@@ -157,7 +157,9 @@ namespace FoodNinja.ViewModel
         }
         private async Task OnRequestFrameTapped(NearestRestaurantModel? selectedRestaurant)
         {
-            await Navigation.PushAsync(new RestaurantDetailPage(selectedRestaurant));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.SelectedRestaurant = selectedRestaurant;
+            await Navigation.PushAsync(new RestaurantDetailPage());
         }
         public async Task LoadRestaurantsAsync()
         {
@@ -197,14 +199,17 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task NavigateToNextPage()
         {
-
-            await Navigation.PushAsync(new RestaurantPage(Restaurant));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.Restaurant = Restaurant;
+            await Navigation.PushAsync(new RestaurantPage());
         }
 
         [RelayCommand]
         private async Task NavigateToPopularMenu()
         {
-            await Navigation.PushAsync(new PopularMenuPage(PopularMenu));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.PopularMenu = PopularMenu;
+            await Navigation.PushAsync(new PopularMenuPage());
         }
 
         [RelayCommand]

@@ -41,7 +41,16 @@ namespace FoodNinja
                     fonts.AddFont("BentonSans_Book.ttf", "BentonBook");
                     fonts.AddFont("BentonSans_Medium.ttf", "BentonMedium");
                     fonts.AddFont("BentonSans_Regular.ttf", "BentonRegular");
+                })
+                .ConfigureMauiHandlers(handlers =>
+                {
+#if ANDROID
+			        handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.Android.CustomMapHandler>();
+#elif IOS
+                    handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.iOS.CustomMapHandler>();
+#endif
                 });
+
                 builder.ConfigureSyncfusionCore();
                 builder.Services.AddSingleton(new FirebaseConfig("AIzaSyD0ehwCKtxucZLyNcUGv-ZFKaNXmw_cmK8"));
                 builder.Services.AddSingleton(new FirebaseClient("https://fir-maui-491c3-default-rtdb.firebaseio.com/"));

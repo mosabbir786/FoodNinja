@@ -3,6 +3,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
 using FoodNinja.Model;
+using FoodNinja.Pages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<List<NearestRestaurantModel>> GetNearestRestaurantAsync()
         {
             try
@@ -288,7 +288,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<List<AddFoodToCart>> GetCartDataAsync()
         {
             try
@@ -339,7 +338,6 @@ namespace FoodNinja.Services
                 return new List<AddFoodToCart>();
             }
         }
-
         public async Task<bool> DecrementFoodQuantityAsync(AddFoodToCart addFoodToCart)
         {
             try
@@ -448,7 +446,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<UserDataModel> GetUserDataAsync(string userId)
         {
             try
@@ -538,6 +535,138 @@ namespace FoodNinja.Services
                 Console.WriteLine("***************** Exception: " + ex.Message);
                 Console.WriteLine("***************** StackTrace: " + ex.StackTrace);
                 return false;
+            }
+        }
+        public async Task AddPaymentMethodAsync(string userId, PaymentModel paymentMethod)
+        {
+            try
+            {
+                var allUsers = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+                var userNode = allUsers.FirstOrDefault();
+                if (userNode.Key != null)
+                {
+                    var userData = userNode.Object;
+                    if (userData.PaymentMethod == null)
+                    {
+                        userData.PaymentMethod = new List<PaymentModel>();
+                    }
+                    userData.PaymentMethod.Add(paymentMethod);
+                    await firebaseClient
+                       .Child("UserData")
+                       .Child(userId)
+                       .Child(userNode.Key)
+                       .PatchAsync(JsonConvert.SerializeObject(userData));
+                    Console.WriteLine("Payment method added successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while adding payment method " + ex.Message);
+            }
+        }
+        public async Task<bool> PlacedOrderAsync(string UserId, List<OrderPlacedModel> selectedOrder)
+        {
+            try
+            {
+                var userOrderRef = firebaseClient.Child("PlacedOrder").Child(UserId);
+                foreach (var order in selectedOrder)
+                {
+                    await userOrderRef.Child(order.OrderId.ToString()).PostAsync(order);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while plced order" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> DeleteCartByIdAsync(string userId, int? restaurantId)
+        {
+            try
+            {
+                await firebaseClient
+                     .Child("CartItem")
+                     .Child(userId)
+                     .Child(restaurantId.ToString())
+                     .DeleteAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while deleting cart item by id" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<List<UserDataModel>> GetAllUser()
+        {
+            try
+            {
+                /* var users = await firebaseClient
+                     .Child("UserData")
+                     .OnceAsync<UserDataModel>();
+
+                 var userList = new List<UserDataModel>();
+
+                 foreach (var user in users)
+                 {
+                     var userId = user.Key;
+                     var userDetails = await firebaseClient
+                         .Child("UserData")
+                         .Child(userId)
+                         .OnceAsync<UserDataModel>();
+
+                     foreach (var detail in userDetails)
+                     {
+                         var userData = detail.Object;
+                         userData.Id = userId; 
+                         userList.Add(userData);
+                     }
+                 }
+                 return userList;*/
+
+                var usersData = await firebaseClient
+                    .Child("UserData")
+                    .OnceSingleAsync<Dictionary<string, Dictionary<string, UserDataModel>>>();
+
+                var userList = usersData
+                .SelectMany(userEntry => userEntry.Value.Select(userDetail =>
+                {
+                    userDetail.Value.Id = userEntry.Key;
+                    return userDetail.Value;
+                }))
+                .ToList();
+                return userList;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while getting all user details" + ex.Message);
+                return null;
+            }
+        }
+        public async Task LogoutAsync()
+        {
+            try
+            {
+                Preferences.Remove("IsLoggedIn");
+                Preferences.Remove("FirebaseToken");
+                Preferences.Remove("RefereshToken");
+                Preferences.Remove("LocalId");
+                Preferences.Clear();
+                await Toast.Make("Successfully Logout").Show();
+                Microsoft.Maui.Controls.Application.Current.MainPage = new NavigationPage(new LoginPage());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*****************{ex.Message}");
             }
         }
 

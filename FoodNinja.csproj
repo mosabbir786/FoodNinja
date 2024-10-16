@@ -75,6 +75,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="darkmap.json" />
+	  <None Remove="dark_map_style.json" />
 	  <None Remove="Platforms\Android\google-services %281%29.json" />
 	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
 	  <None Remove="Resources\Fonts\BentonSans_Bold.ttf" />
@@ -144,6 +146,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Include="darkmap.json" />
+	  <EmbeddedResource Include="dark_map_style.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
@@ -158,7 +165,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Pages\AddPaymentMethodPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\CartPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\ConfirmOrderPages.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\SuccessfullOrderPlacedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\TrackOrderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ChatPage.xaml">
@@ -212,10 +231,16 @@
 	  <MauiXaml Update="Pages\SplashScreen.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\BottomSheet.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Controls\TabBarIconView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Controls\TabBarView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DesclaimerView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

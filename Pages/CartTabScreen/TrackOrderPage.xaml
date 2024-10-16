@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.CartTabScreen.TrackOrderPage"
+             Title="TrackOrderPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:custom="clr-namespace:FoodNinja.Custom"
+             xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+
+    <Grid>
+        <custom:MapEx
+          x:Name="trackOrderMap"
+          MapType="Street"
+          CustomPins="{Binding Pins}"
+          PinHeight="100"
+          PinWidth="100"
+          IsZoomEnabled="True"
+          IsScrollEnabled="True"
+          IsTrafficEnabled="False"/>
+
+        <ImageButton 
+          Margin="20,15,0,0"
+          x:Name="backBtn"
+          Source="back"
+          HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+          WidthRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+          VerticalOptions="Start" HorizontalOptions="Start"
+          Clicked="backBtn_Clicked"/>
+
+        <Border
+          VerticalOptions="End"
+          BackgroundColor="Black"
+          Margin="15"
+          Stroke="Transparent"
+          Padding="15"
+          StrokeShape="RoundRectangle 12">
+            <VerticalStackLayout Spacing="10">
+                <Label
+                  Text="Track Orders"
+                  TextColor="#FFFFFF"
+                  FontFamily="BentonBold"
+                  FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"/>
+
+                <Border
+                  Stroke="Transparent"
+                  BackgroundColor="#252525"
+                  StrokeShape="RoundRectangle 12">
+                    <Grid Padding="10" ColumnSpacing="10" ColumnDefinitions="Auto,*">
+                        <Image  
+                          Source="pic2"
+                          HeightRequest="{markups:OnScreenSize Large='60',Medium='23',Small='21'}"
+                          WidthRequest="{markups:OnScreenSize Large='60',Medium='23',Small='21'}"/>
+
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label
+                              Text="Mr Kemplas"
+                              FontFamily="BentonBold"
+                              TextColor="#FFFFFF"
+                              FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+
+                            <HorizontalStackLayout Spacing="5" Margin="0,3,0,0">
+                                <Image
+                                  HorizontalOptions="Start"
+                                  Source="maplocation"
+                                  HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                  WidthRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+
+                                <Label
+                                  Text="25 minutes on the way"
+                                  TextColor="Gray"
+                                  FontFamily="BentonMedium"
+                                  FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Grid ColumnSpacing="10" ColumnDefinitions="*,Auto">
+                    <Button
+                      x:Name="BackBtn"
+                      BackgroundColor="#53E88B"
+                      Text="Back"
+                      BorderColor="Transparent"
+                      TextColor="#FFFFFF"
+                      FontFamily="BenotinBold"
+                      FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                      HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                      Clicked="BackToRoot_Clicked"/>
+
+                    <Border
+                      x:Name="msgBtnBg"
+                      Stroke="Transparent"
+                      StrokeShape="RoundRectangle 15"
+                      BackgroundColor="#252525"
+                      Grid.Column="1"
+                      HeightRequest="{markups:OnScreenSize Large='53',Medium='51',Small='49'}"
+                      WidthRequest="{markups:OnScreenSize Large='53',Medium='51',Small='49'}">
+                        <Image
+                          HeightRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                          Source="message"
+                          VerticalOptions="Fill" HorizontalOptions="Fill"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Message_Tapped"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>
