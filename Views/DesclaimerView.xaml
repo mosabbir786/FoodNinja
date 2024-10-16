@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Views.DesclaimerView"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="ds1">All prices are set directly by the restaurant.</x:String>
+            <x:String x:Key="ds2">All nutritional information is indicative, values are per serve as shared by the restaurant nd may vary depending on the ingredients and portion size.</x:String>
+            <x:String x:Key="ds3">An average active adult requires 2,000 kcal energy per day, however, calorie needs may vary.</x:String>
+            <x:String x:Key="ds4">Dish details might be AI crafted for a better esperience.</x:String>
+            <x:String x:Key="report">Report an issue with the menu.</x:String>
+            <Style x:Key="dotLabel" TargetType="Label">
+                <Setter Property="TextColor" Value="#FEAD1D"/>
+                <Setter Property="Text" Value="&#9679; "/>
+                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="FontFamily" Value="BentonBold"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+            </Style>
+
+            <Style x:Key="desclaimerLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ContentView.Content>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
+            <Label
+         Margin="0,10,0,0"
+         FontFamily="BentonBold" 
+         FontAttributes="Bold"
+         Text="Desclaimer :"
+         TextColor="#37d582"
+         FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"/>
+
+            <Label Grid.Row="1" Style="{StaticResource dotLabel}"/>
+            <Label Margin="15,0,0,0" Grid.Row="1" Style="{StaticResource desclaimerLabelStyle}" Text="{StaticResource ds1}"/>
+
+            <Label Grid.Row="2" Style="{StaticResource dotLabel}"/>
+            <Label Margin="15,0,0,0" Grid.Row="2" Style="{StaticResource desclaimerLabelStyle}" Text="{StaticResource ds2}"/>
+
+            <Label Grid.Row="3" Style="{StaticResource dotLabel}"/>
+            <Label Margin="15,0,0,0" Grid.Row="3" Style="{StaticResource desclaimerLabelStyle}" Text="{StaticResource ds3}"/>
+
+            <Label Grid.Row="4" Style="{StaticResource dotLabel}"/>
+            <Label Margin="15,0,0,0" Grid.Row="4" Style="{StaticResource desclaimerLabelStyle}" Text="{StaticResource ds4}"/>
+
+            <VerticalStackLayout Grid.Row="5" Margin="0,15,0,110">
+                <BoxView HeightRequest="0.5" Color="Gray"/>
+
+                <Grid>
+                    <Label
+                 FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                 Margin="0,10,0,0"
+                 Text="&#9888;"
+                 FontFamily="BentonBold"
+                 TextColor="#FFFFFF"/>
+
+                    <Label
+                 VerticalOptions="Center"
+                 Margin="20,10,0,0"
+                 Text="{StaticResource report}"
+                 Style="{StaticResource desclaimerLabelStyle}"/>
+                </Grid>
+                <BoxView HeightRequest="0.5" Color="Gray" Margin="0,10,0,0"/>
+            </VerticalStackLayout>
+        </Grid>
+    </ContentView.Content>
+</ContentView>

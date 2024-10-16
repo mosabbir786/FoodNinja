@@ -1,5 +1,6 @@
 ﻿using FoodNinja.Pages;
 using FoodNinja.Pages.Onboarding_Screen;
+using FoodNinja.Services;
 using Syncfusion.Licensing;
 
 namespace FoodNinja
@@ -20,6 +21,7 @@ namespace FoodNinja
             {
                 MainPage = new NavigationPage(new SplashScreen());
             }
+            DependencyService.Register<RestaurantService>();
         }
     }
 }

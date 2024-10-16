@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.CartTabScreen.ConfirmOrderPages"
+             Title="ConfirmOrderPages"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:vm="clr-namespace:FoodNinja.ViewModel"
+             xmlns:bottomSheet="clr-namespace:FoodNinja.Views"
+             xmlns:converter="clr-namespace:FoodNinja.Converter"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+   
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:MaskLastSixDigitsConverter x:Key="MaskLastSixDigitsConverter"/>
+            <converter:BooleanToChangeStrokeConverter x:Key="BooleanToChangeStrokeConverter"/>
+
+            <!--<alohakit:FadeToAnimation
+             x:Key="FadeToAnimation"
+             Duration="500"
+             Target="{x:Reference mainGrid}"
+             Opacity="1"
+             Easing="SpringOut"/>
+
+            <alohakit:TranslateToAnimation
+             x:Key="TranslateToAnimation"
+             Duration="500"
+             Target="{x:Reference priceCalculationBorder}"
+             TranslateY="0"
+             Easing="SpringIn"/>-->
+
+            <Style x:Key="priceTitleLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+            </Style>
+
+            <Style x:Key="priceLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="HorizontalTextAlignment" Value="End"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+            </Style>
+
+            <Style x:Key="editAddressBorderStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 5"/>
+                <Setter Property="Stroke" Value="#FEAD1D"/>
+                <Setter Property="StrokeThickness" Value="0.5"/>
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"/>
+            </Style>
+
+            <Style x:Key="editAddressEntryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid RowDefinitions="*,Auto" x:Name="mainGrid">
+                <VerticalStackLayout Margin="15,15,15,0">
+                    <ImageButton
+                        x:Name="backBtn"
+                        Source="back"
+                        HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                        WidthRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                        VerticalOptions="Start" HorizontalOptions="Start"
+                        Command="{Binding BackCommand}"/>
+
+                    <Label
+                       Text="Confirm Order"
+                       TextColor="#FFFFFF"
+                       Margin="8,10,0,0"
+                       FontFamily="BentonBold"
+                       FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+
+                    <Border
+                       BackgroundColor="#252525"
+                       Stroke="Transparent"
+                       Margin="5,10,5,0"
+                       StrokeShape="RoundRectangle 12">
+                        <Grid Padding="10" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*">
+                            <Label
+                               Grid.Row="0" Grid.Column="0"
+                               Text="Deliver To"
+                               TextColor="Gray"
+                               FontFamily="BentonMedium"
+                               FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"/>
+
+                            <Border
+                               x:Name="editAddressBg"
+                               IsVisible="True" BackgroundColor="#252525"
+                               WidthRequest="{markups:OnScreenSize Large='38',Medium='36',Small='34'}"
+                               HeightRequest="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                               Margin="0,-2,0,0"
+                               HorizontalOptions="End" 
+                               Grid.Row="0" Grid.Column="1"
+                               Stroke="Transparent"
+                               StrokeShape="RoundRectangle 30"/>
+
+                            <Label
+                               Grid.Row="0" Grid.Column="1"
+                               Text="Edit" Margin="0,0,8,0"
+                               HorizontalOptions="End"
+                               TextColor="#53E88B"
+                               FontAttributes="Bold"
+                               FontFamily="BentonMedium"
+                               FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenEditAddressPopupCommand}" Tapped="EditAddressLbl_Tapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+
+                            <Image
+                               Grid.Row="1" Grid.Column="0"
+                               Source="location"
+                               HeightRequest="25"
+                               WidthRequest="25" Margin="0,10,0,0"
+                               HorizontalOptions="Start" VerticalOptions="Start"/>
+
+                            <Label
+                               Margin="-20,10,0,0"
+                               TextColor="#FFFFFF"
+                               FontFamily="OpenSansRegular"
+                               FontAttributes="Bold"
+                               FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
+                               Grid.Row="1" Grid.Column="1"
+                               Text="{Binding UserData.Address}"
+                               LineHeight="1.2"/>
+                        </Grid>
+                    </Border>
+
+                    <Label
+                       Margin="10,10,0,0"
+                       Text="Payment Method"
+                       TextColor="#53E88B"
+                       FontFamily="BentonMedium"
+                       FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+
+                    <Border
+                       BackgroundColor="#252525"
+                       Stroke="Transparent"
+                       Margin="5,10,5,0"
+                       StrokeShape="RoundRectangle 12">
+                        <Grid Padding="10,10,10,10" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+                            <Label
+                               Grid.Row="0" Grid.Column="0"
+                               Text="Select Payment Options"
+                               TextColor="Gray"
+                               FontFamily="BentonMedium"
+                               FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"/>
+
+                            <Border Stroke="Transparent" StrokeShape="RoundRectangle 30" Grid.Row="0" Grid.Column="1" HorizontalOptions="End" Padding="8,5" Margin="0,-5,0,0">
+                                <Label
+                                   Text="Add More"
+                                   TextColor="#53E88B"
+                                   FontFamily="BentonMedium"
+                                   FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="AddMorePayment_Tapped" Command="{Binding AddMorePaymentCommand}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+
+                            <StackLayout
+                               x:Name="paymentMethodCollection"
+                               Grid.Row="1" Grid.ColumnSpan="2"
+                               BindableLayout.ItemsSource="{Binding UserData.PaymentMethod}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                           Stroke="{Binding IsSelectedPayment, Converter={StaticResource BooleanToChangeStrokeConverter}}"
+                                           HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                           StrokeShape="RoundRectangle 6"
+                                           BackgroundColor="Transparent"
+                                           Margin="0,5,0,0"
+                                           Padding="10,5">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Image
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                                                   Margin="0,0,0,0">
+                                                    <Image.Triggers>
+                                                        <DataTrigger TargetType="Image" Binding="{Binding PaymentMethodName}" Value="Paypal">
+                                                            <Setter Property="Source" Value="paypal.png"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Image" Binding="{Binding PaymentMethodName}" Value="Visa">
+                                                            <Setter Property="Source" Value="visa.png"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Image" Binding="{Binding PaymentMethodName}" Value="Payoneer">
+                                                            <Setter Property="Source" Value="payoneer.png"/>
+                                                        </DataTrigger>
+                                                    </Image.Triggers>
+                                                </Image>
+
+                                                <Label
+                                                   HorizontalOptions="EndAndExpand"
+                                                   TextColor="Gray"
+                                                   FontFamily="BentonMedium"
+                                                   FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                                   VerticalOptions="Center">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding PaymentMethodName}" Value="Paypal">
+                                                            <Setter Property="Text" Value="{Binding PaymentEmail,Converter={StaticResource MaskLastSixDigitsConverter}}"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Label" Binding="{Binding PaymentMethodName}" Value="Visa">
+                                                            <Setter Property="Text" Value="{Binding CardNumber, Converter={StaticResource MaskLastSixDigitsConverter},ConverterParameter=Visa}"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Label" Binding="{Binding PaymentMethodName}" Value="Payoneer">
+                                                            <Setter Property="Text" Value="{Binding PaymentEmail,Converter={StaticResource MaskLastSixDigitsConverter}}"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </StackLayout>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ConfirmOrderViewModel}}, Path=PaymentMethodSelectedCommand}"
+                                                   CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+
+                            <Border
+                                HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                Grid.Row="2" Grid.ColumnSpan="2"
+                                Stroke="{Binding CodBorderColor}"
+                                StrokeShape="RoundRectangle 6"
+                                BackgroundColor="Transparent"
+                                Margin="0,0,0,0"
+                                Padding="10,5">
+                                <Label
+                                   Text="COD"
+                                   Margin="10,5,0,5"
+                                   TextColor="#FFFFFF"
+                                   FontFamily="BentonMedium"
+                                   VerticalOptions="Center"
+                                   FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CodSelectedCommand}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--#region Price Calculation -->
+                <Border
+                   TranslationY="0"
+                   Margin="0,0,0,0"
+                   x:Name="priceCalculationBorder"
+                   Grid.Row="1"
+                   Stroke="Transparent"
+                   BackgroundColor="#53E88B"
+                   StrokeShape="RoundRectangle 20,20,0,0"
+                   Padding="5,0">
+                    <Grid RowSpacing="5"  RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,*">
+
+                        <Label
+                           Margin="15,15,0,0"
+                           Text="Sub-Total"
+                           Grid.Row="0" Grid.Column="0"
+                           FontFamily="BentonMedium"
+                           Style="{StaticResource priceTitleLabelStyle}"/>
+
+                        <Label
+                           Margin="15,0,0,0"
+                           Text="Delivery Charge"
+                           Grid.Row="1" Grid.Column="0"
+                           FontFamily="BentonMedium"
+                           Style="{StaticResource priceTitleLabelStyle}"/>
+
+                        <Label
+                           Margin="15,5,0,0"
+                           Text="Total" TextColor="#FFFFFF"
+                           FontFamily="BentonBold"
+                           FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"
+                           Grid.Row="2" Grid.Column="0"/>
+
+                        <Label
+                           Margin="0,15,15,0"
+                           FontFamily="BentonMedium"
+                           Text="{Binding SubTotal,StringFormat='{0} $'}"
+                           Grid.Row="0" Grid.Column="1"
+                           Style="{StaticResource priceLabelStyle}"/>
+
+                        <Label
+                           Margin="0,0,15,0"
+                           FontFamily="BentonMedium"
+                           Text="{Binding DeliveryCharge,StringFormat='{0} $'}"
+                           Grid.Row="1" Grid.Column="1"
+                           Style="{StaticResource priceLabelStyle}"/>
+
+                        <Label
+                           TextColor="#FFFFFF"
+                           Text="{Binding TotalPrice,StringFormat='{0} $'}"
+                           Margin="0,5,15,0"
+                           FontFamily="BentonBold"
+                           HorizontalOptions="End"
+                           FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"
+                           Grid.Row="2" Grid.Column="1"/>
+
+                        <Button
+                           Margin="10,10,10,20"
+                           CornerRadius="12"
+                           BackgroundColor="#FFFFFF"
+                           HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                           FontFamily="BentonMedium"
+                           FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                           TextColor="#53E88B"
+                           Text="Place My Order"
+                           Grid.Row="3" Grid.ColumnSpan="2"
+                           Command="{Binding PlacedOrderCommand}"/>
+                    </Grid>
+                </Border>
+                <!--#endregion-->
+
+                <!--region Update Address BottomSheet -->
+                <bottomSheet:BottomSheet
+                   VerticalOptions="End"
+                   Grid.RowSpan="2"
+                   x:Name="simpleBottomSheet"
+                   HeaderText="Simple Example">
+                    <bottomSheet:BottomSheet.BottomSheetContent>
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="10" Padding="20" BackgroundColor="#252525">
+                            <Label
+                               Text="Update Address"
+                               TextColor="#53E88B"
+                               FontFamily="BentonBold"
+                               FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+                            <Border x:Name="houseBorder" Grid.Row="1" Style="{StaticResource editAddressBorderStyle}">
+                                <Entry
+                                   x:Name="houseEntry"
+                                   Style="{StaticResource editAddressEntryStyle}"
+                                   Placeholder="House / Flat / Block No"
+                                   Text="{Binding HouseFlatBlockNo}"
+                                   Completed="houseEntry_Completed"/>
+                            </Border>
+
+                            <Border x:Name="cityBorder" Grid.Row="2" Style="{StaticResource editAddressBorderStyle}">
+                                <Entry
+                                   x:Name="cityEntry"
+                                   Style="{StaticResource editAddressEntryStyle}"
+                                   Placeholder="Area / City"
+                                   Text="{Binding CityArea}"
+                                   Completed="cityEntry_Completed"/>
+                            </Border>
+
+                            <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto" ColumnSpacing="10">
+                                <Border x:Name="stateBorder" Padding="10,0" Grid.Column="0" Style="{StaticResource editAddressBorderStyle}">
+                                    <Entry
+                                       x:Name="stateEntry"
+                                       Style="{StaticResource editAddressEntryStyle}"
+                                       Placeholder="State"
+                                       Text="{Binding State}"
+                                       Completed="stateEntry_Completed"/>
+                                </Border>
+
+                                <Border x:Name="pincodeBorder" Padding="10,0" Grid.Column="1" Style="{StaticResource editAddressBorderStyle}">
+                                    <Entry
+                                       x:Name="pincodeEntry"
+                                       Style="{StaticResource editAddressEntryStyle}"
+                                       Placeholder="Pincode"
+                                       Text="{Binding Pincode}"
+                                       Keyboard="Numeric"
+                                       MaxLength="6"
+                                       Completed="pincodeEntry_Completed"/>
+                                </Border>
+                            </Grid>
+
+                            <Grid Grid.Row="4" ColumnSpacing="15" ColumnDefinitions="*,*" VerticalOptions="Fill">
+                                <Button
+                                   Text="Cancel"
+                                   TextColor="#FFFFFF"
+                                   FontFamily="BentonMedium"
+                                   VerticalOptions="Center"
+                                   CornerRadius="15"
+                                   BackgroundColor="#FEAD1D"
+                                   Clicked="CancelButton_Clicked"
+                                   HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                   FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+
+                                <Button
+                                   Grid.Column="1"
+                                   Text="Update"
+                                   TextColor="#FFFFFF"
+                                   FontFamily="BentonMedium"
+                                   VerticalOptions="Center"
+                                   CornerRadius="15"
+                                   BackgroundColor="#53E88B"
+                                   Clicked="UpdateButton_Clicked"
+                                   HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                   FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                            </Grid>
+                        </Grid>
+
+                    </bottomSheet:BottomSheet.BottomSheetContent>
+                </bottomSheet:BottomSheet>
+                <!--#endregion-->
+
+                <skia:SKLottieView
+                    Grid.RowSpan="2"
+                    IsVisible="{Binding IsLoading}"
+                    IsAnimationEnabled="{Binding IsLoading}"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="foodyellow.json"
+                    HeightRequest="100" WidthRequest="100"/>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

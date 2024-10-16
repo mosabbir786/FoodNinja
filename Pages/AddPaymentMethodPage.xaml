@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.AddPaymentMethodPage"
+             Title="AddPaymentMethodPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:bottomSheet="clr-namespace:FoodNinja.Views"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="Headline">Payment Method</x:String>
+            <x:String x:Key="Caption">This data will be displayed in your account profile for security</x:String>
+
+            <Style x:Key="AddressBorderStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 5"/>
+                <Setter Property="Stroke" Value="#FEAD1D"/>
+                <Setter Property="StrokeThickness" Value="0.5"/>
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+            </Style>
+
+            <Style x:Key="AddressEntryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="HeightRequest" Value="57"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="Padding" Value="10,0"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid Margin="0" RowDefinitions="Auto,.6*,.4*" x:Name="mainGrid" TranslationY="0">
+
+                <ImageButton
+                    Margin="20,20,0,0"
+                    Opacity="1"
+                    x:Name="backImage"
+                    Source="back.png"
+                    HorizontalOptions="Start"
+                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                    WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                    Clicked="BackImageButton_Clicked">
+                </ImageButton>
+
+                <StackLayout Grid.Row="1" Margin="20,0,20,0">
+                    <Label
+                        Opacity="1"
+                        x:Name="headLineLbl"
+                        Text="{StaticResource Headline}"
+                        TextColor="#FFFFFF"
+                        FontSize="25"
+                        FontFamily="BentonBold"
+                        LineHeight="1.2"
+                        Margin="5,5,0,0">
+                      
+                    </Label>
+
+                    <Label
+                         Opacity="1"
+                         x:Name="captionLbl"
+                         Text="{StaticResource Caption}"
+                         TextColor="White" 
+                         Margin="5,5,30,0"
+                         LineHeight="1.2"
+                         FontFamily="BentonMedium">
+                    </Label>
+
+                    <Border Stroke="{Binding PaypalBorderColor}" Opacity="1" Style="{DynamicResource borderStyle}" x:Name="payPalBorder" Margin="0,10,0,0" TranslationY="0">
+                        <Image
+                            Source="paypal"
+                            HeightRequest="25"
+                            VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Paypal_Tapped" NumberOfTapsRequired="1"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border Opacity="1" Stroke="{Binding VisaBorderColor}" Style="{DynamicResource borderStyle}" x:Name="visaBorder" Margin="0,10,0,0" TranslationY="0">
+                        <Image
+                            Source="visa"
+                            HeightRequest="20"
+                            VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Visa_Tapped" NumberOfTapsRequired="1"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border Opacity="1" Stroke="{Binding PayoneerBorderColor}" Style="{DynamicResource borderStyle}" x:Name="payoneerBorder" Margin="0,10,0,0" TranslationY="0">
+                        <Image
+                            Source="payoneer"
+                            HeightRequest="30"
+                            VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Payoneer_Tapped" NumberOfTapsRequired="1"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                    <Label
+                        IsVisible="{Binding IsPaymentMethodErrorVisible}"
+                        Text="{Binding PaymentMethodSelectionErrorMsg}"
+                        Margin="5,1,0,0"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center"/>
+                </StackLayout>
+
+                <skia:SKLottieView
+                     IsVisible="{Binding IsLoading}"
+                     IsAnimationEnabled="{Binding IsLoading}"
+                     Grid.RowSpan="3"
+                     x:Name="loader"
+                     RepeatCount="-1"
+                     RepeatMode="Reverse"
+                     Margin="0,200,0,0"
+                     Source="foodyellow.json"
+                     HeightRequest="100" WidthRequest="100"
+                     VerticalOptions="Start" HorizontalOptions="Center"/>
+
+                <!--<Button
+             Opacity="0"
+             x:Name="nextBtn"
+             Grid.Row="2"
+             Text="Next"
+             TextColor="#FFFFFF"
+             FontFamily="BentonBold"
+             Margin="0,10,0,15"
+             FontSize="16"
+             CornerRadius="15"
+             VerticalOptions="End"
+             HeightRequest="50" WidthRequest="150"
+             HorizontalOptions="Center"
+             >
+             <Button.Background>
+                 <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                     <GradientStopCollection>
+                         <GradientStop Offset="0" Color="#53E88B"/>
+                         <GradientStop Offset="1" Color="#15BE77"/>
+                     </GradientStopCollection>
+                 </LinearGradientBrush>
+             </Button.Background>
+             <VisualElement.Behaviors>
+                 <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation7}"/>
+             </VisualElement.Behaviors>
+         </Button>-->
+
+                <bottomSheet:BottomSheet
+                     BackgroundColor="Transparent"
+                     x:Name="paypalBottomSheet"
+                     Grid.RowSpan="3"
+                     VerticalOptions="End">
+                    <bottomSheet:BottomSheet.BottomSheetContent>
+                        <StackLayout BackgroundColor="#252525" Padding="20">
+                            <Image Source="mainlogo" VerticalOptions="Start" 
+                                HeightRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"
+                                WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"/>
+                            <Label
+                                Margin="5,10,0,0"
+                                TextColor="#37d582"
+                                FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                FontFamily="BentonMedium"
+                                Text="Add Paypal Registerd Email Id"/>
+
+                            <Border Margin="0,5,0,0" StrokeShape="RoundRectangle 15" Style="{StaticResource AddressBorderStyle}">
+                                <Entry
+                                    x:Name="paypalEntry"
+                                    Text="{Binding PaypalEmail}"
+                                    Style="{StaticResource AddressEntryStyle}"
+                                    Placeholder="Enter your registered email"/>
+                            </Border>
+
+                            <Button
+                                Margin="0,0,0,20"
+                                TextColor="#FFFFFF"
+                                HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                FontFamily="BentonBold"
+                                Text="Add Paypal"
+                                BackgroundColor="#37d582"
+                                CornerRadius="15"
+                                VerticalOptions="EndAndExpand"
+                                Command="{Binding AddPaypalCommand}"/>
+                        </StackLayout>
+                    </bottomSheet:BottomSheet.BottomSheetContent>
+                </bottomSheet:BottomSheet>
+
+                <bottomSheet:BottomSheet
+                     BackgroundColor="Transparent"
+                     x:Name="visaBottomSheet"
+                     Grid.RowSpan="3"
+                     VerticalOptions="End">
+                    <bottomSheet:BottomSheet.BottomSheetContent>
+                        <Grid Padding="10" BackgroundColor="#252525" RowDefinitions="Auto,Auto,Auto,Auto,*">
+                            <Image 
+                                Source="mainlogo" VerticalOptions="Start" 
+                                HeightRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"
+                                WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"/>
+
+                            <Label
+                                TextColor="#37d582"
+                                FontFamily="BentonMedium"
+                                FontSize="{markups:OnScreenSize Large='13',Medium='9',Small='7'}"
+                                Margin="15,10,0,0"
+                                Grid.Row="1"
+                                Text="Add Your Visa Card"/>
+
+                            <Border Grid.Row="2" Margin="10,5,10,0" StrokeShape="RoundRectangle 15" Style="{StaticResource AddressBorderStyle}">
+                                <Entry
+                                    x:Name="cardNumberEntry"
+                                    Text="{Binding VisaCardNumber}"
+                                    Style="{StaticResource AddressEntryStyle}"
+                                    Placeholder="Card Number"
+                                    MaxLength="16"/>
+                            </Border>
+
+                            <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto">
+                                <Border  Margin="10,10,10,0" StrokeShape="RoundRectangle 15" Style="{StaticResource AddressBorderStyle}" WidthRequest="{markups:OnScreenSize Large='80',Medium='78',Small='76'}">
+                                    <Entry
+                                        x:Name="cvvEntry"
+                                        Text="{Binding VisaCVV}"
+                                        Style="{StaticResource AddressEntryStyle}"
+                                        Placeholder="CVV"
+                                        MaxLength="3"
+                                        HorizontalOptions="Center"/>
+                                </Border>
+
+                                <Border Grid.Column="1" Margin="10,10,10,0" StrokeShape="RoundRectangle 15" Style="{StaticResource AddressBorderStyle}">
+                                    <DatePicker
+                                        x:Name="expiryDatePicker"
+                                        DateSelected="DatePicker_DateSelected"
+                                        TextColor="Gray"
+                                        FontFamily="BentonMedium"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="CenterAndExpand"
+                                        WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"
+                                        Date="{Binding ExpiryDate}"
+                                        Format="MM/yyyy"/>
+                                </Border>
+                            </Grid>
+
+                            <Button
+                                 BackgroundColor="#37D582"
+                                 CornerRadius="15"
+                                 Text="Add"
+                                 TextColor="#FFFFFF"
+                                 FontFamily="BentonBold"
+                                 FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                 Grid.Row="4"
+                                 Margin="15,0"
+                                 HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                 Command="{Binding AddVisaCardCommand}"/>
+                        </Grid>
+                    </bottomSheet:BottomSheet.BottomSheetContent>
+                </bottomSheet:BottomSheet>
+
+                <bottomSheet:BottomSheet
+                     BackgroundColor="Transparent"
+                     x:Name="payoneerBottomSheet"
+                     Grid.RowSpan="3"
+                     VerticalOptions="End">
+                    <bottomSheet:BottomSheet.BottomSheetContent>
+                        <StackLayout BackgroundColor="#252525" Padding="20">
+                            <Image
+                                Source="mainlogo" VerticalOptions="Start" 
+                                HeightRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"
+                                WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"/>
+                            <Label
+                                Margin="5,10,0,0"
+                                TextColor="#37d582"
+                                FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                FontFamily="BentonMedium"
+                                Text="Add Payoneer Registerd Email Id"/>
+
+                            <Border Margin="0,5,0,0" StrokeShape="RoundRectangle 15" Style="{StaticResource AddressBorderStyle}">
+                                <Entry                                   
+                                    x:Name="payoneerEntry"
+                                    Text="{Binding PayoneerEmail}"
+                                    Style="{StaticResource AddressEntryStyle}"
+                                    Placeholder="Enter your registered email"/>
+                            </Border>
+
+                            <Button
+                                Margin="0,0,0,20"
+                                TextColor="#FFFFFF"
+                                HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                FontFamily="BentonBold"
+                                Text="Add Payoneer"
+                                BackgroundColor="#37d582"
+                                CornerRadius="15"
+                                VerticalOptions="EndAndExpand"
+                                Command="{Binding AddPayoneerCommand}"/>
+                        </StackLayout>
+                    </bottomSheet:BottomSheet.BottomSheetContent>
+                </bottomSheet:BottomSheet>
+
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

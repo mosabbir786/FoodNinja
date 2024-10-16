@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.CartTabScreen.SuccessfullOrderPlacedPage"
+             Title="SuccessfullOrderPlacedPage"
+             BackgroundColor="Black"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations">
+
+    <ContentPage.Resources>
+        <x:String x:Key="Headline">Congrats!</x:String>
+        <x:String x:Key="Caption">Your order has been placed successfully!</x:String>
+        <alohakit:BounceInAnimation
+              x:Key="BounceInAnimation"
+              Target="{x:Reference tickImage}"
+              Duration="500"/>
+        <alohakit:FadeToAnimation
+            x:Key="FadeToAnimation2"
+            Duration="500"
+            Target="{x:Reference headline}"
+            Opacity="1"
+            Easing="SpringIn"/>
+
+        <alohakit:FadeToAnimation
+            x:Key="FadeToAnimation3"
+            Duration="500"
+            Target="{x:Reference caption}"
+            Opacity="1"
+            Easing="SpringIn"/>
+
+        <alohakit:FadeToAnimation
+            x:Key="FadeToAnimation4"
+            Duration="500"
+            Target="{x:Reference btn}"
+            Opacity="1"
+            Easing="SpringIn"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions=".8*,.2*">
+        <ImageButton 
+          Grid.RowSpan="2"
+         Margin="20,15,0,0"
+         x:Name="backBtn"
+         Source="back"
+         HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+         WidthRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+         VerticalOptions="Start" HorizontalOptions="Start"
+         Clicked="backBtn_Clicked"/>
+        <StackLayout VerticalOptions="Center" BackgroundColor="Transparent">
+            <Image
+              Opacity="0"
+              x:Name="tickImage"
+              Margin="0,30"
+              Source="tickcomplete"
+              HeightRequest="200"
+              VerticalOptions="Center" HorizontalOptions="Center">
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource BounceInAnimation}"/>
+                </VisualElement.Behaviors>
+            </Image>
+
+            <Label
+              Opacity="0"
+              x:Name="headline"
+              Margin="0,0,0,10"
+              FontSize="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+              FontFamily="BentonBold"
+              TextColor="#53E88B"
+              Text="{StaticResource Headline}"
+              HorizontalTextAlignment="Center">
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation2}"/>
+                </VisualElement.Behaviors>
+            </Label>
+
+            <Label
+              Opacity="0"
+              x:Name="caption"
+              TextColor="#FFFFFF"
+              Margin="30,0"
+              LineHeight="1.3"
+              FontSize="{markups:OnScreenSize Large='17',Medium='15',Small='13'}"
+              FontFamily="BentonMedium"
+              Text="{StaticResource Caption}"
+              HorizontalTextAlignment="Center">
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation3}"/>
+                </VisualElement.Behaviors>
+            </Label>
+        </StackLayout>
+
+
+
+        <Button
+          Opacity="0"
+          x:Name="btn"
+          Grid.Row="1"
+          Padding="20,0"
+          Text="Track Order"
+          WidthRequest="140"
+          TextColor="#FFFFFF"
+          FontFamily="BentonBold"
+          Margin="0,0,0,20"
+          FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+          CornerRadius="15"
+          HeightRequest="52"
+          HorizontalOptions="Center" VerticalOptions="EndAndExpand"
+          Clicked="TrackOrder_Clicked">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                    <GradientStopCollection>
+                        <GradientStop Offset="0" Color="#53E88B"/>
+                        <GradientStop Offset="1" Color="#15BE77"/>
+                    </GradientStopCollection>
+                </LinearGradientBrush>
+            </Button.Background>
+            <VisualElement.Behaviors>
+                <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation4}"/>
+            </VisualElement.Behaviors>
+        </Button>
+    </Grid>
+</ContentPage>

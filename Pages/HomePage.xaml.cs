@@ -32,7 +32,7 @@ public partial class HomePage : ContentPage
         var viewModel = BindingContext as HomePageViewModel;
         if (viewModel != null)
         {
-           // viewModel.CurrentPage = TypeOfPage.HomePage;
+             viewModel.CurrentPage = TypeOfPage.HomePage;
 
             /* viewModel.IsLoading = true;
              await viewModel.LoadRestaurantsAsync();
@@ -44,7 +44,6 @@ public partial class HomePage : ContentPage
     {
         base.OnDisappearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
-
     }
 
     #region Clicked Event
@@ -70,7 +69,7 @@ public partial class HomePage : ContentPage
 
     private async void firstSearchbar_TextChanged(object sender, TextChangedEventArgs e)
     {
-      /*  var container = BindingContext as HomePageViewModel;
+        var container = BindingContext as HomePageViewModel;
         if (container != null && container.RestaurantList != null)
         {
             if (!string.IsNullOrEmpty(e.NewTextValue))
@@ -91,7 +90,7 @@ public partial class HomePage : ContentPage
                     firstSearchbar?.Unfocus();
                 }
             }
-        }*/
+        }
     }
 
     private async void ViewMoreRestaurant_Tapped(object sender, TappedEventArgs e)
@@ -160,7 +159,7 @@ public partial class HomePage : ContentPage
     }
     private async void PerformSearch(string searchText)
     {
-       /* firstSearchbar.Text = string.Empty;
+        firstSearchbar.Text = string.Empty;
         var container = BindingContext as HomePageViewModel;
         if (container != null && container.RestaurantList != null)
         {
@@ -182,7 +181,7 @@ public partial class HomePage : ContentPage
                 container.RestaurantList = new ObservableCollection<NearestRestaurantModel>(container.Restaurant.Take(3));
                 firstSearchbar?.Unfocus();
             }
-        }*/
+        }
     }
     #endregion
 
