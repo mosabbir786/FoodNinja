@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Views.Controls.TabBarIconView"
+             xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core">
+    <ContentView.Resources>
+        <Style x:Key="IconStyle" TargetType="{x:Type simpleCore:Icon}">
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="VerticalOptions" Value="Fill"/>
+            <Setter Property="TintColor" Value="#FFFFFF"/>
+        </Style>
+    </ContentView.Resources>
+
+    <simpleCore:Icon
+      Style="{DynamicResource IconStyle}"
+      Source="{Binding Source}"/>
+</ContentView>

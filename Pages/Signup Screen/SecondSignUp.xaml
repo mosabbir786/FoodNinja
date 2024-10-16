@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Signup_Screen.SecondSignUp"
+             Title="SecondSignUp"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations"
+             BackgroundColor="Black">
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="#37d582" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <ResourceDictionary>
+            <x:String x:Key="HeadLine">Fill in your bio to get started</x:String>
+            <x:String x:Key="Caption">This data will be displayed in your account profile for security</x:String>
+            <Color x:Key="Maincolor">#37d582</Color>
+
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="HeightRequest" Value="53"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="Padding" Value="10,0"/>
+            </Style>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonRegular"/>
+            </Style>
+
+            <alohakit:FadeToAnimation
+             x:Key="fadeAnimation"
+             Duration="500"
+             Target="{x:Reference mainGrid}"
+             Opacity="1"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid Margin="20" RowDefinitions="Auto,*" x:Name="mainGrid" Opacity="0">
+                <ImageButton
+                 Source="back.png"
+                 HorizontalOptions="Start"
+                 HeightRequest="50" WidthRequest="50"
+                 Command="{Binding BackCommand}"/>
+
+                <StackLayout Grid.Row="1" Margin="0,0,0,0">
+                    <Label
+                     Text="{StaticResource HeadLine}"
+                     TextColor="#FFFFFF"
+                     FontSize="25"
+                     FontFamily="BentonBold"
+                     LineHeight="1.2"
+                     Margin="5,10,0,0"/>
+
+                    <Label
+                     Text="{StaticResource Caption}"
+                     TextColor="White"
+                     Margin="5,10,30,0"
+                     LineHeight="1.2"
+                     FontFamily="BentonMedium"/>
+
+                    <Border Style="{StaticResource borderStyle}" x:Name="firstNameBorder" Margin="0,20,0,0">
+                        <Entry
+                         VerticalOptions="Center"
+                         Style="{StaticResource entryStyle}"
+                         Placeholder="First Name"
+                         Text="{Binding FirstName}"
+                         Completed="FirstNameEntry_Completed">
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior
+                                 Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                 MinimumLength="1"
+                                 ValidStyle="{StaticResource ValidEntryStyle}"
+                                 InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label
+                     IsVisible="{Binding IsFirstNameErrVisible}"
+                     Text="{Binding FirstNameErrMsg}"
+                     Margin="5,1,0,0"
+                     TextColor="#FEAD1D"
+                     FontSize="12"
+                     FontFamily="BentonRegular"
+                     VerticalOptions="Center"/>
+
+
+                    <Border Style="{StaticResource borderStyle}" x:Name="lastNameBorder" Margin="0,15,0,0">
+                        <Entry
+                         x:Name="lastNameEntry"
+                         VerticalOptions="Center"
+                         Style="{StaticResource entryStyle}"
+                         Placeholder="Last Name"
+                         Text="{Binding LastName}"
+                         Completed="LastNameEntry_Completed">
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior
+                                 Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                 MinimumLength="1"
+                                 ValidStyle="{StaticResource ValidEntryStyle}"
+                                 InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label
+                     IsVisible="{Binding IsLastNameErrVisible}"
+                     Text="{Binding LastNameErrMsg}"
+                     Margin="5,1,0,0"
+                     TextColor="#FEAD1D"
+                     FontSize="12"
+                     FontFamily="BentonRegular"
+                     VerticalOptions="Center"/>
+
+                    <Border Style="{StaticResource borderStyle}" x:Name="mobileBorder" Margin="0,15,0,0">
+                        <Entry
+                         x:Name="mobileEntry"
+                         VerticalOptions="Center"
+                         Style="{StaticResource entryStyle}"
+                         Placeholder="Mobile Number"
+                         Text="{Binding MobileNumber}"
+                         Keyboard="Numeric"
+                         MaxLength="10"
+                         Completed="MobileEntry_Completed">
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior
+                                 Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                 MinimumLength="1"
+                                 ValidStyle="{StaticResource ValidEntryStyle}"
+                                 InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label
+                     IsVisible="{Binding IsMobileNoErrVisible}"
+                     Text="{Binding MobileNumberErrMsg}"
+                     Margin="5,1,0,0"
+                     TextColor="#FEAD1D"
+                     FontSize="12"
+                     FontFamily="BentonRegular"
+                     VerticalOptions="Center"/>
+                    <Button
+                      Text="Next"
+                      TextColor="#FFFFFF"
+                      FontFamily="BentonBold"
+                      Margin="0,10,0,15"
+                      FontSize="16"
+                      CornerRadius="15"
+                      VerticalOptions="EndAndExpand"
+                      HeightRequest="50" WidthRequest="150"
+                      HorizontalOptions="Center"
+                      Command="{Binding NextCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#53E88B"/>
+                                    <GradientStop Offset="1" Color="#15BE77"/>
+                                </GradientStopCollection>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </StackLayout>
+
+
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource fadeAnimation}"/>
+                </VisualElement.Behaviors>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

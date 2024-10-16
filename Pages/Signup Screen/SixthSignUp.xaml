@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Signup_Screen.SixthSignUp"
+             Title="SixthSignUp"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations">
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="HeadLine">Set Your Location</x:String>
+            <x:String x:Key="Caption">This data will be displayed in your account profile for security</x:String>
+
+            <Style x:Key="AddressBorderStyle" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 5"/>
+                <Setter Property="Stroke" Value="#53E88B"/>
+                <Setter Property="StrokeThickness" Value="0.5"/>
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="Margin" Value="0,15,0,0"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"/>
+            </Style>
+
+            <Style x:Key="AddressEntryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <alohakit:TranslateToAnimation
+              x:Key="translateAnimation"
+              TranslateY="0"
+              Duration="600"
+              Target="{x:Reference locationFrame}"
+              Easing="SinInOut"/>
+
+            <alohakit:FadeToAnimation
+              x:Key="FadeToAnimation"
+              Duration="500"
+              Target="{x:Reference mainGrid}"
+              Opacity="1"
+              Easing="SpringIn"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid x:Name="mainGrid" Opacity="0">
+                <StackLayout Margin="20">
+                    <ImageButton
+                       x:Name="backImage"
+                       Source="back.png"
+                       HorizontalOptions="Start"
+                       HeightRequest="50" WidthRequest="50"
+                       Command="{Binding BackCommand}"/>
+
+                    <Label
+                        x:Name="headLineLbl"
+                        Text="{StaticResource HeadLine}"
+                        TextColor="#FFFFFF"
+                        FontSize="25"
+                        FontFamily="BentonBold"
+                        LineHeight="1.2"
+                        Margin="5,15,40,0">
+                    </Label>
+
+                    <Label
+                        x:Name="captionLbl"
+                        Text="{StaticResource Caption}"
+                        TextColor="White" 
+                        Margin="5,15,30,40"
+                        LineHeight="1.2"
+                        FontFamily="BentonMedium">
+                    </Label>
+
+
+                    <Border
+                        x:Name="locationFrame"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 15"
+                        BackgroundColor="#80252525"
+                        HeightRequest="150">
+                        <StackLayout Padding="10,15" Spacing="25">
+                            <HorizontalStackLayout Spacing="10">
+                                <Image
+                                    Source="location"
+                                    HeightRequest="35"
+                                    VerticalOptions="Start" HorizontalOptions="Start"/>
+
+                                <Label
+                                    FontSize="13"
+                                    TextColor="#FFFFFF"
+                                    FontFamily="BentonMedium"
+                                    Text="Your Location"
+                                    VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <Border
+                                x:Name="locationBorder"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 17"
+                                BackgroundColor="#3a3a3a"
+                                VerticalOptions="FillAndExpand">
+                                <Label
+                                    x:Name="locationLabel"
+                                    TextColor="#FFFFFF"
+                                    FontSize="15"
+                                    LineHeight="1.3"
+                                    Text="{Binding FullAddress}"
+                                    VerticalOptions="Center"
+                                    FontFamily="BentonBold"
+                                    HorizontalTextAlignment="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="LocationBorder_Tapped"  Command="{Binding FetchLocationCommand}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </StackLayout>
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Gray" 
+                                Radius="3"
+                                Opacity="0.4"
+                                Offset="0,0"/>
+                        </Border.Shadow>
+                        <VisualElement.Behaviors>
+                            <alohakit:BeginAnimationBehavior Animation="{StaticResource translateAnimation}"/>
+                        </VisualElement.Behaviors>
+                    </Border>
+
+                    <Label
+                        Text="Add Delivery Address"
+                        Margin="0,10,0,0"
+                        FontFamily="BentonBold"
+                        TextColor="#FDAD1D"
+                        TextDecorations="Underline"
+                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                    <Border x:Name="houseBorder" Grid.Row="1" Style="{StaticResource AddressBorderStyle}">
+                        <Entry
+                            x:Name="houseEntry"
+                            Style="{StaticResource AddressEntryStyle}"
+                            Placeholder="House / Flat / Block No"
+                            Text="{Binding HouseFlatBlockNo}"
+                            Completed="houseEntry_Completed"/>
+                    </Border>
+
+                    <Border x:Name="cityBorder" Grid.Row="2" Style="{StaticResource AddressBorderStyle}">
+                        <Entry
+                            x:Name="cityEntry"
+                            Style="{StaticResource AddressEntryStyle}"
+                            Placeholder="Area / City"
+                            Text="{Binding CityArea}"
+                            Completed="cityEntry_Completed"/>
+                    </Border>
+
+                    <Grid  ColumnDefinitions="Auto,Auto" ColumnSpacing="10">
+                        <Border x:Name="stateBorder" Padding="10,0" Grid.Column="0" Style="{StaticResource AddressBorderStyle}">
+                            <Entry
+                                x:Name="stateEntry"
+                                Style="{StaticResource AddressEntryStyle}"
+                                Placeholder="State"
+                                Text="{Binding State}"
+                                Completed="stateEntry_Completed"/>
+                        </Border>
+
+                        <Border x:Name="pincodeBorder" Padding="10,0" Grid.Column="1" Style="{StaticResource AddressBorderStyle}">
+                            <Entry
+                                x:Name="pincodeEntry"
+                                Style="{StaticResource AddressEntryStyle}"
+                                Placeholder="Pincode"
+                                Text="{Binding Pincode}"
+                                Keyboard="Numeric"
+                                MaxLength="6"
+                                Completed="pincodeEntry_Completed"/>
+                        </Border>
+                    </Grid>
+
+
+                    <Button
+                        Padding="20,0"
+                        Text="Next"
+                        WidthRequest="140"
+                        TextColor="#FFFFFF"
+                        FontFamily="BentonBold"
+                        Margin="0,30,0,15"
+                        FontSize="16"
+                        CornerRadius="15"
+                        HeightRequest="52"
+                        HorizontalOptions="Center" VerticalOptions="EndAndExpand"
+                        Command="{Binding NextCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#53E88B"/>
+                                    <GradientStop Offset="1" Color="#15BE77"/>
+                                </GradientStopCollection>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </StackLayout>
+                <skia:SKLottieView
+                     IsVisible="{Binding IsLoading}"
+                     IsAnimationEnabled="{Binding IsLoading}"
+                     RepeatCount="-1"
+                     RepeatMode="Reverse"
+                     Source="food.json"
+                     HeightRequest="100" WidthRequest="100"/>
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation}"/>
+                </VisualElement.Behaviors>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

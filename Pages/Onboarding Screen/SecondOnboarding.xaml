@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Onboarding_Screen.SecondOnboarding"
+             Title="SecondOnboarding"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <alohakit:FadeToAnimation
+              x:Key="FadeToAnimation"
+              Duration="500"
+              Target="{x:Reference headlineLbl}"
+              Opacity="1"
+              Easing="SpringIn"/>
+
+            <alohakit:FadeToAnimation
+              x:Key="FadeToAnimation2"
+              Duration="500"
+              Target="{x:Reference captionLbl}"
+              Opacity="1"
+              Easing="SpringIn"/>
+            <alohakit:FadeToAnimation
+             x:Key="FadeToAnimation3"
+             Duration="500"
+             Target="{x:Reference nextBtn}"
+             Opacity="1"
+             Easing="SpringIn"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <StackLayout HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Image Source="onboard2" />
+        </StackLayout>
+        <StackLayout x:Name="mainStack" Spacing="5" VerticalOptions="End" Margin="0,0,0,50" >
+            <Label
+              Opacity="0"
+              x:Name="headlineLbl"
+              Text="Find Ninja is Where Your Comfort Food Lives"
+              TextColor="White"
+              FontSize="22"
+              FontFamily="BentonBold"
+              Margin="30,0,30,10"
+              LineHeight="1.3"
+              HorizontalTextAlignment="Center">
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation}"/>
+                </VisualElement.Behaviors>
+            </Label>
+
+            <Label
+              Opacity="0"
+              x:Name="captionLbl"
+              FontSize="12"
+              FontFamily="BentonRegular"
+              TextColor="#FFFFFF"
+              Margin="70,5,70,20"
+              LineHeight="1.3"
+              HorizontalTextAlignment="Center" HorizontalOptions="Center"
+              Text="Enjoy a fast and smooth food delivery at your doorstep">
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation2}"/>
+                </VisualElement.Behaviors>
+            </Label>
+
+            <Button
+              Opacity="0"
+              x:Name="nextBtn"
+              Text="Next"
+              TextColor="#FFFFFF"
+              FontFamily="BentonBold"
+              FontSize="16"
+              CornerRadius="15"
+              WidthRequest="150" HeightRequest="55"
+              HorizontalOptions="Center"
+              BackgroundColor="#30d080"
+              Clicked="nextBtn_Clicked">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                        <GradientStopCollection>
+                            <GradientStop Offset="0" Color="#53E88B"/>
+                            <GradientStop Offset="1" Color="#15BE77"/>
+                        </GradientStopCollection>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation3}"/>
+                </VisualElement.Behaviors>
+            </Button>
+
+        </StackLayout>
+    </Grid>
+</ContentPage>

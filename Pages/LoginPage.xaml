@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.LoginPage"
+             Title="LoginPage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="#37d582" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <ResourceDictionary>
+            <Style x:Key="labelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="HeightRequest" Value="53"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="Padding" Value="10,0"/>
+            </Style>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="PlaceholderColor" Value="#4D4D4D"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonRegular"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid x:Name="popView" RowDefinitions=".5*,.6*" Margin="20,20,20,30">
+                <Image
+                    Source="mainlogo"
+                    HeightRequest="210" WidthRequest="195"
+                    HorizontalOptions="Center"/>
+
+                <StackLayout Grid.Row="1">
+                    <Border
+                        x:Name="emailBorder"
+                        Style="{StaticResource borderStyle}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                            <Image Source="profile" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                            <Entry
+                                VerticalOptions="Center"
+                                Style="{StaticResource entryStyle}"
+                                Grid.Column="1"
+                                Placeholder="Email"
+                                Text="{Binding Email}"
+                                Completed="EmailEntry_Completed">
+                                <Entry.Behaviors>
+                                    <toolkit:TextValidationBehavior
+                                        x:Name="emailValidator"
+                                        Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                        MinimumLength="5"
+                                        ValidStyle="{StaticResource ValidEntryStyle}"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Grid>
+                    </Border>
+                    <Label
+                        IsVisible="{Binding IsEmailErrorVisible}"
+                        Margin="5,5,0,0"
+                        Text="{Binding EmailErrorMsg}"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center"/>
+
+                    <Border
+                        x:Name="passwordBorder"
+                        Margin="0,15,0,0"
+                        Style="{StaticResource borderStyle}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsEmailErrorVisible}" Value="True">
+                                <Setter Property="Margin" Value="0,5,0,0"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsEmailErrorVisible}" Value="False">
+                                <Setter Property="Margin" Value="0,15,0,0"/>
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                            <Image Source="lock" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                            <Entry
+                                x:Name="passwordEntry"
+                                VerticalOptions="Center"
+                                Style="{StaticResource entryStyle}"
+                                Grid.Column="1"
+                                Text="{Binding Password}"
+                                Placeholder="Password"
+                                Completed="passwordEntry_Completed">
+                                <Entry.Behaviors>
+                                    <toolkit:MultiValidationBehavior
+                                        x:Name="passwordValidator"
+                                        Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                        ValidStyle="{StaticResource ValidEntryStyle}"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}">
+                                        <toolkit:TextValidationBehavior
+                                            Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                            MinimumLength="6"
+                                            ValidStyle="{StaticResource ValidEntryStyle}"
+                                            InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+
+                                        <toolkit:TextValidationBehavior
+                                            Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                            ValidStyle="{StaticResource ValidEntryStyle}"
+                                            InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                            RegexPattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{6,}$"/>
+                                    </toolkit:MultiValidationBehavior>
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Grid>
+                    </Border>
+                    <Label
+                        IsVisible="{Binding IsPasswordErrorVisible}"
+                        Margin="5,4,0,0"
+                        Text="{Binding PasswordErrorMsg}"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center"/>
+
+                    <Label
+                        Margin="0,20,0,10"
+                        FontFamily="BentonBold"
+                        Text="Or Continue With"
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource labelStyle}"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,10,0,10">
+                        <Border
+                             Grid.Column="0"
+                             Style="{StaticResource borderStyle}">
+                            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Image
+                                    Source="fb"
+                                    HeightRequest="25" WidthRequest="25"/>
+                                <Label
+                                    Text="Facebook"
+                                    FontFamily="BentonBold"
+                                    Style="{StaticResource labelStyle}"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border
+                             Grid.Column="1"
+                             Style="{StaticResource borderStyle}">
+                            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Image
+                                    Source="google"
+                                    HeightRequest="25" WidthRequest="25"/>
+                                <Label
+                                    Text="Google"
+                                    FontFamily="BentonBold"
+                                    Style="{StaticResource labelStyle}"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label
+                        Margin="0,10"
+                        TextColor="#37d582"
+                        Text="Forgot Your Password?"
+                        FontFamily="BentonMedium"
+                        HorizontalTextAlignment="Center"
+                        TextDecorations="Underline"
+                        Style="{StaticResource labelStyle}">
+
+                    </Label>
+
+                    <Button
+                         Text="Login"
+                         TextColor="#FFFFFF"
+                         FontFamily="BentonBold"
+                         Margin="0,10,0,15"
+                         FontSize="16"
+                         CornerRadius="15"
+                         HeightRequest="50" WidthRequest="150"
+                         HorizontalOptions="Center"
+                         Command="{Binding LoginCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#53E88B"/>
+                                    <GradientStop Offset="1" Color="#15BE77"/>
+                                </GradientStopCollection>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,10">
+                        <Label
+                            VerticalOptions="Center"
+                            FontFamily="BentonMedium"
+                            Text="Don't have account?  " FontSize="10" TextColor="Gray"/>
+
+                        <Label
+                            x:Name="signUpLabl"
+                            VerticalOptions="Center"
+                            TextColor="#37d582"
+                            Text="SignUp"
+                            FontSize="14"
+                            FontFamily="BentonBold"
+                            Margin="0,0,0,0"
+                            TextDecorations="Underline">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="SignUp_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                    </StackLayout>
+                </StackLayout>
+                <skia:SKLottieView
+                    IsVisible="{Binding IsLoading}"
+                    IsAnimationEnabled="{Binding IsLoading}"
+                    Grid.RowSpan="2"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="foodyellow.json"
+                    HeightRequest="100" WidthRequest="100"
+                    VerticalOptions="Center" HorizontalOptions="Center"/>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Popups.ReplaceCartItemPopup"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+             Color="Transparent"
+               xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI">
+    <Border
+        StrokeThickness="0.5"
+        Stroke="#53E88B"
+        BackgroundColor="Black"
+        StrokeShape="RoundRectangle 15"
+        HeightRequest="{markups:OnScreenSize Large='220',Medium='245',Small='240'}"
+        WidthRequest="{markups:OnScreenSize Large='300',Medium='298',Small='296'}">
+        <Grid Padding="15,10,10,0" RowDefinitions="Auto,Auto,*">
+            <Grid>
+                <Label
+                    TextColor="#53E88B"
+                    FontSize="{markups:OnScreenSize Large='20',Medium='13',Small='11'}"
+                    Text="Replace Cart Item"
+                    HorizontalOptions="Start"/>
+
+                <Button
+                    BackgroundColor="Transparent"
+                    FontSize="{markups:OnScreenSize Large='20',Medium='13',Small='11'}"
+                    Text="X"
+                    TextColor="#53E88B"
+                    HorizontalOptions="End"
+                    Margin="0,-10,0,0"
+                    FontAttributes="Bold"
+                    Clicked="CrossButton_Clicked"/>
+            </Grid>
+            <Label
+                Margin="10,0"
+                Grid.Row="1"
+                TextColor="#FFFFFF"
+                FontFamily="BentonMedium"
+                FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
+                Text="You can only add food from one restaurant at a time. Please remove the items from your cart before adding from a new restaurant."/>
+
+            <Grid ColumnSpacing="10" Grid.Row="2" ColumnDefinitions="*,*" VerticalOptions="EndAndExpand" Padding="0,0,0,20">
+                <Button
+                    CornerRadius="15"
+                    BackgroundColor="#53E88B"
+                    Text="No"
+                    TextColor="#FFFFFF"
+                    FontAttributes="Bold"
+                    CharacterSpacing="1"
+                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                    Clicked="NoButton_Clicked"/>
+                <Button
+                    Grid.Column="1"
+                    CornerRadius="15"
+                    BackgroundColor="#FEAD1D"
+                    Text="Replace"
+                    TextColor="#FFFFFF"
+                    FontAttributes="Bold"
+                    CharacterSpacing="1"
+                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                    Clicked="ReplaceButton_Clicked"/>
+            </Grid>
+            <skia:SKLottieView
+                Grid.RowSpan="3"
+                IsVisible="false"
+                x:Name="loader"
+                RepeatCount="-1"
+                RepeatMode="Reverse"
+                Source="foodyellow.json"
+                HeightRequest="70" WidthRequest="70"/>
+        </Grid>
+    </Border>
+</toolkit:Popup>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "354504689834",
+    "project_id": "fir-maui-491c3",
+    "storage_bucket": "fir-maui-491c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354504689834:android:7538e0cffb998ba989e8d3",
+        "android_client_info": {
+          "package_name": "com.ibs.practice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0ehwCKtxucZLyNcUGv-ZFKaNXmw_cmK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Signup_Screen.SignupPage"
+             Title="SignupPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations">
+   
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="#37d582" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="BentonRegular"/>
+        </Style>
+        <ResourceDictionary>
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="HeightRequest" Value="53"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="Padding" Value="10,0"/>
+            </Style>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="BentonRegular"/>
+            </Style>
+
+            <alohakit:FadeToAnimation
+               x:Key="FadeToAnimation"
+               Duration="500"
+               Target="{x:Reference mainGrid}"
+               Opacity="1"
+               Easing="SpringOut"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid RowDefinitions="*" Margin="20" x:Name="mainGrid" Opacity="0">
+                <StackLayout Margin="0,10,0,0" Grid.Row="0">
+                    <Image
+                        VerticalOptions="Start"
+                        Source="mainlogo"
+                        HeightRequest="210" WidthRequest="195"
+                        HorizontalOptions="Center"/>
+
+                    <Label
+                        Margin="0,20,0,10"
+                        FontSize="25"
+                        TextColor="#FFFFFF"
+                        FontFamily="BentonBold"
+                        Text="Sign Up For Free"
+                        VerticalOptions="End"
+                        HorizontalTextAlignment="Center"/>
+
+                    <Border Margin="0,30,0,0" Style="{StaticResource borderStyle}" x:Name="userNameBorder">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Image Source="profile" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                            <Entry
+                                VerticalOptions="Center"
+                                Style="{StaticResource entryStyle}"
+                                Grid.Column="1"
+                                Placeholder="User Name"
+                                Text="{Binding UserName}"
+                                Completed="UserNameEntry_Completed">
+                                <Entry.Behaviors>
+                                    <toolkit:MultiValidationBehavior
+                                        x:Name="userNameValidator"
+                                        Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                        Error="User name must be at least 4 characters long"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                        ValidStyle="{StaticResource ValidEntryStyle}" >
+                                        <toolkit:TextValidationBehavior
+                                            Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                            MinimumLength="4"/>
+                                    </toolkit:MultiValidationBehavior>
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Grid>
+                    </Border>
+                    <Label
+                        Margin="5,1,0,0"
+                        IsVisible="{Binding IsUserNameErrorVisible}"
+                        Text="{Binding UserNameError}"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center"/>
+
+                    <Border Style="{StaticResource borderStyle}" x:Name="emailBorder" Margin="0,10,0,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Image Source="message" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                            <Entry
+                                x:Name="emailEntry"
+                                VerticalOptions="Center"
+                                Style="{StaticResource entryStyle}"
+                                Grid.Column="1"
+                                Placeholder="Email"
+                                Text="{Binding Email}"
+                                Completed="EmailEntry_Completed">
+                                <Entry.Behaviors>
+                                    <toolkit:MultiValidationBehavior
+                                        x:Name="emailValidator"
+                                        Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                        ValidStyle="{StaticResource ValidEntryStyle}"
+                                        Error="Email are required?">
+                                        <toolkit:TextValidationBehavior
+                                            MinimumLength="5"
+                                            Flags="ValidateOnAttaching,ValidateOnValueChanged" />
+                                    </toolkit:MultiValidationBehavior>
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Grid>
+                    </Border>
+                    <Label
+                        Margin="5,0,0,5"
+                        IsVisible="{Binding IsEmailErrorVisible}"
+                        Text="{Binding EmailError}"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center"/>
+
+                    <Border Style="{StaticResource borderStyle}" x:Name="passwordBorder" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Image Source="lock" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                            <Entry
+                                x:Name="passwordEntry"
+                                VerticalOptions="Center"
+                                Style="{StaticResource entryStyle}"
+                                Grid.Column="1"
+                                Placeholder="Password"
+                                Text="{Binding Password}"
+                                Completed="PasswordEntry_Completed">
+                                <Entry.Behaviors>
+                                    <toolkit:MultiValidationBehavior
+                                        x:Name="passwordValidator"
+                                        Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                        ValidStyle="{StaticResource ValidEntryStyle}"
+                                        InvalidStyle="{StaticResource InvalidEntryStyle}">
+                                        <toolkit:TextValidationBehavior
+                                            MinimumLength="6"
+                                            toolkit:MultiValidationBehavior.Error="Password must be at least 6 digit."/>
+
+                                        <toolkit:TextValidationBehavior
+                                            RegexPattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;])[A-Za-z\d@$!%*?&amp;]{6,}$"
+                                            ValidStyle="{StaticResource ValidEntryStyle}"
+                                            InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                            toolkit:MultiValidationBehavior.Error="Password must include at least one uppercase letter, one lowercase letter, one number, and one special character."/>
+                                    </toolkit:MultiValidationBehavior>
+                                </Entry.Behaviors>
+                            </Entry>
+                        </Grid>
+                    </Border>
+                    <Label
+                        x:Name="errorLbl"
+                        Margin="5,0,0,5"
+                        IsVisible="{Binding IsPasswordErrorVisible}"
+                        Text="{Binding PasswordError}"
+                        TextColor="#FEAD1D"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        VerticalOptions="Center">
+                    </Label>
+
+                    <Grid ColumnSpacing="8" RowSpacing="8" Margin="0,5,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                        <Border
+                            Grid.Row="0" Grid.Column="0"
+                            HorizontalOptions="Start"
+                            HeightRequest="22" WidthRequest="22"
+                            BackgroundColor="#53E88B"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 11">
+                            <Image
+                                IsVisible="False"
+                                x:Name="check1"
+                                Source="check"
+                                HeightRequest="15" WidthRequest="15"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="CheckBox1_Tapped" NumberOfTapsRequired="1"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                        <Label
+                            Grid.Row="0" Grid.Column="1"
+                            Text="Keep Me Signed In"
+                            TextColor="Gray" Opacity="0.8"
+                            FontSize="12"
+                            FontFamily="BentonRegular"
+                            VerticalOptions="Center"/>
+
+                        <Border
+                            Grid.Row="1" Grid.Column="0"
+                            HorizontalOptions="Start"
+                            HeightRequest="22" WidthRequest="22"
+                            BackgroundColor="#53E88B"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 11">
+                            <Image
+                                IsVisible="False"
+                                x:Name="check2"
+                                Source="check"
+                                HeightRequest="15" WidthRequest="15"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="CheckBox2_Tapped"  NumberOfTapsRequired="1"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                        <Label
+                            Grid.Row="1" Grid.Column="1"
+                            Text="Email Me About Special Pricing"
+                            TextColor="Gray" Opacity="0.8"
+                            FontSize="12"
+                            FontFamily="BentonRegular"
+                            VerticalOptions="Center"/>
+                    </Grid>
+
+                    <Button
+                        Padding="20,0"
+                        Text="Create Account"
+                        TextColor="#FFFFFF"
+                        FontFamily="BentonBold"
+                        Margin="0,30,0,15"
+                        FontSize="16"
+                        CornerRadius="15"
+                        HeightRequest="52"
+                        HorizontalOptions="Center"
+                        Command="{Binding SignupCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#53E88B"/>
+                                    <GradientStop Offset="1" Color="#15BE77"/>
+                                </GradientStopCollection>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+
+                    <Label
+                        x:Name="alreadyAccountLbl"
+                        FontSize="12"
+                        Margin="0,10,0,0"
+                        FontFamily="BentonBold"
+                        TextColor="#37d582"
+                        Text="Already have an account?"
+                        HorizontalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="AlreadyAccount_Tapped"  Command="{Binding AlreadyAccountCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+
+                <skia:SKLottieView
+                    IsVisible="{Binding IsLoading}"
+                    IsAnimationEnabled="{Binding IsLoading}"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="food.json"
+                    HeightRequest="100" WidthRequest="100"/>
+                <VisualElement.Behaviors>
+                    <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation}"/>
+                </VisualElement.Behaviors>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>

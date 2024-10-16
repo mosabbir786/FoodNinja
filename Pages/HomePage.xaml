@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.HomePage"
+             Title="HomePage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="shimmerColor">Gray</Color>
+            <x:String x:Key="Headline">Find Your Favorite Food</x:String>
+            <x:String x:Key="Deal">Special Deal For &#10; October</x:String>
+
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+            </Style>
+
+            <!--<alohakit:FadeToAnimation
+                x:Key="FadeToAnimation"
+                Target="{x:Reference mainGrid}"
+                Opacity ="1"
+                Duration="500"
+                Easing="SpringOut"/>
+
+            <alohakit:TranslateToAnimation
+                Duration="700"
+                x:Key="horizoltalTranslate"
+                Target="{x:Reference restroList}"
+                Easing="SinInOut"
+                TranslateX="0"/>
+            <alohakit:TranslateToAnimation
+                Duration="700"
+                x:Key="verticalTranslate"
+                Target="{x:Reference menuList}"
+                Easing="SinInOut"
+                TranslateY="0"/>-->
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid RowDefinitions="*" Margin="0">
+                <VerticalStackLayout Margin="20,10,20,0">
+                    <Grid Margin="0,0,0,15" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
+                        <Label
+                             VerticalOptions="Center"
+                             LineHeight="{markups:OnScreenSize Large='1',Medium='0.9',Small='0.79'}"
+                             Margin="0,0,40,0"
+                             Grid.Row="0" Grid.Column="0"
+                             FontSize="31"
+                             FontFamily="BentonBold"
+                             TextColor="#FFFFFF"
+                             Text="{StaticResource Headline}"/>
+
+                        <Border
+                             Grid.Row="0" Grid.Column="1"
+                             HeightRequest="45" WidthRequest="45" 
+                             Style="{StaticResource borderStyle}">
+                            <ImageButton
+                                 Source="notification"
+                                 HeightRequest="20" WidthRequest="20"
+                                 VerticalOptions="Center" HorizontalOptions="Center"
+                                 Clicked="NotificationImageButton_Clicked"/>
+                        </Border>
+
+                        <Border
+                            Margin="0,10,0,0"
+                            HeightRequest="45"
+                            Grid.Row="1" Grid.ColumnSpan="2"
+                            Style="{StaticResource borderStyle}">
+                            <SearchBar
+                                 x:Name="firstSearchbar"
+                                 Placeholder="Search for the nearest restaurant..."                         
+                                 FontSize="12"
+                                 FontFamily="BentonRegular"
+                                 CancelButtonColor="#FFFFFF"
+                                 TextColor="#FFFFFF"
+                                 Focused="firstSearchbar_Focused"
+                                 Unfocused="firstSearchbar_Unfocused"
+                                 SearchButtonPressed="firstSearchbar_SearchButtonPressed"
+                                 TextChanged="firstSearchbar_TextChanged"/>
+                        </Border>
+                    </Grid>
+
+
+                    <Border
+                        Style="{StaticResource borderStyle}"
+                        HeightRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}">
+                        <Grid >
+                            <Image
+                                Source="promo"
+                                Aspect="Fill"/>
+
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="End" Padding="20,0,10,0">
+                                <Label
+                                    Margin="0,0,0,0"
+                                    Text="{StaticResource Deal}"
+                                    TextColor="Black"
+                                    FontFamily="BentonBold"
+                                    LineHeight="1.2"
+                                    FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+                                <Button
+                                      FontFamily="BentonBold"
+                                      TextColor="#37d582"
+                                      Margin="0,10,0,0"
+                                      BackgroundColor="#FFFFFF"
+                                      CornerRadius="10"
+                                      FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}" 
+                                      HorizontalOptions="Start"
+                                      HeightRequest="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"
+                                      WidthRequest="{markups:OnScreenSize Large='90',Medium='88',Small='86'}"
+                                      Text="Buy Now"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+
+                    <Grid Padding="2,0" ColumnDefinitions="*,*"  Margin="0,0,0,0">
+                        <Label
+                            Margin="0,10,0,0"
+                            x:Name="v2"
+                            TextColor="#FFFFFF"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="{markups:OnScreenSize Medium='11',Large='12',Small='10'}"
+                            Text="Nearest Restaurant"/>
+
+                        <Border
+                            x:Name="vMore1Border"
+                            StrokeShape="RoundRectangle 15"
+                            Stroke="Transparent"
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            Padding="10,5,5,0"
+                            BackgroundColor="Transparent"
+                            HeightRequest="25" WidthRequest="70" />
+                        <Label
+                             Margin="0,0,5,0"
+                             Grid.Column="1"
+                             x:Name="viewMoreLbl1"
+                             Text="View More"
+                             FontSize="{markups:OnScreenSize Medium='11',Large='12',Small='10'}"
+                             TextColor="#FF8E4C"
+                             FontFamily="BentonMedium"
+                             VerticalOptions="Center" HorizontalOptions="End">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ViewMoreRestaurant_Tapped"  Command="{Binding NavigateToNextPageCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <ScrollView  Orientation="Horizontal" x:Name="restroList" TranslationX="0">
+                        <StackLayout
+                            x:Name="horizontalCollection"
+                            Spacing="10"
+                            Orientation="Horizontal"
+                            HorizontalOptions="Center"
+                            BindableLayout.ItemsSource="{Binding RestaurantList}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        StrokeShape="RoundRectangle 15"
+                                        Margin="{markups:OnScreenSize Medium='0,10,0,0',Large='0,10,0,0',Small='0,10,0,0'}"
+                                        HeightRequest="{markups:OnScreenSize Medium='173',Large='174',Small='172'}"
+                                        WidthRequest="{markups:OnScreenSize Medium='154',Large='155',Small='145'}"
+                                        Style="{StaticResource borderStyle}">
+
+                                        <Grid VerticalOptions="Center" HorizontalOptions="Center" RowDefinitions="Auto,Auto,Auto">
+                                            <ffimageloading:CachedImage
+                                                Source="{Binding RestrauntImageSource,FallbackValue='dummyicon.png'}" Aspect="AspectFill"
+                                                LoadingPlaceholder="dummyicon.png"
+                                                HeightRequest="73" WidthRequest="96"
+                                                ErrorPlaceholder="error.png"
+                                                DownsampleToViewSize="true"
+                                                CacheType="Memory"/>
+                                            <Label
+                                                Grid.Row="1"
+                                                Margin="0,10,0,0"
+                                                Text="{Binding RestaurantName}"
+                                                TextColor="#FFFFFF"
+                                                FontSize="{markups:OnScreenSize Medium='11',Large='13',Small='10'}"
+                                                FontFamily="BentonMedium"
+                                                HorizontalTextAlignment="Center"/>
+
+
+                                            <Label
+                                                Grid.Row="2"
+                                                Margin="0,5,0,0"
+                                                Text="{Binding RestrauntDistance, StringFormat='{0} Km'}"
+                                                TextColor="White"
+                                                Opacity="0.5"
+                                                FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
+                                                FontFamily="BentonRegular"
+                                                HorizontalTextAlignment="Center"/>
+
+                                        </Grid>
+                                        <Border.Shadow>
+                                            <Shadow
+                                                Brush="#80252525" 
+                                                Radius="3"
+                                                Opacity="0.4"
+                                                Offset="0,0"/>
+                                        </Border.Shadow>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Tapped="RestaurantFrame_Tapped" 
+                                                Command="{Binding BindingContext.RestaurantFrameTappedCommand, Source={x:Reference Name=horizontalCollection}}"
+                                                CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                        <!--<VisualElement.Behaviors>
+                            <alohakit:BeginAnimationBehavior Animation="{StaticResource horizoltalTranslate}"/>
+                        </VisualElement.Behaviors>-->
+                    </ScrollView>
+
+
+                    <Grid x:Name="viewMoreGrid" Margin="5,15,5,5" ColumnDefinitions="*,*" HeightRequest="25" Padding="0,2,0,2">
+                        <Label
+                            Text="Popular Menu"
+                            TextColor="#FFFFFF"
+                            FontSize="{markups:OnScreenSize Medium='11',Large='12',Small='10'}"
+                            FontFamily="OpenSansSemibold"
+                            HorizontalOptions="Start" VerticalOptions="Center"/>
+                        <Border
+                            x:Name="vMore2Border"
+                            StrokeShape="RoundRectangle 15"
+                            Stroke="Transparent"
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            Padding="10,0,5,0"
+                            BackgroundColor="Transparent"
+                            HeightRequest="25" WidthRequest="70" />
+                        <Label
+                            Grid.Column="1"
+                            VerticalOptions="Center"
+                            Margin="0,0,5,0"
+                            x:Name="viewMoreLbl2"
+                            Text="View More"
+                            TextColor="#FF8E4C"
+                            FontFamily="BentonMedium"
+                            FontSize="{markups:OnScreenSize Medium='11',Large='12',Small='10'}"
+                            HorizontalOptions="End">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer  Tapped="ViewMoreMenu_Tapped" Command="{Binding NavigateToPopularMenuCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <StackLayout
+                        TranslationY="0"
+                        x:Name="menuList"
+                        Margin="0,0,0,0"
+                        HorizontalOptions="Fill"
+                        BindableLayout.ItemsSource="{Binding PopularMenueList}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    StrokeShape="RoundRectangle 15"
+                                    Padding="10"
+                                    Style="{StaticResource borderStyle}"
+                                    HeightRequest="{markups:OnScreenSize Medium='93',Large='95',Small='91'}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                        <Border
+                                             Stroke="Transparent"
+                                             HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                                             WidthRequest="{markups:OnScreenSize Medium='53',Large='55',Small='51'}"
+                                             StrokeShape="RoundRectangle, 12">
+                                            <ffimageloading:CachedImage
+                                                 Source="{Binding FoodImageSource,FallbackValue='dummyicon.png'}" Aspect="AspectFill"
+                                                 HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                                                 WidthRequest="{markups:OnScreenSize Medium='62',Large='64',Small='60'}"
+                                                 LoadingPlaceholder="dummyicon.png"
+                                                 ErrorPlaceholder="error.png"
+                                                 DownsampleToViewSize="true"
+                                                 CacheType="Memory"/>
+
+                                        </Border>
+
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="0,0,0,10">
+                                            <Label
+                                                Margin="0,10,0,0"
+                                                Text="{Binding DishName}"
+                                                TextColor="#FFFFFF"
+                                                FontSize="{markups:OnScreenSize Medium='12',Large='13',Small='11'}"
+                                                FontFamily="BentonMedium"
+                                                HorizontalTextAlignment="Start" />
+                                            <Label
+                                                 Margin="0,5,0,0"
+                                                 Text="{Binding RestaurantName}"
+                                                 TextColor="LightGray"
+                                                 Opacity="0.5"
+                                                 FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
+                                                 FontFamily="BentonRegular"
+                                                 HorizontalTextAlignment="Start"/>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout VerticalOptions="Center" Grid.Column="2" Margin="0,0,10,0">
+                                            <Label
+                                                Margin="0,0,0,5"
+                                                Text="{Binding Price, StringFormat='${0:F2}'}"
+                                                TextColor="#FEAD1D"
+                                                FontSize="{markups:OnScreenSize Medium='16',Large='18',Small='14'}"
+                                                FontFamily="BentonMedium"
+                                                HorizontalTextAlignment="Center" />
+
+                                            <Button
+                                                 FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
+                                                 FontFamily="BentonMedium"
+                                                 FontAttributes="Bold"
+                                                 CornerRadius="12"
+                                                 Text="Add+"
+                                                 CharacterSpacing="1.7"
+                                                 TextColor="#FFFFFF"
+                                                 BackgroundColor="#37d582"
+                                                 HeightRequest="{markups:OnScreenSize Large='38',Medium='36',Small='34'}"
+                                                 WidthRequest="{markups:OnScreenSize Large='70',Medium='68',Small='66'}"
+                                                 Command="{Binding BindingContext.AddFoodToCartCommand, Source={x:Reference Name=menuList}}"
+                                                 CommandParameter="{Binding .}"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                        <!--<VisualElement.Behaviors>
+                            <alohakit:BeginAnimationBehavior Animation="{StaticResource verticalTranslate}"/>
+                        </VisualElement.Behaviors>-->
+                    </StackLayout>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

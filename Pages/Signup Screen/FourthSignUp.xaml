@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Signup_Screen.FourthSignUp"
+             Title="FourthSignUp"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="Gallery">From Gallery</x:String>
+            <x:String x:Key="Camera">Take Photo</x:String>
+            <x:String x:Key="HeadLine">Upload Your Photo Profile</x:String>
+            <x:String x:Key="Caption">This data will be displayed in your account profile for security</x:String>
+
+            <Style TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="Margin" Value="0,20,0,0"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="HeightRequest" Value="130"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+            </Style>
+            <alohakit:TranslateToAnimation
+               x:Key="translateAnimation1"
+               TranslateY="0"
+               Duration="600"
+               Target="{x:Reference galBorder}"
+               Easing="SinInOut"/>
+            <alohakit:TranslateToAnimation
+               x:Key="translateAnimation2"
+               TranslateY="0"
+               Duration="600"
+               Target="{x:Reference camBorder}"
+               Easing="SinInOut"/>
+
+            <alohakit:FadeToAnimation
+               x:Key="FadeToAnimation3"
+               Duration="500"
+               Target="{x:Reference mainGrid}"
+               Opacity="1"
+               Easing="SpringIn"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid RowDefinitions="*" Margin="20" x:Name="mainGrid" Opacity="0">
+            <StackLayout Grid.Row="0" >
+                <ImageButton
+                   x:Name="backImage"
+                   Source="back.png"
+                   HorizontalOptions="Start"
+                   HeightRequest="50" WidthRequest="50"
+                   Command="{Binding BackCommand}">
+
+                </ImageButton>
+
+                <Label
+                   x:Name="headLineLbl"
+                   Text="{StaticResource HeadLine}"
+                   TextColor="#FFFFFF"
+                   FontSize="25"
+                   FontFamily="BentonBold"
+                   LineHeight="1.2"
+                   Margin="5,15,40,0">
+
+                </Label>
+
+                <Label
+                  x:Name="captionLbl"
+                  Text="{StaticResource Caption}"
+                  TextColor="White" 
+                  Margin="5,15,30,0"
+                  LineHeight="1.2"
+                  FontFamily="BentonMedium">
+
+                </Label>
+
+
+                <Border x:Name="galBorder" TranslationY="547">
+                    <StackLayout  x:Name="galleryStack" VerticalOptions="Center" Spacing="10">
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center" Padding="20,0">
+                            <Label
+                               Text="{Binding SelectedImageLbl}"
+                               TextColor="#FFFFFF"
+                               FontSize="12"
+                               FontFamily="BentonMedium"
+                               HorizontalTextAlignment="Center">
+                            </Label>
+                            <Image
+                              x:Name="crossIcon"
+                              Source="cross"
+                              HeightRequest="15" WidthRequest="20"
+                              VerticalOptions="Center">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding DeSelectImageCommand}" Tapped="CrossIcon_Tapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsImageSelected}" Value="True">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsImageSelected}" Value="False">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
+                        </HorizontalStackLayout>
+
+                        <Image Source="gallery"
+                             HeightRequest="50"
+                             IsVisible="False">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsImageSelected}" Value="True">
+                                    <Setter Property="IsVisible" Value="false"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsImageSelected}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Image.Triggers>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickPhotoFromGalleryCommand}" Tapped="Gallery_Tapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        <Label
+                          IsVisible="False"
+                          Text="{StaticResource Gallery}"
+                          FontSize="12"
+                          FontFamily="BentonMedium"
+                          TextColor="#FFFFFF"
+                          HorizontalTextAlignment="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsImageSelected}" Value="True">
+                                    <Setter Property="IsVisible" Value="false"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsImageSelected}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickPhotoFromGalleryCommand}" Tapped="Gallery_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+                    <VisualElement.Behaviors>
+                        <alohakit:BeginAnimationBehavior Animation="{StaticResource translateAnimation1}"/>
+                    </VisualElement.Behaviors>
+                </Border>
+
+
+
+                <Border x:Name="camBorder" TranslationY="400">
+                    <StackLayout  x:Name="cameraStack" VerticalOptions="Center" Spacing="10">
+
+                        <HorizontalStackLayout  Padding="10" Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label
+                              Text="{Binding CapturedImageLbl}"
+                              TextColor="#FFFFFF"
+                              FontSize="12"
+                              FontFamily="BentonMedium"
+                              HorizontalTextAlignment="Center">
+                            </Label>
+                            <Image
+                              Source="cross"
+                              HeightRequest="15" WidthRequest="20"
+                              VerticalOptions="Center">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding DeSelectImageCommand}" Tapped="CrossIcon_Tapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <HorizontalStackLayout.Triggers>
+                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsImageCaptured}" Value="True">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsImageCaptured}" Value="False">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </HorizontalStackLayout.Triggers>
+                        </HorizontalStackLayout>
+                        <Image Source="camera"
+                             HeightRequest="50" VerticalOptions="Center">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsImageCaptured}" Value="True">
+                                    <Setter Property="IsVisible" Value="false"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsImageCaptured}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Image.Triggers>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Camera_Tapped"  Command="{Binding CaptureImageCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        <Label
+                          Text="{StaticResource Camera}"
+                          FontSize="12"
+                          FontFamily="BentonMedium"
+                          TextColor="#FFFFFF"
+                          HorizontalTextAlignment="Center" VerticalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsImageCaptured}" Value="True">
+                                    <Setter Property="IsVisible" Value="false"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsImageCaptured}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Camera_Tapped"  Command="{Binding CaptureImageCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+                    <VisualElement.Behaviors>
+                        <alohakit:BeginAnimationBehavior Animation="{StaticResource translateAnimation2}"/>
+                    </VisualElement.Behaviors>
+                </Border>
+                <Label
+                  IsVisible="{Binding IsImageErrorMsgVisible}"
+                  Text="{Binding ImageErrorMsg}"
+                  Margin="5,5,0,0"
+                  TextColor="#FEAD1D"
+                  FontSize="12"
+                  FontFamily="BentonRegular"
+                  VerticalOptions="Center"/>
+
+                <Button
+                  Padding="20,0"
+                  Text="Next"
+                  WidthRequest="140"
+                  TextColor="#FFFFFF"
+                  FontFamily="BentonBold"
+                  Margin="0,30,0,15"
+                  FontSize="16"
+                  CornerRadius="15"
+                  HeightRequest="52"
+                  HorizontalOptions="Center" VerticalOptions="EndAndExpand"
+                  Command="{Binding NavigateNextCommand}">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                            <GradientStopCollection>
+                                <GradientStop Offset="0" Color="#53E88B"/>
+                                <GradientStop Offset="1" Color="#15BE77"/>
+                            </GradientStopCollection>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </StackLayout>
+
+            <VisualElement.Behaviors>
+                <alohakit:BeginAnimationBehavior Animation="{StaticResource FadeToAnimation3}"/>
+            </VisualElement.Behaviors>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
