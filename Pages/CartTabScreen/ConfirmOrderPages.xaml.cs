@@ -9,20 +9,12 @@ namespace FoodNinja.Pages.CartTabScreen;
 public partial class ConfirmOrderPages : ContentPage
 {
     private ObservableCollection<AddFoodToCart> cartDataList;
-<<<<<<< HEAD
-=======
-    string ReturnFromPage;//These changese are done on 7-10-2024
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
     private FirebaseManager firebaseManager;
     public ConfirmOrderPages(ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice)
     {
         InitializeComponent();
         firebaseManager = new FirebaseManager();
-<<<<<<< HEAD
         this.cartDataList = cartDataList;
-=======
-        this.cartDataList = cartDataList;     //These changese are done on 7-10-2024
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
         this.BindingContext = new ConfirmOrderViewModel(firebaseManager, Navigation, cartDataList, subTotal, totalPrice);
     }
     protected override async void OnAppearing()
@@ -31,21 +23,12 @@ public partial class ConfirmOrderPages : ContentPage
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
         if (BindingContext is ConfirmOrderViewModel viewModel)
         {
-<<<<<<< HEAD
             string returnFromPage = Preferences.Get("ReturnFromPage", string.Empty);
             if(returnFromPage == "SuccessfullOrderPlacedPage")
             {
                 viewModel.ReturnFromPage = returnFromPage;
                 Preferences.Clear("ReturnFromPage");
                 returnFromPage = string.Empty;
-=======
-            ReturnFromPage = Preferences.Get("ReturnFromPage", string.Empty); //These changese are done on 7-10-2024 Line 28 to 35
-            if (ReturnFromPage == "SuccessfullOrderPlacedPage")
-            {
-                viewModel.ReturnFromPage = ReturnFromPage;
-                Preferences.Clear("ReturnFromPage");
-                ReturnFromPage = string.Empty;
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
                 cartDataList.Clear();
             }
 
@@ -59,18 +42,10 @@ public partial class ConfirmOrderPages : ContentPage
         base.OnDisappearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
 
-<<<<<<< HEAD
-=======
-        //These changese are done on 7-10-2024 from Line 47 to 53
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
         if (BindingContext is ConfirmOrderViewModel viewModel)
         {
             viewModel.ReturnFromPage = string.Empty;
         }
-<<<<<<< HEAD
-=======
-        ReturnFromPage = string.Empty;
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
         Preferences.Remove("ReturnFromPage");
     }
     private async void EditAddressLbl_Tapped(object sender, TappedEventArgs e)

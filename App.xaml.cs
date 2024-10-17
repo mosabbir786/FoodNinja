@@ -23,7 +23,6 @@ namespace FoodNinja
                 MainPage = new NavigationPage(new SplashScreen());
             }
             DependencyService.Register<RestaurantService>();
-<<<<<<< HEAD
         }
 
         protected override void OnStart()
@@ -39,8 +38,6 @@ namespace FoodNinja
         protected override void OnSleep()
         {
             base.OnSleep();
-=======
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
         }
     }
 }

@@ -76,10 +76,6 @@ namespace FoodNinja.ViewModel
         private PaymentModel selectedPaymentMethod;
 
 
-<<<<<<< HEAD
-=======
-        //These changese are done on 7-10-2024
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
         [ObservableProperty]
         private string returnFromPage;
         public ICommand PaymentMethodSelectedCommand { get; }
@@ -152,11 +148,8 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PlacedOrder()
         {
-<<<<<<< HEAD
+
             if (!PaymentMethodSelected)
-=======
-            if (!PaymentMethodSelected)//These changese are done on 7-10-2024 From Line 156 to 166
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
             {
                 if (ReturnFromPage == "SuccessfullOrderPlacedPage")
                 {
@@ -167,16 +160,13 @@ namespace FoodNinja.ViewModel
                     }
                 }
             }
-<<<<<<< HEAD
             else if(ReturnFromPage == "SuccessfullOrderPlacedPage")
             {
                 await Toast.Make("Order has already been placed.").Show();
                 return;
             }
             else if (!PaymentMethodSelected || string.IsNullOrWhiteSpace(UserData?.Address))
-=======
             if (!PaymentMethodSelected || string.IsNullOrWhiteSpace(UserData?.Address))
->>>>>>> af00894f63ff3f516f737ebdfaaa5751bab3031a
             {
                 await Toast.Make("Please select at least one payment method").Show();
                 return;
