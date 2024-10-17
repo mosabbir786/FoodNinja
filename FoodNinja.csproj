@@ -57,6 +57,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+		<PackageReference Include="Syncfusion.Maui.Expander" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="26.2.14" />
 		<PackageReference Include="Syncfusion.Maui.Maps" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Licensing" Version="27.1.50" />
@@ -109,6 +110,7 @@
 	  <None Remove="Resources\Images\icnmenuclosedark.png" />
 	  <None Remove="Resources\Images\location.png" />
 	  <None Remove="Resources\Images\lock.png" />
+	  <None Remove="Resources\Images\logout.png" />
 	  <None Remove="Resources\Images\mainlogo.png" />
 	  <None Remove="Resources\Images\maplocation.png" />
 	  <None Remove="Resources\Images\mappin.png" />
@@ -135,6 +137,7 @@
 	  <None Remove="Resources\Images\rs2.png" />
 	  <None Remove="Resources\Images\rs3.png" />
 	  <None Remove="Resources\Images\rs4.png" />
+	  <None Remove="Resources\Images\signout.png" />
 	  <None Remove="Resources\Images\speaker.png" />
 	  <None Remove="Resources\Images\splash.png" />
 	  <None Remove="Resources\Images\tickcomplete.png" />
