@@ -7,6 +7,7 @@ using FoodNinja.Pages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ namespace FoodNinja.Services
         private const string DatabaseUrl = "https://fir-maui-491c3-default-rtdb.firebaseio.com/";
         FirebaseAuthProvider firebaseAuthProvider;
         FirebaseClient firebaseClient;
-
         public FirebaseManager()
         {
             firebaseAuthProvider = new FirebaseAuthProvider(new FirebaseConfig(FirebaseApiKey));
@@ -551,7 +551,7 @@ namespace FoodNinja.Services
                     var userData = userNode.Object;
                     if (userData.PaymentMethod == null)
                     {
-                        userData.PaymentMethod = new List<PaymentModel>();
+                        userData.PaymentMethod = new ObservableCollection<PaymentModel>();
                     }
                     userData.PaymentMethod.Add(paymentMethod);
                     await firebaseClient

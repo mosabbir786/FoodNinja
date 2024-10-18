@@ -13,17 +13,9 @@ public partial class ProfilePage : ContentPage
 		firebaseManager = new FirebaseManager();
 		this.BindingContext = new ProfilePageViewModel(Navigation, firebaseManager);
 	}
-
-    private async void Button_Clicked(object sender, EventArgs e)
-    {
-        //await this.ShowPopupAsync(new LogoutPopup());
-    }
     private async void AddPaymentButton_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AddPaymentMethodPage());
+		await addMoreBtn.ScaleTo(1.1, 100);
+		await addMoreBtn.ScaleTo(1, 100);
     }
-
- 
-  
-
 }

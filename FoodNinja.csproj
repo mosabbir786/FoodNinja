@@ -84,6 +84,8 @@
 	  <None Remove="Resources\Fonts\BentonSans_Book.ttf" />
 	  <None Remove="Resources\Fonts\BentonSans_Medium.ttf" />
 	  <None Remove="Resources\Fonts\BentonSans_Regular.ttf" />
+	  <None Remove="Resources\Images\arrowdown.png" />
+	  <None Remove="Resources\Images\arrowup.png" />
 	  <None Remove="Resources\Images\back.png" />
 	  <None Remove="Resources\Images\bike.png" />
 	  <None Remove="Resources\Images\call.png" />
@@ -207,10 +209,19 @@
 	  <MauiXaml Update="Pages\Onboarding Screen\SecondOnboarding.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\LogoutPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Popups\ReplaceCartItemPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProfileTabScreen\EditProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProfileTabScreen\PreviousOrderDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Signup Screen\FifthSignup.xaml">
