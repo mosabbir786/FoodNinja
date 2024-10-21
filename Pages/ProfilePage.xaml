@@ -105,7 +105,7 @@
                                     <syncfusion:SfExpander.Content>
                                         <Grid RowDefinitions="Auto,Auto">
                                             <StackLayout
-                                                BindableLayout.ItemsSource="{Binding PaymentMethods}">
+                                                BindableLayout.ItemsSource="{Binding UserData.PaymentMethod}">
                                                 <BindableLayout.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackLayout Padding="10,10,10,0" Orientation="Horizontal" Spacing="10">
@@ -145,6 +145,16 @@
                                                                     </DataTrigger>
                                                                 </Label.Triggers>
                                                             </Label>
+
+                                                            <Button
+                                                                Padding="10"
+                                                                Margin="0,0,0,0"
+                                                                BackgroundColor="#FEAD1D"
+                                                                ImageSource="delete"
+                                                                HorizontalOptions="End"
+                                                                HeightRequest="{markups:OnScreenSize Large='40',Medium='13',Small='11'}"
+                                                                WidthRequest="{markups:OnScreenSize Large='40',Medium='13',Small='11'}"
+                                                                />
                                                         </StackLayout>
                                                     </DataTemplate>
                                                 </BindableLayout.ItemTemplate>

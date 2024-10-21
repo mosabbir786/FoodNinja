@@ -541,30 +541,63 @@ namespace FoodNinja.Services
         {
             try
             {
+                /*     var allUsers = await firebaseClient
+                         .Child("UserData")
+                         .Child(userId)
+                         .OnceAsync<UserDataModel>();
+                     var userNode = allUsers.FirstOrDefault();
+                     if (userNode.Key != null)
+                     {
+                         var userData = userNode.Object;
+                         if (userData.PaymentMethod == null)
+                         {
+                             userData.PaymentMethod = new ObservableCollection<PaymentModel>();
+                         }
+                         userData.PaymentMethod.Add(paymentMethod);
+                         await firebaseClient
+                            .Child("UserData")
+                            .Child(userId)
+                            .Child(userNode.Key)
+                            .PatchAsync(JsonConvert.SerializeObject(userData));
+                         Console.WriteLine("Payment method added successfully.");
+                     }
+                     else
+                     {
+                         Console.WriteLine("User not found.");
+                     }*/
                 var allUsers = await firebaseClient
-                    .Child("UserData")
-                    .Child(userId)
-                    .OnceAsync<UserDataModel>();
+                 .Child("UserData")
+                 .Child(userId)
+                 .OnceAsync<UserDataModel>();
                 var userNode = allUsers.FirstOrDefault();
                 if (userNode.Key != null)
                 {
                     var userData = userNode.Object;
                     if (userData.PaymentMethod == null)
                     {
-                        userData.PaymentMethod = new ObservableCollection<PaymentModel>();
+                        userData.PaymentMethod = new Dictionary<int, PaymentModel>();
                     }
-                    userData.PaymentMethod.Add(paymentMethod);
-                    await firebaseClient
-                       .Child("UserData")
-                       .Child(userId)
-                       .Child(userNode.Key)
-                       .PatchAsync(JsonConvert.SerializeObject(userData));
-                    Console.WriteLine("Payment method added successfully.");
+
+                    if (!userData.PaymentMethod.ContainsKey(paymentMethod.Id))
+                    {
+                        userData.PaymentMethod[paymentMethod.Id] = paymentMethod;
+                        await firebaseClient
+                           .Child("UserData")
+                           .Child(userId)
+                           .Child(userNode.Key)
+                           .PatchAsync(JsonConvert.SerializeObject(userData));
+                        Console.WriteLine("Payment method added successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Payment method with this ID already exists.");
+                    }
                 }
                 else
                 {
                     Console.WriteLine("User not found.");
                 }
+
             }
             catch (Exception ex)
             {

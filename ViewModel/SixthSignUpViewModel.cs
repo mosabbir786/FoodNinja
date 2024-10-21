@@ -115,7 +115,7 @@ namespace FoodNinja.ViewModel
                 Address = Address,
                 Latitude = Latitude,
                 Longitude = Longitude,
-                PaymentMethod = new ObservableCollection<PaymentModel>()
+               // PaymentMethod = new ObservableCollection<PaymentModel>()
             };
             IsLoading = true;
             await Task.Delay(50);

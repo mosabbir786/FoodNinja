@@ -190,7 +190,7 @@
                                 BackgroundColor="#37d582"
                                 CornerRadius="15"
                                 VerticalOptions="EndAndExpand"
-                                Command="{Binding AddPaypalCommand}"/>
+                                Command="{Binding AddPaypalCommand}" Clicked="ADDPaypalButton_Clicked"/>
                         </StackLayout>
                     </bottomSheet:BottomSheet.BottomSheetContent>
                 </bottomSheet:BottomSheet>

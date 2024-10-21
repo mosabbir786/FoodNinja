@@ -18,6 +18,8 @@ public partial class AddPaymentMethodPage : ContentPage
         payoneerBottomSheet.BottomSheetClosed += OnPayoneerBottomSheetClosed;
     }
 
+    
+
     private async void BackImageButton_Clicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
@@ -73,6 +75,8 @@ public partial class AddPaymentMethodPage : ContentPage
     {
         base.OnDisappearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
+        var profilePageViewModel = (ProfilePageViewModel)BindingContext;
+        profilePageViewModel.IsUpdated = true;
 
     }
 
@@ -109,5 +113,11 @@ public partial class AddPaymentMethodPage : ContentPage
     private void DatePicker_DateSelected(object sender, DateChangedEventArgs e)
     {
         expiryDatePicker.TextColor = Colors.White;
+    }
+
+    private void ADDPaypalButton_Clicked(object sender, EventArgs e)
+    {
+        paypalEntry.Unfocus();
+        
     }
 }

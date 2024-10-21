@@ -12,6 +12,7 @@ using FoodNinja.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,9 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string fullName;
+
+        [ObservableProperty]
+        private bool isUpdated = false;
         #endregion
 
 
@@ -51,16 +55,10 @@ namespace FoodNinja.ViewModel
             Navigation = navigation;
             firebaseManager = _firebaseManager;
             PaymentMethods = new ObservableCollection<PaymentModel>();
-            LoadUserData();
         }
         #endregion
 
         #region Methods
-        private async void LoadUserData()
-        {
-            await FetchUserDataAsync();
-            await LoadPaymentMethod();
-        }
         public async Task FetchUserDataAsync()
         {
             UserId = Preferences.Get("LocalId", string.Empty);
@@ -70,65 +68,90 @@ namespace FoodNinja.ViewModel
             {
                 UserData = response;
                 FullName = UserData.FirstName + " " + UserData.LastName;
-
                 if (UserData.PaymentMethod == null)
                 {
-                    UserData.PaymentMethod = new ObservableCollection<PaymentModel>();
+                    //UserData.PaymentMethod = new ObservableCollection<PaymentModel>();
+                    UserData.PaymentMethod = new Dictionary<int, PaymentModel>();
                 }
+                var paymentMethods = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
+                PaymentMethods = paymentMethods;
             }
             IsLoading = false;
 
-            /* try
-             {
-                 var userDataObservable = firebaseClient
-                     .Child("UserData")
-                     .Child(UserId)
-                     .AsObservable<UserDataModel>();
-                      userDataObservable.Subscribe(userNode =>
-                     {
-                         if(userNode.Object != null)
-                         {
-                             UserDataCollection.Clear();
-                             UserDataCollection.Add(userNode.Object);
+            /* Stopwatch stopwatch = new Stopwatch();
+             stopwatch.Start();
 
-                         }
-                         else
-                         {
-                             Console.WriteLine("No user data found for this UserId.");
-                         }
-                     });
-                 IsLoading = false;
-             }
-             catch (Exception ex)
+             var observable = firebaseClient
+             .Child("UserData")
+             .Child(UserId)
+             .AsObservable<UserDataModel>();
+
+             stopwatch.Stop();
+             Console.WriteLine($"Time taken to set up observable: {stopwatch.Elapsed.TotalSeconds} seconds");
+             stopwatch.Restart();
+
+             observable.Subscribe(async user =>
              {
-                 Console.WriteLine("Error while fetching user data " + ex.Message);
-             }*/
+                 await Task.Run(() =>
+                 {
+                     var dataStopwatch = new Stopwatch();
+                     dataStopwatch.Start();
+                     UserData = user.Object;
+                     dataStopwatch.Stop();
+                     Console.WriteLine($"Time taken to assign UserData: {dataStopwatch.Elapsed.TotalSeconds} seconds");
+
+                     dataStopwatch.Restart(); // Restart for FullName
+                     FullName = UserData.FirstName + " " + UserData.LastName;
+                     dataStopwatch.Stop();
+                     Console.WriteLine($"Time taken to construct FullName: {dataStopwatch.Elapsed.TotalSeconds} seconds");
+                 });               
+                 stopwatch.Stop();
+                 Console.WriteLine($"Time taken to display user data: {stopwatch.Elapsed.TotalSeconds} second");
+
+             }, error =>
+             {
+                 Console.WriteLine("Error while fetching user data: " + error.Message);
+             });*/
         }
-
         public async Task LoadPaymentMethod()
         {
             UserId = Preferences.Get("LocalId", string.Empty);
-            firebaseClient.Child("UserData").Child(UserId).AsObservable<PaymentModel>().Subscribe(item =>
+            var userNode = await firebaseClient
+                .Child("UserData")
+                .Child(UserId)
+                .OnceAsync<object>();
+
+            var users = userNode.FirstOrDefault();
+            var firebaseKey = users.Key;
+            if (firebaseKey != null)
             {
-                if(item != null)
-                {
-                    PaymentMethods.Add(item.Object);
-                }
-            });
+                MainThread.BeginInvokeOnMainThread(() => PaymentMethods.Clear());
+                firebaseClient
+               .Child("UserData")
+               .Child(UserId)
+               .Child(firebaseKey)
+               .Child("PaymentMethod")
+               .AsObservable<PaymentModel>()
+               .Subscribe(payment =>
+               {
+                   MainThread.BeginInvokeOnMainThread(() =>
+                   {
+                       PaymentMethods.Add(payment.Object);
+                   });
+               }, error =>
+               {
+                   Application.Current.MainPage.DisplayAlert("Error", "Failed to fetch payment methods.", "OK");
+               });
+            }
         }
 
-        public void UpdateUserData(PaymentModel newPaymentMethod)
-        {
-            if(UserData?.PaymentMethod == null)
-            {
-                UserData.PaymentMethod = new ObservableCollection<PaymentModel>();
-            }
-            UserData.PaymentMethod.Add(newPaymentMethod);
-            OnPropertyChanged(nameof(UserData));
-        }
         #endregion
 
         #region Commands
+        private async Task DeleteSelectedPayment(PaymentModel selectedPaymentModel)
+        {
+
+        }
         [RelayCommand]
         private async Task GoToOrderDetailPage()
         {

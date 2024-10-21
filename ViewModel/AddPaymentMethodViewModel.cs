@@ -67,8 +67,11 @@ namespace FoodNinja.ViewModel
         {
             if (currentBottomSheet != null)
             {
+                Random random = new Random();
+                int id = random.Next(1000, 9999);
                 var paymentMethod = new PaymentModel
                 {
+                    Id = id,
                     PaymentEmail = PaypalEmail,
                     CardNumber = string.Empty,
                     CVV = string.Empty,
@@ -91,8 +94,11 @@ namespace FoodNinja.ViewModel
             VisaExpiryDate = ExpiryDate.ToString("MM/yyyy", CultureInfo.InvariantCulture);
             if (currentBottomSheet != null)
             {
+                Random random = new Random();
+                int id = random.Next(1000, 9999);
                 var paymentMethod = new PaymentModel
                 {
+                    Id = id,
                     PaymentEmail = string.Empty,
                     CardNumber = VisaCardNumber,
                     CVV = VisaCVV,
@@ -115,8 +121,11 @@ namespace FoodNinja.ViewModel
         {
             if (currentBottomSheet != null)
             {
+                Random random = new Random();
+                int id = random.Next(1000, 9999);
                 var paymentMethod = new PaymentModel
                 {
+                    Id = id,
                     PaymentEmail = PayoneerEmail,
                     CardNumber = string.Empty,
                     CVV = string.Empty,

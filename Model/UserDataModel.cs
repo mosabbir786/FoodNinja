@@ -15,15 +15,16 @@ namespace FoodNinja.Model
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobileNumber { get; set; }
-        public ObservableCollection<PaymentModel> PaymentMethod { get; set; } = new ObservableCollection<PaymentModel>();
+        public Dictionary<int, PaymentModel> PaymentMethod { get; set; } = new Dictionary<int, PaymentModel>();
+      //  public ObservableCollection<PaymentModel> PaymentMethod { get; set; } = new ObservableCollection<PaymentModel>();
         public string Image { get; set; }
         public string Address { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
     }
-
     public partial class PaymentModel : ObservableObject
     {
+        public int Id { get; set; }
         public string PaymentEmail { get; set; }
         public string CardNumber { get; set; }
         public string CVV { get; set; }
