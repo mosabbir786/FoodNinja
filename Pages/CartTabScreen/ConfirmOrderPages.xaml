@@ -172,7 +172,7 @@
                             <StackLayout
                                x:Name="paymentMethodCollection"
                                Grid.Row="1" Grid.ColumnSpan="2"
-                               BindableLayout.ItemsSource="{Binding UserData.PaymentMethod}">
+                               BindableLayout.ItemsSource="{Binding PaymentMethodList}">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <Border

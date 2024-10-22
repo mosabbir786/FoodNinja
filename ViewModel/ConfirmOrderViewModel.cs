@@ -102,6 +102,7 @@ namespace FoodNinja.ViewModel
             if (response != null)
             {
                 UserData = response;
+                PaymentMethodList = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
             }
         }
         public async Task UpdateUserAddress()

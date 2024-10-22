@@ -80,32 +80,32 @@ public partial class AddPaymentMethodPage : ContentPage
 
     }
 
-    private void Paypal_Tapped(object sender, TappedEventArgs e)
+    private async void Paypal_Tapped(object sender, TappedEventArgs e)
     {
         if (BindingContext is AddPaymentMethodViewModel viewModel)
         {
             viewModel.PaypalBorderColor = Color.FromArgb("#37d582");
             viewModel.SetCurrentBottomSheet(paypalBottomSheet);
-            paypalBottomSheet.OpenBottomSheet();
+            await paypalBottomSheet.OpenBottomSheet();
         }
     }
-    private void Visa_Tapped(object sender, TappedEventArgs e)
+    private async void Visa_Tapped(object sender, TappedEventArgs e)
     {
         if (BindingContext is AddPaymentMethodViewModel viewModel)
         {
             viewModel.VisaBorderColor = Color.FromArgb("#37d582");
             viewModel.SetCurrentBottomSheet(visaBottomSheet);
-            visaBottomSheet.OpenBottomSheet();
+            await visaBottomSheet.OpenBottomSheet();
         }
     }
 
-    private void Payoneer_Tapped(object sender, TappedEventArgs e)
+    private async void Payoneer_Tapped(object sender, TappedEventArgs e)
     {
         if (BindingContext is AddPaymentMethodViewModel viewModel)
         {
             viewModel.PayoneerBorderColor = Color.FromArgb("#37d582");
             viewModel.SetCurrentBottomSheet(payoneerBottomSheet);
-            payoneerBottomSheet.OpenBottomSheet();
+            await payoneerBottomSheet.OpenBottomSheet();
         }
 
     }

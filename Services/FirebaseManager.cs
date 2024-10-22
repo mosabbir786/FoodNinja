@@ -541,30 +541,6 @@ namespace FoodNinja.Services
         {
             try
             {
-                /*     var allUsers = await firebaseClient
-                         .Child("UserData")
-                         .Child(userId)
-                         .OnceAsync<UserDataModel>();
-                     var userNode = allUsers.FirstOrDefault();
-                     if (userNode.Key != null)
-                     {
-                         var userData = userNode.Object;
-                         if (userData.PaymentMethod == null)
-                         {
-                             userData.PaymentMethod = new ObservableCollection<PaymentModel>();
-                         }
-                         userData.PaymentMethod.Add(paymentMethod);
-                         await firebaseClient
-                            .Child("UserData")
-                            .Child(userId)
-                            .Child(userNode.Key)
-                            .PatchAsync(JsonConvert.SerializeObject(userData));
-                         Console.WriteLine("Payment method added successfully.");
-                     }
-                     else
-                     {
-                         Console.WriteLine("User not found.");
-                     }*/
                 var allUsers = await firebaseClient
                  .Child("UserData")
                  .Child(userId)
@@ -602,6 +578,52 @@ namespace FoodNinja.Services
             catch (Exception ex)
             {
                 Console.WriteLine("Error while adding payment method " + ex.Message);
+            }
+        }
+      
+        public async Task<bool>DeletePaymentMethodAsync(string userId, int paymentMrthodId)
+        {
+            try
+            {
+                var allUser = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = allUser.FirstOrDefault();
+                if(userNode != null)
+                {
+                    var userData = userNode.Object;
+                    if(userData.PaymentMethod != null && userData.PaymentMethod.ContainsKey(paymentMrthodId))
+                    {
+                        userData.PaymentMethod.Remove(paymentMrthodId);
+                        await firebaseClient
+                            .Child("UserData")
+                            .Child(userId)
+                            .Child(userNode.Key)
+                            .PatchAsync(JsonConvert.SerializeObject(new 
+                            {
+                               PaymentMethod = userData.PaymentMethod
+                            }));
+                        Console.WriteLine("Payment method deleted successfully.");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Payment method not found.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting payment method" + ex.Message);
+                return false;
             }
         }
         public async Task<bool> PlacedOrderAsync(string UserId, List<OrderPlacedModel> selectedOrder)

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
@@ -35,7 +36,7 @@ namespace FoodNinja.ViewModel
         private UserDataModel userData;
 
         [ObservableProperty]
-        private ObservableCollection<PaymentModel> paymentMethods;
+        private ObservableCollection<PaymentModel> paymentMethodsList;
 
         [ObservableProperty]
         private bool isLoading;
@@ -45,6 +46,15 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private bool isUpdated = false;
+
+        [ObservableProperty]
+        private string firstName;
+
+        [ObservableProperty]
+        private string lastName;
+
+        [ObservableProperty]
+        private string phoneNumber;
         #endregion
 
 
@@ -54,14 +64,14 @@ namespace FoodNinja.ViewModel
             firebaseClient = new FirebaseClient(DatabaseUrl);
             Navigation = navigation;
             firebaseManager = _firebaseManager;
-            PaymentMethods = new ObservableCollection<PaymentModel>();
+            PaymentMethodsList = new ObservableCollection<PaymentModel>();
+            UserId = Preferences.Get("LocalId", string.Empty);
         }
         #endregion
 
         #region Methods
         public async Task FetchUserDataAsync()
         {
-            UserId = Preferences.Get("LocalId", string.Empty);
             IsLoading = true;
             var response = await firebaseManager.GetUserDataAsync(UserId);
             if (response != null)
@@ -70,11 +80,10 @@ namespace FoodNinja.ViewModel
                 FullName = UserData.FirstName + " " + UserData.LastName;
                 if (UserData.PaymentMethod == null)
                 {
-                    //UserData.PaymentMethod = new ObservableCollection<PaymentModel>();
                     UserData.PaymentMethod = new Dictionary<int, PaymentModel>();
                 }
                 var paymentMethods = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
-                PaymentMethods = paymentMethods;
+                PaymentMethodsList = paymentMethods;
             }
             IsLoading = false;
 
@@ -125,7 +134,7 @@ namespace FoodNinja.ViewModel
             var firebaseKey = users.Key;
             if (firebaseKey != null)
             {
-                MainThread.BeginInvokeOnMainThread(() => PaymentMethods.Clear());
+                MainThread.BeginInvokeOnMainThread(() => PaymentMethodsList.Clear());
                 firebaseClient
                .Child("UserData")
                .Child(UserId)
@@ -136,7 +145,7 @@ namespace FoodNinja.ViewModel
                {
                    MainThread.BeginInvokeOnMainThread(() =>
                    {
-                       PaymentMethods.Add(payment.Object);
+                       PaymentMethodsList.Add(payment.Object);
                    });
                }, error =>
                {
@@ -148,10 +157,20 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Commands
+        [RelayCommand]
         private async Task DeleteSelectedPayment(PaymentModel selectedPaymentModel)
         {
-
+            if(selectedPaymentModel != null)
+            {
+                PaymentMethodsList.Remove(selectedPaymentModel);
+                var isDeleted = await firebaseManager.DeletePaymentMethodAsync(UserId, selectedPaymentModel.Id);
+                if(isDeleted)
+                {
+                    await Toast.Make("Success: Payment method has been deleted.").Show();
+                }
+            }
         }
+
         [RelayCommand]
         private async Task GoToOrderDetailPage()
         {

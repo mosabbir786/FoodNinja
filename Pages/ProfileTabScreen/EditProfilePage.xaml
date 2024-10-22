@@ -2,11 +2,212 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FoodNinja.Pages.ProfileTabScreen.EditProfilePage"
-             Title="EditProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="EditProfilePage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="secondryColor">#FEAD1D</Color>
+            <Color x:Key="primaryColor">#53E88B</Color>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="PlaceholderColor" Value="#FFFFFF"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="FontFamily" Value="BentonRegular"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+            </Style>
+            <Style x:Key="titleLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="Margin" Value="5,0,0,3"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"/>
+                <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+            </Style>
+
+            <Style x:Key="borderStyle" TargetType="Border">
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="BackgroundColor" Value="#80252525"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid Padding="20,20,20,40" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*,*" ColumnSpacing="20">
+                <ImageButton
+                    Source="back.png"
+                    Margin="0,0,0,20"
+                    HorizontalOptions="Start"
+                    HeightRequest="50" WidthRequest="50"
+                    Command="{Binding BackCommand}"/>
+                <Label
+                    HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                    FontFamily="BentonBold"
+                    Text="Edit Profile"
+                    Grid.ColumnSpan="2"
+                    FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+                <Label
+                    Grid.Row="1" Grid.Column="0"
+                    Text="First Name"
+                    Style="{StaticResource titleLabelStyle}"/>
+                <Border
+                    x:Name="firstNameBorder"
+                    Grid.Row="2" Grid.Column="0"
+                    Style="{StaticResource borderStyle}">
+                    <Entry
+                        Style="{StaticResource entryStyle}"
+                        x:Name="firstNameEntry"
+                        Placeholder="First Name"
+                        Text="{Binding FirstName}"
+                        Completed="firstNameEntry_Completed"/>
+                </Border>
+
+                <Label
+                    Grid.Row="1" Grid.Column="1"
+                    Text="Last Name"
+                    Style="{StaticResource titleLabelStyle}"/>
+                <Border
+                    x:Name="lastNameBorder"
+                    Grid.Row="2" Grid.Column="1"
+                    Style="{StaticResource borderStyle}">
+                    <Entry
+                        Style="{StaticResource entryStyle}"
+                        x:Name="lastNameEntry"
+                        Placeholder="Last Name"
+                        Text="{Binding LastName}"
+                        Completed="lastNameEntry_Completed"/>
+                </Border>
+
+                <Label
+                    Margin="5,10,0,5"
+                    Grid.Row="3" Grid.ColumnSpan="2"
+                    Text="Phone Number"
+                    Style="{StaticResource titleLabelStyle}"/>
+                <Border
+                    x:Name="phoneNumberBorder"
+                    Grid.Row="4" Grid.ColumnSpan="2"
+                    Style="{StaticResource borderStyle}">
+                    <Entry
+                        Style="{StaticResource entryStyle}"
+                        x:Name="phoneEntry"
+                        Placeholder="Phone Number"
+                        Keyboard="Numeric"
+                        MaxLength="10"
+                        Text="{Binding PhoneNumber}"
+                        Completed="phoneEntry_Completed"/>
+                </Border>
+
+                <Label
+                    Margin="5,20,0,5"
+                    Grid.Row="5" Grid.ColumnSpan="2"
+                    Text="Change Profile Picture"
+                    Style="{StaticResource titleLabelStyle}"/>
+                <Border
+                    IsVisible="{Binding BorderContentVisible}"
+                    x:Name="galleryBorder"
+                    Margin="0,0,0,10"
+                    Grid.Row="6" Grid.ColumnSpan="2"
+                    HorizontalOptions="Fill"
+                    Stroke="Transparent"
+                    BackgroundColor="#80252525"
+                    StrokeShape="RoundRectangle 15">
+                    <StackLayout Padding="20">
+                        <Image
+                            Source="gallery"
+                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                        <Label
+                            Margin="0,10,0,0"
+                            HorizontalOptions="Center"
+                            Text="From Gallery"
+                            TextColor="#FFFFFF"
+                            Style="{StaticResource titleLabelStyle}"/>
+                    </StackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GalleryBorder_Tapped" Command="{Binding PickPhotoFromGalleryCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Border
+                    IsVisible="True"
+                    Grid.Row="6" Grid.ColumnSpan="2"
+                    Style="{StaticResource borderStyle}">
+                    <HorizontalStackLayout Padding="10,0" Spacing="10">
+                        <Label
+                            FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
+                            Margin="0,0"
+                            FontFamily="BentonMedium"
+                            VerticalOptions="Center"
+                            Text="{Binding ImageFileName}"/>
+
+                        <ImageButton
+                            BackgroundColor="Transparent"
+                            Source="cross"
+                            Padding="0"
+                            HeightRequest="20" WidthRequest="20"/>
+                    </HorizontalStackLayout>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="False">
+                            <Setter Property="IsVisible" Value="True"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+
+                <Label
+                    Grid.Row="7" Grid.ColumnSpan="2"
+                    Text="Or"
+                    HorizontalOptions="Center"
+                    FontFamily="BentonBold"
+                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                    TextColor="{StaticResource primaryColor}"/>
+
+                <Border
+                     x:Name="cameraBorder"
+                     Margin="0,10,0,10"
+                     Grid.Row="8" Grid.ColumnSpan="2"
+                     HorizontalOptions="Fill"
+                     Stroke="Transparent"
+                     BackgroundColor="#80252525"
+                     StrokeShape="RoundRectangle 15">
+                    <StackLayout Padding="20">
+                        <Image
+                            Source="camera"
+                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                        <Label
+                            Margin="0,10,0,0"
+                            HorizontalOptions="Center"
+                            Text="From Gallery"
+                            TextColor="#FFFFFF"
+                            Style="{StaticResource titleLabelStyle}"/>
+                    </StackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CameraBorder_Tapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Button
+                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                    FontFamily="BentonBold"
+                    TextColor="#FFFFFF"
+                    Text="Edit"
+                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                    CornerRadius="15"
+                    BorderColor="Transparent"
+                    BackgroundColor="{StaticResource primaryColor}"
+                    VerticalOptions="End"
+                    Grid.RowSpan="10" Grid.ColumnSpan="2"
+                    Command="{Binding EditCommand}"/>
+            </Grid>
+
+        </ScrollView>
+    </ContentPage.Content>
 </ContentPage>
