@@ -5,6 +5,7 @@
              Title="EditProfilePage"
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="Black"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -36,7 +37,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <ScrollView>
+        <ScrollView VerticalScrollBarVisibility="Never">
             <Grid Padding="20,20,20,40" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*,*" ColumnSpacing="20">
                 <ImageButton
                     Source="back.png"
@@ -149,7 +150,8 @@
                             BackgroundColor="Transparent"
                             Source="cross"
                             Padding="0"
-                            HeightRequest="20" WidthRequest="20"/>
+                            HeightRequest="20" WidthRequest="20"
+                            Command="{Binding RemoveGalleryImageCommand}"/>
                     </HorizontalStackLayout>
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="True">
@@ -169,7 +171,38 @@
                     FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
                     TextColor="{StaticResource primaryColor}"/>
 
+
                 <Border
+                    Margin="0,10,0,0"
+                    IsVisible="True"
+                    Grid.Row="8" Grid.ColumnSpan="2"
+                    Style="{StaticResource borderStyle}">
+                    <HorizontalStackLayout Padding="10,0" Spacing="10">
+                        <Label
+                            FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
+                            Margin="0,0"
+                            FontFamily="BentonMedium"
+                            VerticalOptions="Center"
+                            Text="{Binding ImageFileName}"/>
+
+                        <ImageButton
+                            BackgroundColor="Transparent"
+                            Source="cross"
+                            Padding="0"
+                            HeightRequest="20" WidthRequest="20"
+                            Command="{Binding RemoveGalleryImageCommand}"/>
+                    </HorizontalStackLayout>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="True">
+                            <Setter Property="IsVisible" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="False">
+                            <Setter Property="IsVisible" Value="True"/>
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+                <Border
+                    IsVisible="{Binding CameraBorderContentVisible}"
                      x:Name="cameraBorder"
                      Margin="0,10,0,10"
                      Grid.Row="8" Grid.ColumnSpan="2"
@@ -190,7 +223,7 @@
                             Style="{StaticResource titleLabelStyle}"/>
                     </StackLayout>
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="CameraBorder_Tapped"/>
+                        <TapGestureRecognizer Tapped="CameraBorder_Tapped" Command="{Binding CapturePhotoFromCameraCommand}"/>
                     </Border.GestureRecognizers>
                 </Border>
 
@@ -206,6 +239,18 @@
                     VerticalOptions="End"
                     Grid.RowSpan="10" Grid.ColumnSpan="2"
                     Command="{Binding EditCommand}"/>
+
+                <skia:SKLottieView
+                    Grid.RowSpan="10" Grid.ColumnSpan="2"
+                    IsVisible="{Binding IsLoading}"
+                    IsAnimationEnabled="{Binding IsLoading}"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="foodyellow.json"
+                    Margin="0,-80,0,0"
+                    HorizontalOptions="Center" VerticalOptions="Center"
+                    HeightRequest="100" WidthRequest="100"/>
             </Grid>
 
         </ScrollView>

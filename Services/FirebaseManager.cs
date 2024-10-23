@@ -579,8 +579,7 @@ namespace FoodNinja.Services
             {
                 Console.WriteLine("Error while adding payment method " + ex.Message);
             }
-        }
-      
+        }      
         public async Task<bool>DeletePaymentMethodAsync(string userId, int paymentMrthodId)
         {
             try
@@ -705,6 +704,87 @@ namespace FoodNinja.Services
             {
                 Console.WriteLine("Error while getting all user details" + ex.Message);
                 return null;
+            }
+        }
+
+        public async Task<bool> DeleteAddress(string userId)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if(userNode != null)
+                {
+                    await firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key)
+                        .Child("Address")
+                        .DeleteAsync();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while deleting address" + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> EditUserProfile(string userId, UserDataModel updatedData)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                  .Child("UserData")
+                  .Child(userId)
+                  .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if (userNode != null)
+                {
+                    var userData = userNode.Object;
+                    var updates = new Dictionary<string, object>();
+
+                    if (!string.IsNullOrEmpty(updatedData.Email))
+                        updates["Email"] = updatedData.Email;
+
+                    if (!string.IsNullOrEmpty(updatedData.FirstName))
+                        updates["FirstName"] = updatedData.FirstName;
+
+                    if (!string.IsNullOrEmpty(updatedData.LastName))
+                        updates["LastName"] = updatedData.LastName;
+
+                    if (!string.IsNullOrEmpty(updatedData.MobileNumber))
+                        updates["MobileNumber"] = updatedData.MobileNumber;
+
+                    if (!string.IsNullOrEmpty(updatedData.Image))
+                        updates["Image"] = updatedData.Image;
+
+                    if (!string.IsNullOrEmpty(updatedData.Address))
+                        updates["Address"] = updatedData.Address;
+
+                    await firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key)
+                        .PatchAsync(updates);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("No user found");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while edititng profile details" + ex.Message);
+                return false;
             }
         }
         public async Task LogoutAsync()

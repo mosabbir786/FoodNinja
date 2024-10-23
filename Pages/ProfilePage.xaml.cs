@@ -35,9 +35,9 @@ public partial class ProfilePage : ContentPage
 		await addMoreBtn.ScaleTo(1.1, 100);
 		await addMoreBtn.ScaleTo(1, 100);
     }
-    private async void EditProfile_Clicked(object sender, EventArgs e)
+    private async void EditAddress_Clicked(object sender, EventArgs e)
     {
-        await editProfileBottomSheet.OpenBottomSheet();
+        await editAddressBottomSheet.OpenBottomSheet();
     }
 
 }

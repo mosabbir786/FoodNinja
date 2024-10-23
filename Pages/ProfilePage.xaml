@@ -260,7 +260,8 @@
                                                         FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
                                                         HeightRequest="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"
                                                         Text="Edit"
-                                                        FontFamily="BentonMedium"/>
+                                                        FontFamily="BentonMedium"
+                                                        Clicked="EditAddress_Clicked"/>
                                                     <Button
                                                         FontFamily="BentonMedium"
                                                         TextColor="#FFFFFF"
@@ -307,7 +308,7 @@
 
                 <bottomSheet:BottomSheet
                     BackgroundColor="Transparent"
-                    x:Name="editProfileBottomSheet"
+                    x:Name="editAddressBottomSheet"
                     Grid.RowSpan="2"
                     VerticalOptions="End">
                     <bottomSheet:BottomSheet.BottomSheetContent>

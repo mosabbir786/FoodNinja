@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
+using FoodNinja.Model;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using System;
@@ -50,10 +52,13 @@ namespace FoodNinja.ViewModel
         private string imageFileName;
 
         [ObservableProperty]
-        private bool isFileNameVisible;
+        private bool borderContentVisible = true;
 
         [ObservableProperty]
-        private bool borderContentVisible = true;
+        private bool cameraBorderContentVisible = true;
+
+        [ObservableProperty]
+        private string methodType;
         #endregion
 
         #region Constructor
@@ -76,29 +81,42 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PickPhotoFromGallery()
         {
-            IsFileNameVisible = true;
             var options = new PickOptions
             {
                 PickerTitle = "Please select an image",
                 FileTypes = FilePickerFileType.Images
             };
 
-            int deniedCount = permissionService.GetPermissionDeniedCount();
-            if(deniedCount >= 2)
+            int deniedCount =  permissionService.GetPermissionDeniedCount();
+            if(DeviceInfo.Platform == DevicePlatform.iOS)
             {
-                await Application.Current.MainPage.ShowPopupAsync(new PermissionPopup());
-                return;
+                if (deniedCount == 1)
+                {
+                    await Application.Current.MainPage.ShowPopupAsync(new PermissionPopup());
+                    return;
+                }
             }
+            else if(DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                if (deniedCount >= 2)
+                {
+                    await Application.Current.MainPage.ShowPopupAsync(new PermissionPopup());
+                    return;
+                }
+            }     
+            
             var permissionGranted = await permissionService.CheckPhotoPermission();
             if(permissionGranted)
             {
+                MethodType = "Gallery";
                 await PickPhoto(options);
             }
-            else 
+            else  
             {
                 bool isPermissionGrantedAfterRequest = await permissionService.RequestPhotoPermission();
                 if(isPermissionGrantedAfterRequest)
                 {
+                    MethodType = "Gallery";
                     await PickPhoto(options);
                 }
             }
@@ -114,53 +132,168 @@ namespace FoodNinja.ViewModel
                 FileTypes = FilePickerFileType.Images
             };
 
-            int deniedCount = permissionService.GetPermissionDeniedCount();
-            if (deniedCount >= 2)
+            var deniedCount =  permissionService.GetCameraPermissionDeniedCount();
+            if(DeviceInfo.Platform == DevicePlatform.iOS)
             {
-                await Application.Current.MainPage.ShowPopupAsync(new PermissionPopup());
-                return;
-            }
-            var permissionGranted = await permissionService.CheckPhotoPermission();
-            if (permissionGranted)
-            {
-                await PickPhoto(options);
-            }
-            else
-            {
-                bool isPermissionGrantedAfterRequest = await permissionService.RequestPhotoPermission();
-                if (isPermissionGrantedAfterRequest)
+                if(deniedCount == 1)
                 {
-                    await PickPhoto(options);
+                    await App.Current.MainPage.ShowPopupAsync(new PermissionPopup());
                 }
             }
+            else if(DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                if(deniedCount >= 2)
+                {
+                    await App.Current.MainPage.ShowPopupAsync(new PermissionPopup());
+                }
+            }
+
+            /* var permissionGranted = await permissionService.CheckAndRequestCameraPermission();
+             if (permissionGranted)
+             {
+                 MethodType = "Camera";
+                 await PickPhoto(options);
+             }
+             else
+             {
+                 bool isPermissionGrantedAfterRequest = await permissionService.CheckAndRequestCameraPermission();
+                 if (isPermissionGrantedAfterRequest)
+                 {
+                     MethodType = "Camera";
+                     await PickPhoto(options);
+                 }
+             }*/
+
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+#if ANDROID
+               var permissionGranted = await permissionService.CheckCameraPermission();
+               if (permissionGranted)
+               {
+                    MethodType = "Camera";
+                    await PickPhoto(options);
+               }
+               else
+               {
+                 bool isPermissionGrantedAfterRequest = await permissionService.RequestCameraPermission();
+                 if (isPermissionGrantedAfterRequest)
+                 {
+                     MethodType = "Camera";
+                     await PickPhoto(options);
+                 }
+              }
+#endif
+            }
+        }
+
+        [RelayCommand]
+        private async Task RemoveGalleryImage()
+        {
+            await Task.Delay(1);
+            if (MethodType == "Gallery")
+            {
+                ImageFileName = string.Empty;
+                UpdatedImage = string.Empty;
+                SelectedImage = null;
+                BorderContentVisible = true;
+            }
+            else if (MethodType == "Camera")
+            {
+                ImageFileName = string.Empty;
+                UpdatedImage = string.Empty;
+                SelectedImage = null;
+                CameraBorderContentVisible = true;
+            }
+          
         }
 
         [RelayCommand]
         private async Task Edit()
         {
+            bool isEmpty = string.IsNullOrWhiteSpace(FirstName) && 
+                           string.IsNullOrWhiteSpace(LastName) && 
+                           string.IsNullOrWhiteSpace(PhoneNumber) 
+                           && string.IsNullOrWhiteSpace(UpdatedImage);
+            if(isEmpty)
+            {
+                await Toast.Make("Please fill in at least one field to edit your profile.").Show();
+            }
+            else
+            {
+                await EditProfileAsync();
+            }
         }
-        #endregion
+#endregion
 
         #region Methods
+        private async Task EditProfileAsync()
+        {
+            var updatedData = new UserDataModel
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                MobileNumber = PhoneNumber,
+                Image = UpdatedImage,
+            };
+
+            IsLoading = true;
+            var success = await firebaseManager.EditUserProfile(UserId,updatedData);
+            if(success)
+            {
+                IsLoading = false;
+                FirstName = string.Empty;
+                LastName = string.Empty;
+                PhoneNumber = string.Empty;
+                UpdatedImage = string.Empty;
+                await Toast.Make("Profile edited successfully!").Show();
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await Toast.Make("Something went wrong.Please try after some time").Show();
+            }
+        }
         private async Task PickPhoto(PickOptions options)
         {
             try
             {
-                var result = await FilePicker.Default.PickAsync(options);
-                if (result != null)
+                if (MethodType == "Gallery")
                 {
-                    if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
-                       result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
+                    var result = await FilePicker.Default.PickAsync(options);
+                    if (result != null)
                     {
-                        SelectedImage = new MemoryStream();
-                        using (var stream = await result.OpenReadAsync())
+                        if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
+                           result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
                         {
-                            await stream.CopyToAsync(SelectedImage);
+                            SelectedImage = new MemoryStream();
+                            using (var stream = await result.OpenReadAsync())
+                            {
+                                await stream.CopyToAsync(SelectedImage);
+                            }
+                            SelectedImage.Seek(0, SeekOrigin.Begin);
+                            ImageFileName = TurncatedFileName(result.FileName, 30);
+                            UpdatedImage = await ConvertMemoryStreamToBase64(SelectedImage);
+                            BorderContentVisible = false;
                         }
-                        SelectedImage.Seek(0, SeekOrigin.Begin);
-                        ImageFileName = TurncatedFileName(result.FileName, 30);
-                        UpdatedImage = await ConvertMemoryStreamToBase64(SelectedImage);
-                        BorderContentVisible = false;
+                    }
+                }
+                else if (MethodType == "Camera")
+                {
+                    if(MediaPicker.Default.IsCaptureSupported)
+                    {
+                        var photo = await MediaPicker.Default.CapturePhotoAsync();
+                        if(photo != null)
+                        {
+                            SelectedImage = new MemoryStream();
+                            using (var stream = await photo.OpenReadAsync())
+                            {
+                                await stream.CopyToAsync(SelectedImage);
+                            }
+                            SelectedImage.Seek(0, SeekOrigin.Begin);
+                            ImageFileName = TurncatedFileName(photo.FileName, 30);
+                            UpdatedImage = await ConvertMemoryStreamToBase64(SelectedImage);
+                            CameraBorderContentVisible = false;
+                        }
                     }
                 }
             }
@@ -172,6 +305,7 @@ namespace FoodNinja.ViewModel
 
         private async Task<string>ConvertMemoryStreamToBase64(MemoryStream selectedImage)
         {
+            await Task.Delay(1);
             using(MemoryStream memoryStream = new MemoryStream())
             {
                 selectedImage.CopyTo(memoryStream);

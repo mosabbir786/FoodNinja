@@ -174,6 +174,7 @@ namespace FoodNinja.Platforms.Android
         {
             try
             {
+                await Task.Delay(1);
                 bool success = googleMap.SetMapStyle(new MapStyleOptions(jsonStyle));
                 if (!success)
                 {

@@ -1,5 +1,6 @@
 ﻿using FoodNinja.Pages;
 using FoodNinja.Pages.Onboarding_Screen;
+using FoodNinja.Pages.ProfileTabScreen;
 using FoodNinja.Services;
 using Syncfusion.Licensing;
 
@@ -15,12 +16,11 @@ namespace FoodNinja
             bool isLoggedIn = Preferences.Get("IsLoggedIn", false);
             if (isLoggedIn)
             {
-                //MainPage = new NavigationPage(new AppShell());
-                MainPage = new AppShell();
+                 MainPage = new AppShell();
             }
             else
             {
-                MainPage = new NavigationPage(new SplashScreen());
+                 MainPage = new NavigationPage(new SplashScreen());
             }
             DependencyService.Register<RestaurantService>();
         }
