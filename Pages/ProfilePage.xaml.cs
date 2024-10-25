@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
@@ -14,7 +15,17 @@ public partial class ProfilePage : ContentPage
 		InitializeComponent();
 		firebaseManager = new FirebaseManager();
 		this.BindingContext = new ProfilePageViewModel(Navigation, firebaseManager);
+        if(BindingContext is  ProfilePageViewModel viewModel)
+        {
+            viewModel.SetCurrentBottomSheet(editAddressBottomSheet);
+        }
+        editAddressBottomSheet.BottomSheetClosed += OnBottomSheetClosed;
 	}
+
+    private async void OnBottomSheetClosed(object? sender, EventArgs e)
+    {
+        await Toast.Make("Addreess Updated").Show();
+    }
 
     protected override async void OnAppearing()
     {
@@ -40,4 +51,34 @@ public partial class ProfilePage : ContentPage
         await editAddressBottomSheet.OpenBottomSheet();
     }
 
+    private async void houseEntry_Completed(object sender, EventArgs e)
+    {
+        await houseBorder.ScaleTo(1.1, 100);
+        await houseBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        cityEntry.Focus();
+    }
+
+    private async void cityEntry_Completed(object sender, EventArgs e)
+    {
+        await cityBorder.ScaleTo(1.1, 100);
+        await cityBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        stateEntry.Focus();
+    }
+
+    private async void stateEntry_Completed(object sender, EventArgs e)
+    {
+        await stateBorder.ScaleTo(1.1, 100);
+        await stateBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        pincodeEntry.Focus();
+    }
+
+    private async void pincodeEntry_Completed(object sender, EventArgs e)
+    {
+        await pincodeBorder.ScaleTo(1.1, 100);
+        await pincodeBorder.ScaleTo(1, 100);
+        pincodeEntry.Unfocus();
+    }
 }

@@ -8,12 +8,12 @@ public partial class EditProfilePage : ContentPage
 {
     private readonly FirebaseManager firebaseManager;
     private readonly PermissionService permissionService;
-	public EditProfilePage()
+	public EditProfilePage(bool addressExpanderVisiblity)
 	{
 		InitializeComponent();
         firebaseManager = new FirebaseManager();
         permissionService = new PermissionService();
-        this.BindingContext = new EditProfileViewModel(Navigation,firebaseManager,permissionService);
+        this.BindingContext = new EditProfileViewModel(Navigation,firebaseManager,permissionService,addressExpanderVisiblity);
 	}
 
     protected override async void OnAppearing()
@@ -84,5 +84,36 @@ public partial class EditProfilePage : ContentPage
             cameraBorder.Opacity = i;
             await Task.Delay(20);
         }
+    }
+
+    private async void houseEntry_Completed(object sender, EventArgs e)
+    {
+        await houseBorder.ScaleTo(1.1, 100);
+        await houseBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        cityEntry.Focus();
+    }
+
+    private async void cityEntry_Completed(object sender, EventArgs e)
+    {
+        await cityBorder.ScaleTo(1.1, 100);
+        await cityBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        stateEntry.Focus();
+    }
+
+    private async void stateEntry_Completed(object sender, EventArgs e)
+    {
+        await stateBorder.ScaleTo(1.1, 100);
+        await stateBorder.ScaleTo(1, 100);
+        await Task.Delay(50);
+        pincodeEntry.Focus();
+    }
+
+    private async void pincodeEntry_Completed(object sender, EventArgs e)
+    {
+        await pincodeBorder.ScaleTo(1.1, 100);
+        await pincodeBorder.ScaleTo(1, 100);
+        pincodeEntry.Unfocus();
     }
 }

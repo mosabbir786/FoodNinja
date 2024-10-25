@@ -706,7 +706,6 @@ namespace FoodNinja.Services
                 return null;
             }
         }
-
         public async Task<bool> DeleteAddress(string userId)
         {
             try
@@ -731,6 +730,36 @@ namespace FoodNinja.Services
             catch (Exception ex)
             {
                 Console.WriteLine("Error while deleting address" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> EditAddressAsync(string userId, string newAddress)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if(userNode != null)
+                {
+                    await firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key)
+                        .PatchAsync( new { Address = newAddress });
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while editing address" + ex.Message);
                 return false;
             }
         }
@@ -762,6 +791,9 @@ namespace FoodNinja.Services
                     if (!string.IsNullOrEmpty(updatedData.MobileNumber))
                         updates["MobileNumber"] = updatedData.MobileNumber;
 
+                    if (!string.IsNullOrEmpty(updatedData.Address))
+                        updates["Address"] = updatedData.Address;
+
                     if (!string.IsNullOrEmpty(updatedData.Image))
                         updates["Image"] = updatedData.Image;
 
@@ -785,6 +817,35 @@ namespace FoodNinja.Services
             {
                 Console.WriteLine("Error while edititng profile details" + ex.Message);
                 return false;
+            }
+        }
+
+        public async Task<List<OrderPlacedModel>> GetAllPlacedOrderAsync(string userId)
+        {
+            try
+            {
+                var orders = new List<OrderPlacedModel>();
+
+                var userOrders = await firebaseClient
+                    .Child("PlacedOrder")
+                    .Child(userId)
+                    .OnceAsync<OrderPlacedModel>();
+
+                foreach(var orderEntry in userOrders)
+                {
+                    var orderDetails = await firebaseClient
+                        .Child("PlacedOrder")
+                        .Child(userId)
+                        .Child(orderEntry.Key)
+                        .OnceAsync<OrderPlacedModel>();
+                    orders.AddRange(orderDetails.Select(o => o.Object));
+                }
+                return orders;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while fetching all placed order detail." + ex.Message);
+                return new List<OrderPlacedModel>();
             }
         }
         public async Task LogoutAsync()

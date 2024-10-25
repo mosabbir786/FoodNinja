@@ -81,6 +81,7 @@ namespace FoodNinja.ViewModel
         public ICommand PaymentMethodSelectedCommand { get; }
 
         #endregion
+
         #region Constructor
         public ConfirmOrderViewModel(FirebaseManager _firebaseManager, INavigation navigation, ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice)
         {
@@ -166,7 +167,6 @@ namespace FoodNinja.ViewModel
                 await Toast.Make("Order has already been placed.").Show();
                 return;
             }
-            else if (!PaymentMethodSelected || string.IsNullOrWhiteSpace(UserData?.Address))
             if (!PaymentMethodSelected || string.IsNullOrWhiteSpace(UserData?.Address))
             {
                 await Toast.Make("Please select at least one payment method").Show();
@@ -175,7 +175,7 @@ namespace FoodNinja.ViewModel
             else
             {
                 var random = new Random();
-                var statusOptions = new List<string> { "Processing", "Preparing", "Rider Assign" };
+                var statusOptions = new List<string> { "Processing", "Preparing", "Rider Assign","Complete" };
                 var placedOrders = new List<OrderPlacedModel>();
                 foreach (var foodItem in OrderFoodItem)
                 {

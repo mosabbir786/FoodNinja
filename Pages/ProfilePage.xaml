@@ -36,10 +36,10 @@
             
             <Style x:Key="borderStyle" TargetType="Border">
                 <Setter Property="Padding" Value="5,0"/>
-                <Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
                 <Setter Property="Stroke" Value="Transparent"/>
-                <Setter Property="BackgroundColor" Value="#3053E88B"/>
-                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"/>
+                <Setter Property="BackgroundColor" Value="#252525"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -207,7 +207,7 @@
                                 </Border>
 
 
-                                <Border BackgroundColor="#30FEAD1D" StrokeShape="RoundRectangle 10,10,10,10" Margin="{OnPlatform Default='0,15,0,0',WinUI='8,0,6,8',MacCatalyst='8,0,6,8'}" Stroke="Transparent"  StrokeThickness="{OnPlatform MacCatalyst=2,Default=1}" Padding="10,13">
+                                <Border IsVisible="{Binding AddressExpanderVisiblity}" BackgroundColor="#30FEAD1D" StrokeShape="RoundRectangle 10,10,10,10" Margin="{OnPlatform Default='0,15,0,0',WinUI='8,0,6,8',MacCatalyst='8,0,6,8'}" Stroke="Transparent"  StrokeThickness="{OnPlatform MacCatalyst=2,Default=1}" Padding="10,13">
                                     <syncfusion:SfExpander
                                         x:Name="addressExpander"
                                         VerticalOptions="Center"
@@ -269,7 +269,8 @@
                                                         CornerRadius="10"
                                                         FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
                                                         HeightRequest="{markups:OnScreenSize Large='40',Medium='38',Small='36'}"
-                                                        Text="Delete"/>
+                                                        Text="Delete"
+                                                        Command="{Binding DeleteAddressCommand}"/>
                                                 </HorizontalStackLayout>
                                             </Grid>
                                         </syncfusion:SfExpander.Content>
@@ -312,6 +313,68 @@
                     Grid.RowSpan="2"
                     VerticalOptions="End">
                     <bottomSheet:BottomSheet.BottomSheetContent>
+                        <StackLayout BackgroundColor="#151515" Padding="20,20">
+                            <Label
+                                Text="Add Delivery Address"
+                                Margin="5,0,0,0"
+                                FontFamily="BentonBold"
+                                TextColor="#FDAD1D"
+                                TextDecorations="Underline"
+                                FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                            <Border x:Name="houseBorder" Margin="0,10,0,10" Style="{StaticResource borderStyle}">
+                                <Entry
+                                    x:Name="houseEntry"
+                                    Style="{StaticResource entryStyle}"
+                                    Placeholder="House / Flat / Block No"
+                                    Text="{Binding HouseFlatBlockNo}"
+                                    Completed="houseEntry_Completed"/>
+                            </Border>
+
+                            <Border x:Name="cityBorder" Grid.Row="2" Margin="0,0,0,10" Style="{StaticResource borderStyle}">
+                                <Entry
+                                    x:Name="cityEntry"
+                                    Style="{StaticResource entryStyle}"
+                                    Placeholder="Area / City"
+                                    Text="{Binding CityArea}"
+                                    Completed="cityEntry_Completed"/>
+                            </Border>
+
+                            <Grid  ColumnDefinitions="Auto,Auto" ColumnSpacing="10">
+                                <Border x:Name="stateBorder" Padding="10,0" Grid.Column="0" Style="{StaticResource borderStyle}">
+                                    <Entry
+                                        x:Name="stateEntry"
+                                        Style="{StaticResource entryStyle}"
+                                        Placeholder="State"
+                                        Text="{Binding State}"
+                                        Completed="stateEntry_Completed"/>
+                                </Border>
+
+                                <Border x:Name="pincodeBorder" Padding="10,0" Grid.Column="1" Style="{StaticResource borderStyle}">
+                                    <Entry
+                                        x:Name="pincodeEntry"
+                                        Style="{StaticResource entryStyle}"
+                                        Placeholder="Pincode"
+                                        Text="{Binding Pincode}"
+                                        Keyboard="Numeric"
+                                        MaxLength="6"
+                                        Completed="pincodeEntry_Completed"/>
+                                </Border>
+                            </Grid>
+
+                            <Button
+                                Text="Edit Address"
+                                TextColor="#FFFFFF"
+                                CornerRadius="15"
+                                Margin="0,20,0,0"
+                                Padding="30,0"
+                                FontFamily="BentonBold"
+                                HorizontalOptions="Center"
+                                Command="{Binding EditAddressCommand}"
+                                FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                BackgroundColor="{StaticResource primaryColor}"/>
+
+                        </StackLayout>
                     </bottomSheet:BottomSheet.BottomSheetContent>
                 </bottomSheet:BottomSheet>
                 

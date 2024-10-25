@@ -23,9 +23,10 @@ namespace FoodNinja.ViewModel
     public partial class ProfilePageViewModel:ObservableObject
     {
         #region Fields
+        private FoodNinja.Views.BottomSheet currentBottomSheet;
         private FirebaseManager firebaseManager = new FirebaseManager();
-        FirebaseClient firebaseClient;
-        private const string DatabaseUrl = "https://fir-maui-491c3-default-rtdb.firebaseio.com/";
+       /* FirebaseClient firebaseClient;
+        private const string DatabaseUrl = "https://fir-maui-491c3-default-rtdb.firebaseio.com/";*/
 
         public INavigation Navigation { get; }
 
@@ -55,13 +56,33 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string phoneNumber;
+
+        [ObservableProperty]
+        private string newAddress;
+
+        [ObservableProperty]
+        private bool addressExpanderVisiblity;
+
+        [ObservableProperty]
+        private string houseFlatBlockNo;
+
+        [ObservableProperty]
+        private string cityArea;
+
+        [ObservableProperty]
+        private string state;
+
+        [ObservableProperty]
+        private string pincode;
+
+        [ObservableProperty]
+        private string address;
         #endregion
 
 
         #region Constructor
         public ProfilePageViewModel(INavigation navigation, FirebaseManager _firebaseManager)
         {
-            firebaseClient = new FirebaseClient(DatabaseUrl);
             Navigation = navigation;
             firebaseManager = _firebaseManager;
             PaymentMethodsList = new ObservableCollection<PaymentModel>();
@@ -84,6 +105,15 @@ namespace FoodNinja.ViewModel
                 }
                 var paymentMethods = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
                 PaymentMethodsList = paymentMethods;
+
+                if(UserData.Address == null)
+                {
+                    AddressExpanderVisiblity = false;
+                }
+                else
+                {
+                    AddressExpanderVisiblity = true;
+                }
             }
             IsLoading = false;
 
@@ -122,7 +152,7 @@ namespace FoodNinja.ViewModel
                  Console.WriteLine("Error while fetching user data: " + error.Message);
              });*/
         }
-        public async Task LoadPaymentMethod()
+        /*        public async Task LoadPaymentMethod()
         {
             UserId = Preferences.Get("LocalId", string.Empty);
             var userNode = await firebaseClient
@@ -152,8 +182,32 @@ namespace FoodNinja.ViewModel
                    Application.Current.MainPage.DisplayAlert("Error", "Failed to fetch payment methods.", "OK");
                });
             }
+        }*/
+        private async Task EditAddressAsync()
+        {
+            Address = $"{HouseFlatBlockNo}, {CityArea}, {State}, {Pincode}";
+            IsLoading = true;
+            bool isAddressEdited = await firebaseManager.EditAddressAsync(UserId, Address);
+            if(isAddressEdited)
+            {
+                HouseFlatBlockNo = string.Empty;
+                CityArea = string.Empty;
+                State = string.Empty;
+                Pincode  = string.Empty;
+                await currentBottomSheet.CloseBottomSheet();
+                await FetchUserDataAsync();
+            }
+            else
+            {
+                await Toast.Make("Something went wrong.Please try again later.").Show();
+            }
+            IsLoading = false;
         }
 
+        public void SetCurrentBottomSheet(FoodNinja.Views.BottomSheet bottomSheet)
+        {
+            currentBottomSheet = bottomSheet;
+        }
         #endregion
 
         #region Commands
@@ -180,7 +234,7 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task GoToEditProfilePage()
         {
-            await Navigation.PushAsync(new EditProfilePage());
+            await Navigation.PushAsync(new EditProfilePage(AddressExpanderVisiblity));
         }
 
         [RelayCommand]
@@ -193,6 +247,36 @@ namespace FoodNinja.ViewModel
         private async Task AddPaymentMethod()
         {
             await Navigation.PushAsync(new AddPaymentMethodPage());
+        }
+
+        [RelayCommand]
+        private async Task DeleteAddress()
+        {
+            IsLoading = true;
+            var deleted = await firebaseManager.DeleteAddress(UserId);
+            if (deleted)
+            {
+                await Toast.Make("Address delete successfully!").Show();
+                await FetchUserDataAsync();
+            }
+            IsLoading = false;
+        }
+
+        [RelayCommand]
+        private async Task EditAddress()
+        {
+            bool isEmpty = string.IsNullOrWhiteSpace(HouseFlatBlockNo) &&
+                          string.IsNullOrWhiteSpace(CityArea) &&
+                          string.IsNullOrWhiteSpace(State)
+                          && string.IsNullOrWhiteSpace(Pincode);
+            if (isEmpty)
+            {
+                await Toast.Make("Please fill in all the field to edit your profile.").Show();
+            }
+            else
+            {
+                await EditAddressAsync();
+            }
         }
         #endregion
     }

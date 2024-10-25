@@ -8,7 +8,9 @@ using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,15 +61,46 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string methodType;
+
+        [ObservableProperty]
+        private bool addressAvailable;
+
+        [ObservableProperty]
+        private bool addressControlVisiblity;
+
+        [ObservableProperty]
+        private string houseFlatBlockNo;
+
+        [ObservableProperty]
+        private string cityArea;
+
+        [ObservableProperty]
+        private string state;
+
+        [ObservableProperty]
+        private string pincode;
+
+        [ObservableProperty]
+        private string address;
         #endregion
 
         #region Constructor
-        public EditProfileViewModel(INavigation navigation, FirebaseManager _firebaseManager, PermissionService _permissionService)
+        public EditProfileViewModel(INavigation navigation, FirebaseManager _firebaseManager, PermissionService _permissionService, bool addressExpanderVisiblity)
         {
             Navigation = navigation;
             firebaseManager = _firebaseManager;
             this.permissionService = _permissionService;
+            AddressAvailable = addressExpanderVisiblity;
             UserId = Preferences.Get("LocalId", string.Empty);
+
+            if(AddressAvailable)
+            {
+                AddressControlVisiblity = false;
+            }
+            else
+            {
+                AddressControlVisiblity = true;
+            }
         }
         #endregion
 
@@ -148,42 +181,21 @@ namespace FoodNinja.ViewModel
                 }
             }
 
-            /* var permissionGranted = await permissionService.CheckAndRequestCameraPermission();
-             if (permissionGranted)
-             {
-                 MethodType = "Camera";
-                 await PickPhoto(options);
-             }
-             else
-             {
-                 bool isPermissionGrantedAfterRequest = await permissionService.CheckAndRequestCameraPermission();
-                 if (isPermissionGrantedAfterRequest)
-                 {
-                     MethodType = "Camera";
-                     await PickPhoto(options);
-                 }
-             }*/
-
-            if (DeviceInfo.Platform == DevicePlatform.Android)
+            var permissionGranted = await permissionService.CheckCameraPermission();
+            if (permissionGranted)
             {
-#if ANDROID
-               var permissionGranted = await permissionService.CheckCameraPermission();
-               if (permissionGranted)
-               {
+                MethodType = "Camera";
+                await PickPhoto(options);
+            }
+            else
+            {
+                bool isPermissionGrantedAfterRequest = await permissionService.RequestCameraPermission();
+                if (isPermissionGrantedAfterRequest)
+                {
                     MethodType = "Camera";
                     await PickPhoto(options);
-               }
-               else
-               {
-                 bool isPermissionGrantedAfterRequest = await permissionService.RequestCameraPermission();
-                 if (isPermissionGrantedAfterRequest)
-                 {
-                     MethodType = "Camera";
-                     await PickPhoto(options);
-                 }
-              }
-#endif
-            }
+                }
+            }            
         }
 
         [RelayCommand]
@@ -210,30 +222,40 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task Edit()
         {
-            bool isEmpty = string.IsNullOrWhiteSpace(FirstName) && 
-                           string.IsNullOrWhiteSpace(LastName) && 
-                           string.IsNullOrWhiteSpace(PhoneNumber) 
-                           && string.IsNullOrWhiteSpace(UpdatedImage);
-            if(isEmpty)
+            if(string.IsNullOrEmpty(HouseFlatBlockNo) && string.IsNullOrEmpty(CityArea) && string.IsNullOrEmpty(State) && string.IsNullOrEmpty(Pincode))
             {
-                await Toast.Make("Please fill in at least one field to edit your profile.").Show();
+                bool isEmpty = string.IsNullOrWhiteSpace(FirstName) &&
+                          string.IsNullOrWhiteSpace(LastName) &&
+                          string.IsNullOrWhiteSpace(PhoneNumber)
+                          && string.IsNullOrWhiteSpace(UpdatedImage);
+                if (isEmpty)
+                {
+                    await Toast.Make("Please fill in at least one field to edit your profile.").Show();
+                }
+                else
+                {
+                    await EditProfileAsync();
+                }
             }
             else
             {
                 await EditProfileAsync();
             }
+
         }
-#endregion
+        #endregion
 
         #region Methods
         private async Task EditProfileAsync()
         {
+            Address = $"{HouseFlatBlockNo}, {CityArea}, {State}, {Pincode}";
             var updatedData = new UserDataModel
             {
                 FirstName = FirstName,
                 LastName = LastName,
                 MobileNumber = PhoneNumber,
                 Image = UpdatedImage,
+                Address = Address
             };
 
             IsLoading = true;
@@ -245,6 +267,10 @@ namespace FoodNinja.ViewModel
                 LastName = string.Empty;
                 PhoneNumber = string.Empty;
                 UpdatedImage = string.Empty;
+                HouseFlatBlockNo = string.Empty;
+                CityArea = string.Empty;
+                State = string.Empty;
+                Pincode = string.Empty;
                 await Toast.Make("Profile edited successfully!").Show();
                 await Navigation.PopAsync();
             }
@@ -302,7 +328,6 @@ namespace FoodNinja.ViewModel
                 Console.WriteLine("Error wile picking image from gallery" + ex.Message);
             } 
         }
-
         private async Task<string>ConvertMemoryStreamToBase64(MemoryStream selectedImage)
         {
             await Task.Delay(1);
@@ -313,7 +338,6 @@ namespace FoodNinja.ViewModel
                 return Convert.ToBase64String(imageBytes);
             }
         }
-
         private string TurncatedFileName(string fileName, int maxLength)
         {
             if(fileName.Length <= maxLength)

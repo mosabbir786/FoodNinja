@@ -105,48 +105,11 @@ namespace FoodNinja.Services
             return false;
 #endif
         }
-        /*        public async Task<bool> CheckAndRequestCameraPermission()
-                {
-                    var cameraPermission = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                    var storagePermission = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-
-                    if(cameraPermission == PermissionStatus.Granted && storagePermission == PermissionStatus.Granted)
-                    {
-                        ResetDeniedCount();
-                        return true;
-                    }
-
-                   if(cameraPermission == PermissionStatus.Denied || storagePermission == PermissionStatus.Denied)
-                    {
-                        if(DeviceInfo.Platform == DevicePlatform.iOS)
-                        {
-                            await App.Current.MainPage.DisplayAlert("Permission Denied", "Please grant  from setting  to access photos", "OK");
-                        }
-                        IncrementDeniedCount();
-                        return false ;
-                    }
-
-                    var cameraRequestResult = await Permissions.RequestAsync<Permissions.Camera>();
-                    var storageRequestResult = await Permissions.RequestAsync<Permissions.StorageWrite>();
-
-                    if (cameraRequestResult == PermissionStatus.Granted && storageRequestResult == PermissionStatus.Granted)
-                    {
-                        ResetDeniedCount();
-                        return true;
-                    }
-                    else
-                    {
-                        IncrementDeniedCount();
-                        return false;
-                    }
-                }
-        */
-
-#if ANDROID
         public async Task<bool> CheckCameraPermission()
         {
             await Task.Delay(1);
-    
+#if ANDROID
+
             var currentActivity = Platform.CurrentActivity;
             if (currentActivity == null)
                 return false;
@@ -154,12 +117,19 @@ namespace FoodNinja.Services
             // Check if camera permission is granted
             var status = ContextCompat.CheckSelfPermission(currentActivity, Android.Manifest.Permission.Camera);
             return status == Permission.Granted;
-        }
+#else
+            return false;
+#endif
 
+#if IOS
+           var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+           return status == PermissionStatus.Granted;
+#endif
+        }
         public async Task<bool> RequestCameraPermission()
         {
             await Task.Delay(1);
-    
+#if ANDROID
             var currentActivity = Platform.CurrentActivity;
             if (currentActivity == null)
                 return false;
@@ -186,8 +156,26 @@ namespace FoodNinja.Services
                 return result; // Return the result of the permission request
             }
             return true; // Permission is already granted
-        }
+#else
+            return false;
 #endif
+
+#if IOS
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if(status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+
+                if (status != PermissionStatus.Granted)
+                {
+                    // Increment denied count if permission is not granted
+                    IncrementDeniedCount();
+                }
+            }
+            return status == PermissionStatus.Granted;
+#endif
+        }
+
 
 
         #region For Image Permission

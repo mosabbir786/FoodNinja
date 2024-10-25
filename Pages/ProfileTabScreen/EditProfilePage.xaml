@@ -38,132 +38,192 @@
 
     <ContentPage.Content>
         <ScrollView VerticalScrollBarVisibility="Never">
-            <Grid Padding="20,20,20,40" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*,*" ColumnSpacing="20">
-                <ImageButton
-                    Source="back.png"
-                    Margin="0,0,0,20"
-                    HorizontalOptions="Start"
-                    HeightRequest="50" WidthRequest="50"
-                    Command="{Binding BackCommand}"/>
-                <Label
-                    HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                    FontFamily="BentonBold"
-                    Text="Edit Profile"
-                    Grid.ColumnSpan="2"
-                    FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
-
-                <Label
-                    Grid.Row="1" Grid.Column="0"
-                    Text="First Name"
-                    Style="{StaticResource titleLabelStyle}"/>
-                <Border
-                    x:Name="firstNameBorder"
-                    Grid.Row="2" Grid.Column="0"
-                    Style="{StaticResource borderStyle}">
-                    <Entry
-                        Style="{StaticResource entryStyle}"
-                        x:Name="firstNameEntry"
-                        Placeholder="First Name"
-                        Text="{Binding FirstName}"
-                        Completed="firstNameEntry_Completed"/>
-                </Border>
-
-                <Label
-                    Grid.Row="1" Grid.Column="1"
-                    Text="Last Name"
-                    Style="{StaticResource titleLabelStyle}"/>
-                <Border
-                    x:Name="lastNameBorder"
-                    Grid.Row="2" Grid.Column="1"
-                    Style="{StaticResource borderStyle}">
-                    <Entry
-                        Style="{StaticResource entryStyle}"
-                        x:Name="lastNameEntry"
-                        Placeholder="Last Name"
-                        Text="{Binding LastName}"
-                        Completed="lastNameEntry_Completed"/>
-                </Border>
-
-                <Label
-                    Margin="5,10,0,5"
-                    Grid.Row="3" Grid.ColumnSpan="2"
-                    Text="Phone Number"
-                    Style="{StaticResource titleLabelStyle}"/>
-                <Border
-                    x:Name="phoneNumberBorder"
-                    Grid.Row="4" Grid.ColumnSpan="2"
-                    Style="{StaticResource borderStyle}">
-                    <Entry
-                        Style="{StaticResource entryStyle}"
-                        x:Name="phoneEntry"
-                        Placeholder="Phone Number"
-                        Keyboard="Numeric"
-                        MaxLength="10"
-                        Text="{Binding PhoneNumber}"
-                        Completed="phoneEntry_Completed"/>
-                </Border>
-
-                <Label
-                    Margin="5,20,0,5"
-                    Grid.Row="5" Grid.ColumnSpan="2"
-                    Text="Change Profile Picture"
-                    Style="{StaticResource titleLabelStyle}"/>
-                <Border
-                    IsVisible="{Binding BorderContentVisible}"
-                    x:Name="galleryBorder"
-                    Margin="0,0,0,10"
-                    Grid.Row="6" Grid.ColumnSpan="2"
-                    HorizontalOptions="Fill"
-                    Stroke="Transparent"
-                    BackgroundColor="#80252525"
-                    StrokeShape="RoundRectangle 15">
-                    <StackLayout Padding="20">
-                        <Image
-                            Source="gallery"
-                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
-
-                        <Label
-                            Margin="0,10,0,0"
-                            HorizontalOptions="Center"
-                            Text="From Gallery"
-                            TextColor="#FFFFFF"
-                            Style="{StaticResource titleLabelStyle}"/>
-                    </StackLayout>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="GalleryBorder_Tapped" Command="{Binding PickPhotoFromGalleryCommand}"/>
-                    </Border.GestureRecognizers>
-                </Border>
-
-                <Border
-                    IsVisible="True"
-                    Grid.Row="6" Grid.ColumnSpan="2"
-                    Style="{StaticResource borderStyle}">
-                    <HorizontalStackLayout Padding="10,0" Spacing="10">
-                        <Label
-                            FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
-                            Margin="0,0"
-                            FontFamily="BentonMedium"
-                            VerticalOptions="Center"
-                            Text="{Binding ImageFileName}"/>
-
+            <Grid>
+                <VerticalStackLayout Padding="20,10,20,10">
+                    <Grid>
                         <ImageButton
-                            BackgroundColor="Transparent"
-                            Source="cross"
-                            Padding="0"
-                            HeightRequest="20" WidthRequest="20"
-                            Command="{Binding RemoveGalleryImageCommand}"/>
-                    </HorizontalStackLayout>
-                    <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="True">
-                            <Setter Property="IsVisible" Value="False"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="False">
-                            <Setter Property="IsVisible" Value="True"/>
-                        </DataTrigger>
-                    </Border.Triggers>
-                </Border>
+                            Source="back.png"
+                            Margin="0,0,0,0"
+                            HorizontalOptions="Start"
+                            HeightRequest="50" WidthRequest="50"
+                            Command="{Binding BackCommand}"/>
+                        <Label
+                            Margin="0,0,0,10"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                            FontFamily="BentonBold"
+                            Text="Edit Profile"
+                            FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+                    </Grid>
 
-                <Label
+                    <!--#region Name and Phone Number Control -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="20" Margin="0,20,0,0">
+                        <Label
+                            Grid.Row="0" Grid.Column="0"
+                            Text="First Name"
+                            Style="{StaticResource titleLabelStyle}"/>
+                        <Border
+                            x:Name="firstNameBorder"
+                            Grid.Row="1" Grid.Column="0"
+                            Style="{StaticResource borderStyle}">
+                            <Entry
+                                Style="{StaticResource entryStyle}"
+                                x:Name="firstNameEntry"
+                                Placeholder="First Name"
+                                Text="{Binding FirstName}"
+                                Completed="firstNameEntry_Completed"/>
+                        </Border>
+
+                        <Label
+                            Grid.Row="0" Grid.Column="1"
+                            Text="Last Name"
+                            Style="{StaticResource titleLabelStyle}"/>
+                        <Border
+                            x:Name="lastNameBorder"
+                            Grid.Row="1" Grid.Column="1"
+                            Style="{StaticResource borderStyle}">
+                            <Entry
+                                Style="{StaticResource entryStyle}"
+                                x:Name="lastNameEntry"
+                                Placeholder="Last Name"
+                                Text="{Binding LastName}"
+                                Completed="lastNameEntry_Completed"/>
+                        </Border>
+                    </Grid>
+
+
+                    <Label
+                        Margin="5,10,0,5"
+                        Text="Phone Number"
+                        Style="{StaticResource titleLabelStyle}"/>
+                    <Border
+                         x:Name="phoneNumberBorder"
+                         Style="{StaticResource borderStyle}">
+                        <Entry
+                            Style="{StaticResource entryStyle}"
+                            x:Name="phoneEntry"
+                            Placeholder="Phone Number"
+                            Keyboard="Numeric"
+                            MaxLength="10"
+                            Text="{Binding PhoneNumber}"
+                            Completed="phoneEntry_Completed"/>
+                    </Border>
+                    <!--#endregion-->
+
+                    <!--#region Address Control-->
+                    <VerticalStackLayout>
+                        <Label
+                            IsVisible="{Binding AddressControlVisiblity}"
+                            Margin="5,10,0,5"
+                            Text="Address"
+                            Style="{StaticResource titleLabelStyle}"/>
+
+                        <Border IsVisible="{Binding AddressControlVisiblity}" x:Name="houseBorder" Margin="0,0,0,10" Style="{StaticResource borderStyle}">
+                            <Entry
+                                x:Name="houseEntry"
+                                Style="{StaticResource entryStyle}"
+                                Placeholder="House / Flat / Block No"
+                                Text="{Binding HouseFlatBlockNo}"
+                                Completed="houseEntry_Completed"/>
+                        </Border>
+
+                        <Border IsVisible="{Binding AddressControlVisiblity}" x:Name="cityBorder" Margin="0,0,0,10" Style="{StaticResource borderStyle}">
+                            <Entry
+                                x:Name="cityEntry"
+                                Style="{StaticResource entryStyle}"
+                                Placeholder="Area / City"
+                                Text="{Binding CityArea}"
+                                Completed="cityEntry_Completed"/>
+                        </Border>
+
+                        <Grid IsVisible="{Binding AddressControlVisiblity}"  ColumnDefinitions="Auto,Auto" ColumnSpacing="10">
+                            <Border x:Name="stateBorder" Padding="10,0" Grid.Column="0" Style="{StaticResource borderStyle}">
+                                <Entry
+                                    x:Name="stateEntry"
+                                    Style="{StaticResource entryStyle}"
+                                    Placeholder="State"
+                                    Text="{Binding State}"
+                                    Completed="stateEntry_Completed"/>
+                            </Border>
+
+                            <Border IsVisible="{Binding AddressControlVisiblity}" x:Name="pincodeBorder" Padding="10,0" Grid.Column="1" Style="{StaticResource borderStyle}">
+                                <Entry
+                                    x:Name="pincodeEntry"
+                                    Style="{StaticResource entryStyle}"
+                                    Placeholder="Pincode"
+                                    Text="{Binding Pincode}"
+                                    Keyboard="Numeric"
+                                    MaxLength="6"
+                                    Completed="pincodeEntry_Completed"/>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+
+                    <Label
+                        Margin="5,20,0,5"
+                        Text="Change Profile Picture"
+                        Style="{StaticResource titleLabelStyle}"/>
+
+                    <!--#region Media Picker and Camera  -->
+
+                    <Grid>
+                        <Border
+                        IsVisible="{Binding BorderContentVisible}"
+                        x:Name="galleryBorder"
+                        Margin="0,0,0,10"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        BackgroundColor="#80252525"
+                        StrokeShape="RoundRectangle 15">
+                            <StackLayout Padding="20">
+                                <Image
+                                Source="gallery"
+                                HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                                <Label
+                                Margin="0,10,0,0"
+                                HorizontalOptions="Center"
+                                Text="From Gallery"
+                                TextColor="#FFFFFF"
+                                Style="{StaticResource titleLabelStyle}"/>
+                            </StackLayout>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="GalleryBorder_Tapped" Command="{Binding PickPhotoFromGalleryCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                        <Border
+                        IsVisible="True"
+                        Style="{StaticResource borderStyle}">
+                            <HorizontalStackLayout Padding="10,0" Spacing="10">
+                                <Label
+                                FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
+                                Margin="0,0"
+                                FontFamily="BentonMedium"
+                                VerticalOptions="Center"
+                                Text="{Binding ImageFileName}"/>
+
+                                <ImageButton
+                                BackgroundColor="Transparent"
+                                Source="cross"
+                                Padding="0"
+                                HeightRequest="20" WidthRequest="20"
+                                Command="{Binding RemoveGalleryImageCommand}"/>
+                            </HorizontalStackLayout>
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border" Binding="{Binding BorderContentVisible}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+                    </Grid>
+
+                    <Label
                     Grid.Row="7" Grid.ColumnSpan="2"
                     Text="Or"
                     HorizontalOptions="Center"
@@ -171,88 +231,98 @@
                     FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
                     TextColor="{StaticResource primaryColor}"/>
 
+                    <Grid>
+                        <Border
+                         Margin="0,10,0,0"
+                         IsVisible="True"
+                         Style="{StaticResource borderStyle}">
+                            <HorizontalStackLayout Padding="10,0" Spacing="10">
+                                <Label
+                                FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
+                                Margin="0,0"
+                                FontFamily="BentonMedium"
+                                VerticalOptions="Center"
+                                Text="{Binding ImageFileName}"/>
 
-                <Border
-                    Margin="0,10,0,0"
-                    IsVisible="True"
-                    Grid.Row="8" Grid.ColumnSpan="2"
-                    Style="{StaticResource borderStyle}">
-                    <HorizontalStackLayout Padding="10,0" Spacing="10">
-                        <Label
-                            FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
-                            Margin="0,0"
-                            FontFamily="BentonMedium"
-                            VerticalOptions="Center"
-                            Text="{Binding ImageFileName}"/>
+                                <ImageButton
+                                 BackgroundColor="Transparent"
+                                 Source="cross"
+                                 Padding="0"
+                                 HeightRequest="20" WidthRequest="20"
+                                 Command="{Binding RemoveGalleryImageCommand}"/>
+                            </HorizontalStackLayout>
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+                        <Border
+                        IsVisible="{Binding CameraBorderContentVisible}"
+                        x:Name="cameraBorder"
+                        Margin="0,10,0,10"
+                        Grid.Row="8" Grid.ColumnSpan="2"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        BackgroundColor="#80252525"
+                        StrokeShape="RoundRectangle 15">
+                            <StackLayout Padding="20">
+                                <Image
+                                Source="camera"
+                                HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
 
-                        <ImageButton
-                            BackgroundColor="Transparent"
-                            Source="cross"
-                            Padding="0"
-                            HeightRequest="20" WidthRequest="20"
-                            Command="{Binding RemoveGalleryImageCommand}"/>
-                    </HorizontalStackLayout>
-                    <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="True">
-                            <Setter Property="IsVisible" Value="False"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Border" Binding="{Binding CameraBorderContentVisible}" Value="False">
-                            <Setter Property="IsVisible" Value="True"/>
-                        </DataTrigger>
-                    </Border.Triggers>
-                </Border>
-                <Border
-                    IsVisible="{Binding CameraBorderContentVisible}"
-                     x:Name="cameraBorder"
-                     Margin="0,10,0,10"
-                     Grid.Row="8" Grid.ColumnSpan="2"
-                     HorizontalOptions="Fill"
-                     Stroke="Transparent"
-                     BackgroundColor="#80252525"
-                     StrokeShape="RoundRectangle 15">
-                    <StackLayout Padding="20">
-                        <Image
-                            Source="camera"
-                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+                                <Label
+                                Margin="0,10,0,0"
+                                HorizontalOptions="Center"
+                                Text="From Gallery"
+                                TextColor="#FFFFFF"
+                                Style="{StaticResource titleLabelStyle}"/>
+                            </StackLayout>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="CameraBorder_Tapped" Command="{Binding CapturePhotoFromCameraCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </Grid>
 
-                        <Label
-                            Margin="0,10,0,0"
-                            HorizontalOptions="Center"
-                            Text="From Gallery"
-                            TextColor="#FFFFFF"
-                            Style="{StaticResource titleLabelStyle}"/>
-                    </StackLayout>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="CameraBorder_Tapped" Command="{Binding CapturePhotoFromCameraCommand}"/>
-                    </Border.GestureRecognizers>
-                </Border>
+                    <!--#endregion-->
 
-                <Button
-                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
-                    FontFamily="BentonBold"
-                    TextColor="#FFFFFF"
-                    Text="Edit"
-                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
-                    CornerRadius="15"
-                    BorderColor="Transparent"
-                    BackgroundColor="{StaticResource primaryColor}"
-                    VerticalOptions="End"
-                    Grid.RowSpan="10" Grid.ColumnSpan="2"
-                    Command="{Binding EditCommand}"/>
+                    <Button
+                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                        FontFamily="BentonBold"
+                        TextColor="#FFFFFF"
+                        Text="Edit"
+                        HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                        CornerRadius="15"
+                        BorderColor="Transparent"
+                        BackgroundColor="{StaticResource primaryColor}"
+                        VerticalOptions="End"
+                        Command="{Binding EditCommand}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding AddressAvailable}" Value="True">
+                                <Setter Property="Margin" Value="0,140,0,0"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding AddressAvailable}" Value="False">
+                                <Setter Property="Margin" Value="0,15,0,0"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    
+                </VerticalStackLayout>
 
                 <skia:SKLottieView
-                    Grid.RowSpan="10" Grid.ColumnSpan="2"
-                    IsVisible="{Binding IsLoading}"
-                    IsAnimationEnabled="{Binding IsLoading}"
-                    x:Name="loader"
-                    RepeatCount="-1"
-                    RepeatMode="Reverse"
-                    Source="foodyellow.json"
-                    Margin="0,-80,0,0"
-                    HorizontalOptions="Center" VerticalOptions="Center"
-                    HeightRequest="100" WidthRequest="100"/>
+                     IsVisible="{Binding IsLoading}"
+                     IsAnimationEnabled="{Binding IsLoading}"
+                     x:Name="loader"
+                     RepeatCount="-1"
+                     RepeatMode="Reverse"
+                     Source="foodyellow.json"
+                     Margin="0,-80,0,0"
+                     HorizontalOptions="Center" VerticalOptions="Center"
+                     HeightRequest="100" WidthRequest="100"/>
             </Grid>
-
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

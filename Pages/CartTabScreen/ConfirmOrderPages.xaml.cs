@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using FoodNinja.Model;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
@@ -111,8 +112,20 @@ public partial class ConfirmOrderPages : ContentPage
         });
         if (BindingContext is ConfirmOrderViewModel viewModel)
         {
-            await viewModel.UpdateUserAddress();
-            await simpleBottomSheet.CloseBottomSheet();
+            bool isEmpty = string.IsNullOrEmpty(viewModel.HouseFlatBlockNo) &&
+                           string.IsNullOrEmpty(viewModel.CityArea) &&
+                           string.IsNullOrEmpty(viewModel.State) &&
+                           string.IsNullOrEmpty(viewModel.Pincode);
+            if(isEmpty)
+            {
+                await Toast.Make("Please fill in at least one field to edit your profile.").Show();
+                return;
+            }
+            else
+            {
+                await viewModel.UpdateUserAddress();
+                await simpleBottomSheet.CloseBottomSheet();
+            }
         }
     }
 
