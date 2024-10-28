@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               x:Class="FoodNinja.Pages.Popups.ShowExitConfirmationPopup"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+               Color="Transparent">
+    <Border
+        Stroke="#53E88B"
+        StrokeThickness="0.7"
+        Padding="10"
+        BackgroundColor="Black"
+        StrokeShape="RoundRectangle 15"
+        HeightRequest="{markups:OnScreenSize Large='240',Medium='238',Small='236'}"
+        WidthRequest="{markups:OnScreenSize Large='280',Medium='275',Small='270'}">
+        <VerticalStackLayout>
+            <Image
+                Source="mainlogo"
+                VerticalOptions="Start"
+                HeightRequest="{markups:OnScreenSize Large='70',Medium='68',Small='67'}"/>
+            <Label
+                LineHeight="1"
+                Margin="20,10"
+                Text="Are you sure you want to close the app?"
+                TextColor="#53E88B"
+                FontFamily="BentonBold"
+                HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+            <Grid ColumnDefinitions="*,*" VerticalOptions="End" ColumnSpacing="10" Margin="0,20,0,0">
+                <Button
+                    Text="Exit"
+                    TextColor="#FFFFFF"
+                    BackgroundColor="#53E88B"
+                    FontFamily="BentonBold"
+                    CornerRadius="15"
+                    FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                    Clicked="Exit_Button_Clicked"/>
+                <Button
+                    Text="Cancel"
+                    TextColor="#FFFFFF"
+                    BackgroundColor="#FEAD1D"
+                    FontFamily="BentonBold"
+                    FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                    CornerRadius="15"
+                    Grid.Column="1"
+                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                    Clicked="Cancel_Button_Clicked"/>
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

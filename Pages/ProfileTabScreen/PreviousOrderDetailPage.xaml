@@ -5,6 +5,7 @@
              Title="PreviousOrderDetailPage"
              BackgroundColor="Black"
              NavigationPage.HasNavigationBar="False"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:converter="clr-namespace:FoodNinja.Converter"
              xmlns:shimmer="clr-namespace:FoodNinja.Custom"
              xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
@@ -167,7 +168,6 @@
                         FontFamily="BentonRegular"
                         CancelButtonColor="#FFFFFF"
                         TextColor="#FFFFFF"
-                        Focused="firstSearchbar_Focused"
                         Unfocused="firstSearchbar_Unfocused"
                         SearchButtonPressed="firstSearchbar_SearchButtonPressed"
                         TextChanged="firstSearchbar_TextChanged"/>
@@ -175,6 +175,7 @@
 
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0">
                     <CollectionView
+                        x:Name="previousOrderCollection"
                         VerticalScrollBarVisibility="Never"
                         HorizontalOptions="Fill"
                         ItemsSource="{Binding AllOrderList}">
@@ -200,10 +201,11 @@
                                             HeightRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}"
                                             WidthRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}">
                                             <Image
+                                                x:Name="foodImage"
                                                 Aspect="AspectFill"
                                                 Source="{Binding FoodImage, Converter={StaticResource Base64ToImageSourceConverter}}"/>
                                         </Border>
-
+                                        
                                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                             <Label
                                                 Text="{Binding FoodName}"
@@ -224,10 +226,26 @@
                                                 TextColor="{StaticResource primaryColor}"
                                                 FontFamily="BentonBold"
                                                 FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
-                                                VerticalOptions="Start" HorizontalOptions="Start"/>
+                                                VerticalOptions="Start" HorizontalOptions="Start">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Complete">
+                                                        <Setter Property="TextColor" Value="LightGray"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Rider Assign">
+                                                        <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Preparing">
+                                                        <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Processing">
+                                                        <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                         </VerticalStackLayout>
-
+                                        
                                         <Border 
+                                            x:Name="orderStatusBorder"
                                             VerticalOptions="Center"
                                             StrokeShape="RoundRectangle 30"
                                             BackgroundColor="{StaticResource primaryColor}"
@@ -240,9 +258,31 @@
                                                 FontFamily="BentonMedium"
                                                 VerticalOptions="Center" HorizontalOptions="Center"
                                                 Text="{Binding OrderStatus}"/>
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Complete">
+                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Rider Assign">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Preparing">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Processing">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                            </Border.Triggers>
                                         </Border>
-
                                     </Grid>
+                                    <Border.Behaviors>
+                                        <toolkit:TouchBehavior
+                                            Command="{Binding BindingContext.DeleteOrderCommand, Source={x:Reference Name=previousOrderCollection}}"
+                                            CommandParameter="{Binding .}"
+                                            LongPressDuration="2000"
+                                            DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                                            PressedOpacity="0.5"
+                                            PressedScale="0.8"/>
+                                    </Border.Behaviors>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -250,8 +290,8 @@
                 </StackLayout>
             </Grid>
             <skia:SKLottieView
-                IsVisible="{Binding NoPreviousOrderAnimation}"
-                IsAnimationEnabled="{Binding NoPreviousOrderAnimation}"
+                IsVisible="{Binding NoData}"
+                IsAnimationEnabled="{Binding NoData}"
                 RepeatCount="-1"
                 RepeatMode="Reverse"
                 Source="nodata.json"

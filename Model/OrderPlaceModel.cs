@@ -11,7 +11,6 @@ namespace FoodNinja.Model
         public int OrderId { get; set; }
         public string? UserId { get; set; }
         public int CartId { get; set; }
-
         public string UserName { get; set; }
         public string? RestaurantName { get; set; }
         public int RestaurantId { get; set; }
@@ -38,5 +37,4 @@ namespace FoodNinja.Model
         public PaymentModel UserPaymentMethod { get; set; }
         public DateTime TimeStamp { get; set; }
     }
-
 }

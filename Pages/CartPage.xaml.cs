@@ -1,5 +1,6 @@
 using AlohaKit.Animations;
 using CommunityToolkit.Maui.Views;
+using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
 using Microsoft.Maui.Controls;
@@ -21,7 +22,14 @@ public partial class CartPage : ContentPage
         firebaseManager = new FirebaseManager();
         this.BindingContext = new CartViewModel(Navigation, firebaseManager);
     }
-
+    protected override bool OnBackButtonPressed()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            await this.ShowPopupAsync(new ShowExitConfirmationPopup());
+        });
+        return true;
+    }
     private void OnPanUpdated(object? sender, PanUpdatedEventArgs e)
     {
         if (_isAnimating || sender is not Grid grid) return; 
@@ -137,13 +145,5 @@ public partial class CartPage : ContentPage
             await viewModel.GetCartdata();
         }
         Preferences.Remove("SourcePage");
-    }
-    protected override bool OnBackButtonPressed()
-    {
-        Dispatcher.Dispatch(async () =>
-        {
-            //await this.ShowPopupAsync(new ShowExitConfirmationPopup());
-        });
-        return true;
     }
 }

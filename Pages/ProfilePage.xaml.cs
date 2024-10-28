@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
+using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
 using FoodNinja.Views;
@@ -22,6 +23,14 @@ public partial class ProfilePage : ContentPage
         editAddressBottomSheet.BottomSheetClosed += OnBottomSheetClosed;
 	}
 
+    protected override bool OnBackButtonPressed()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            await this.ShowPopupAsync(new ShowExitConfirmationPopup());
+        });
+        return true;
+    }
     private async void OnBottomSheetClosed(object? sender, EventArgs e)
     {
         await Toast.Make("Addreess Updated").Show();

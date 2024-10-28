@@ -16,19 +16,41 @@ public partial class PreviousOrderDetailPage : ContentPage
 		this.BindingContext = new OrderDetailsViewModel(Navigation,firebaseManager);
 	}
 
-    private void firstSearchbar_Focused(object sender, FocusEventArgs e)
-    {
-
-    }
-
     private void firstSearchbar_Unfocused(object sender, FocusEventArgs e)
     {
-
+        firstSearchbar.Unfocus();
     }
 
     private void firstSearchbar_SearchButtonPressed(object sender, EventArgs e)
     {
+        PerformSearch(firstSearchbar.Text);
+    }
 
+    private async void PerformSearch(string searchText)
+    {
+        var container = BindingContext as OrderDetailsViewModel;
+        if (container != null && container.AllOrderList != null)
+        {
+            var originalList = container.AllOrderList.ToList();
+            if(string.IsNullOrEmpty(searchText))
+            {
+                var filteredPreviousOrderList = originalList
+                   .Where(s => !string.IsNullOrEmpty(s.RestaurantName) &&
+                   s.RestaurantName.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
+                   .ToList();
+            }
+            else
+            {
+                await MainThread.InvokeOnMainThreadAsync(async() =>
+                {
+                    await Toast.Make("No previous order found with this restaurant").Show();
+
+                });
+                previousOrderCollection.ItemsSource = container.AllOrderList;
+                firstSearchbar.Text = string.Empty;
+                firstSearchbar.Unfocus();
+            }
+        }
     }
 
     private async void firstSearchbar_TextChanged(object sender, TextChangedEventArgs e)
@@ -36,20 +58,34 @@ public partial class PreviousOrderDetailPage : ContentPage
         var container = BindingContext as OrderDetailsViewModel;
         if (container != null && container.AllOrderList != null)
         {
-            if(!string.IsNullOrEmpty(e.NewTextValue))
+            var originalList = container.AllOrderList.ToList();
+            if(string.IsNullOrEmpty(e.NewTextValue))
             {
-                var filteredPrevoiusOrderList = container.AllOrderList.Where(s => !string.IsNullOrEmpty(s.RestaurantName) && s.RestaurantName.StartsWith(e.NewTextValue, StringComparison.OrdinalIgnoreCase)).ToList();
-                container.AllOrderList = new ObservableCollection<OrderPlacedModel>(filteredPrevoiusOrderList); 
+                var filteredPreviousOrderList = originalList
+                    .Where(s => !string.IsNullOrEmpty(s.RestaurantName) &&
+                    s.RestaurantName.StartsWith(e.NewTextValue, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                container.AllOrderList = new ObservableCollection<OrderPlacedModel>(filteredPreviousOrderList);
+                if(filteredPreviousOrderList.Any())
+                {
+                    container.AllOrderList = new ObservableCollection<OrderPlacedModel>(filteredPreviousOrderList);
+                }
+                else
+                {
+                    await Toast.Make("No previous order found with this restaurant").Show();
+                    container.AllOrderList = new ObservableCollection<OrderPlacedModel>(originalList);
+                }
             }
             else
             {
-                await Toast.Make("No Oorder Found").Show();
-                if (string.IsNullOrEmpty(e.NewTextValue))
-                {
-                    firstSearchbar?.Unfocus();
-                    
-                }
+                await Toast.Make("No previous order found with this restaurant").Show();
+                container.AllOrderList = new ObservableCollection<OrderPlacedModel>(originalList);
             }
+        }
+        else
+        {
+            previousOrderCollection.ItemsSource = container.AllOrderList;
         }
     }
 }

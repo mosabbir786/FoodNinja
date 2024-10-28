@@ -1,5 +1,7 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using FoodNinja.Model;
+using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
@@ -21,7 +23,7 @@ public partial class HomePage : ContentPage
     {
         Dispatcher.Dispatch(async () =>
         {
-            
+            await this.ShowPopupAsync(new ShowExitConfirmationPopup());
         });
         return true;
     }

@@ -4,11 +4,13 @@ using Firebase.Database;
 using Firebase.Database.Query;
 using FoodNinja.Model;
 using FoodNinja.Pages;
+using Microsoft.Maui.Controls.Internals;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -763,7 +765,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<bool> EditUserProfile(string userId, UserDataModel updatedData)
         {
             try
@@ -819,33 +820,53 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
-        public async Task<List<OrderPlacedModel>> GetAllPlacedOrderAsync(string userId)
+        public async Task<ObservableCollection<OrderPlacedModel>> GetAllPlacedOrderAsync(string userId)
         {
             try
             {
-                var orders = new List<OrderPlacedModel>();
+                var orders = new ObservableCollection<OrderPlacedModel>();
 
                 var userOrders = await firebaseClient
                     .Child("PlacedOrder")
                     .Child(userId)
                     .OnceAsync<OrderPlacedModel>();
 
-                foreach(var orderEntry in userOrders)
+                foreach (var orderEntry in userOrders)
                 {
                     var orderDetails = await firebaseClient
                         .Child("PlacedOrder")
                         .Child(userId)
                         .Child(orderEntry.Key)
                         .OnceAsync<OrderPlacedModel>();
-                    orders.AddRange(orderDetails.Select(o => o.Object));
+                    //orders.AddRange(orderDetails.Select(o => o.Object));
+                    foreach (var detail in orderDetails)
+                    {
+                        orders.Add(detail.Object);
+                    }
                 }
                 return orders;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error while fetching all placed order detail." + ex.Message);
-                return new List<OrderPlacedModel>();
+                return new ObservableCollection<OrderPlacedModel>();
+            }
+        }
+        public async Task<bool> DeletePlacedOrderByIdAsync(string userId, int orderId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("PlacedOrder")
+                    .Child(userId)
+                    .Child(orderId.ToString())
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting placed order." + ex.Message);
+                return false;
             }
         }
         public async Task LogoutAsync()
