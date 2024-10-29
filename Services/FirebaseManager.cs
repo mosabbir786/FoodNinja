@@ -465,38 +465,6 @@ namespace FoodNinja.Services
                 return null;
             }
         }
-        public async Task UpdateUserAddressAysnc(string userId, string newAddress)
-        {
-            try
-            {
-                Console.WriteLine($"Updating address for user: {userId} to {newAddress}");
-
-                var userChildren = await firebaseClient
-                    .Child("UserData")
-                    .Child(userId)
-                    .OnceAsync<UserDataModel>();
-                var userNode = userChildren.FirstOrDefault();
-                if (userNode != null)
-                {
-                    var thirdChildKey = userNode.Key;
-                    Console.WriteLine($"Third child key: {thirdChildKey}");
-
-                    var updates = new Dictionary<string, object>
-                    {
-                        { "Address", newAddress }
-                    };
-                    await firebaseClient
-                        .Child("UserData")
-                        .Child(userId)
-                        .Child(thirdChildKey)
-                        .PatchAsync(updates);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error while updating user address" + ex.Message);
-            }
-        }
         public async Task<bool> IsDifferentRestaurantPresentAsync(string userId, int restaurantId)
         {
             try
@@ -720,12 +688,16 @@ namespace FoodNinja.Services
                 var userNode = userReference.FirstOrDefault();
                 if(userNode != null)
                 {
-                    await firebaseClient
+                    var userNodeRef = firebaseClient
                         .Child("UserData")
                         .Child(userId)
-                        .Child(userNode.Key)
-                        .Child("Address")
-                        .DeleteAsync();
+                        .Child(userNode.Key);
+
+                    await userNodeRef.Child("Address").DeleteAsync();
+                    await userNodeRef.Child("HouseOrFlatOrBlockName").DeleteAsync();
+                    await userNodeRef.Child("AreaOrCity").DeleteAsync();
+                    await userNodeRef.Child("State").DeleteAsync();
+                    await userNodeRef.Child("Pincode").DeleteAsync();
                 }
                 return true;
             }
@@ -735,7 +707,7 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-        public async Task<bool> EditAddressAsync(string userId, string newAddress)
+        public async Task<bool> EditAddressAsync(string userId,string houseOrFlatOrBlockName, string areaOrCity, string state, string pincode)
         {
             try
             {
@@ -751,7 +723,13 @@ namespace FoodNinja.Services
                         .Child("UserData")
                         .Child(userId)
                         .Child(userNode.Key)
-                        .PatchAsync( new { Address = newAddress });
+                        .PatchAsync( new
+                        { 
+                            HouseOrFlatOrBlockName = houseOrFlatOrBlockName,
+                            AreaOrCity = areaOrCity,
+                            State = state,
+                            Pincode = pincode
+                        });
                     return true;
                 }
                 else
@@ -792,14 +770,23 @@ namespace FoodNinja.Services
                     if (!string.IsNullOrEmpty(updatedData.MobileNumber))
                         updates["MobileNumber"] = updatedData.MobileNumber;
 
-                    if (!string.IsNullOrEmpty(updatedData.Address))
+                  /*  if (!string.IsNullOrEmpty(updatedData.Address))
                         updates["Address"] = updatedData.Address;
-
+*/
                     if (!string.IsNullOrEmpty(updatedData.Image))
                         updates["Image"] = updatedData.Image;
 
-                    if (!string.IsNullOrEmpty(updatedData.Address))
-                        updates["Address"] = updatedData.Address;
+                    if (!string.IsNullOrEmpty(updatedData.HouseOrFlatOrBlockName))
+                        updates["HouseOrFlatOrBlockName"] = updatedData.HouseOrFlatOrBlockName;
+
+                    if (!string.IsNullOrEmpty(updatedData.AreaOrCity))
+                        updates["AreaOrCity"] = updatedData.AreaOrCity;
+
+                    if (!string.IsNullOrEmpty(updatedData.State))
+                        updates["State"] = updatedData.State;
+
+                    if (!string.IsNullOrEmpty(updatedData.Pincode))
+                        updates["Pincode"] = updatedData.Pincode;
 
                     await firebaseClient
                         .Child("UserData")

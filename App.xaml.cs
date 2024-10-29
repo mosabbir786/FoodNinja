@@ -23,28 +23,7 @@ namespace FoodNinja
                  MainPage = new NavigationPage(new SplashScreen());
             }
             DependencyService.Register<RestaurantService>();
-
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         }
-
-        //For UI Thread Exceptions
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var exception = e.ExceptionObject as Exception;
-            if(exception != null)
-            {
-                SentrySdk.CaptureException(exception);
-            }
-        }
-
-        //For Non-UI Thread Exceptions
-        private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-        {
-            e.SetObserved();
-            SentrySdk.CaptureException(e.Exception);
-        }
-
         protected override void OnStart()
         {
             base.OnStart();

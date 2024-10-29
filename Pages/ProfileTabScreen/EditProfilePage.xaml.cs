@@ -20,6 +20,10 @@ public partial class EditProfilePage : ContentPage
     {
         base.OnAppearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
+        if(BindingContext is  EditProfileViewModel viewModel)
+        {
+            await viewModel.FetchUserDataAsync();
+        }
     }
 
     protected override void OnDisappearing()

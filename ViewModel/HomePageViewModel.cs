@@ -50,6 +50,9 @@ namespace FoodNinja.ViewModel
         private bool isViewMoreLbl1;
 
         [ObservableProperty]
+        private bool isLoadingForCart;
+
+        [ObservableProperty]
         private ObservableCollection<NearestRestaurantModel> restaurantList = new ObservableCollection<NearestRestaurantModel>();
 
         [ObservableProperty]
@@ -143,7 +146,9 @@ namespace FoodNinja.ViewModel
                     RestaurantLong = selectedFood.RestaurantLong,
 
                 };
+                IsLoadingForCart = true;
                 var response = await firebaseManager.AddFoodToCartFromPopularMenuAsync(addFoodToCart);
+                IsLoadingForCart = false;
                 if (response)
                 {
                     await Toast.Make("Food added to cart").Show();

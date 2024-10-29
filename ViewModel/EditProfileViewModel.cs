@@ -8,6 +8,7 @@ using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -82,6 +83,9 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string address;
+
+        [ObservableProperty]
+        private UserDataModel userData;
         #endregion
 
         #region Constructor
@@ -246,16 +250,34 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Methods
+        public async Task FetchUserDataAsync()
+        {
+            var response = await firebaseManager.GetUserDataAsync(UserId);
+            if (response != null)
+            {
+                UserData = response;
+                FirstName = UserData.FirstName;
+                LastName =  UserData.LastName;
+                PhoneNumber = UserData.MobileNumber;
+                HouseFlatBlockNo = UserData.HouseOrFlatOrBlockName;
+                CityArea = UserData.AreaOrCity;
+                State = UserData.State;
+                Pincode = UserData.Pincode;
+                Address = $"{UserData.HouseOrFlatOrBlockName}, {UserData.AreaOrCity}, {UserData.State}, {UserData.Pincode}";
+            }
+        }
         private async Task EditProfileAsync()
         {
-            Address = $"{HouseFlatBlockNo}, {CityArea}, {State}, {Pincode}";
             var updatedData = new UserDataModel
             {
                 FirstName = FirstName,
                 LastName = LastName,
                 MobileNumber = PhoneNumber,
                 Image = UpdatedImage,
-                Address = Address
+                HouseOrFlatOrBlockName = HouseFlatBlockNo,
+                AreaOrCity = CityArea,
+                State = State,
+                Pincode = Pincode,
             };
 
             IsLoading = true;

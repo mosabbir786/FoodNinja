@@ -38,6 +38,10 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -57,8 +61,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
-		<PackageReference Include="Sentry.Extensions.Logging" Version="4.12.1" />
-		<PackageReference Include="Sentry.Maui" Version="4.12.1" />
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="26.2.14" />
 		<PackageReference Include="Syncfusion.Maui.Maps" Version="27.1.50" />
@@ -147,9 +149,11 @@
 	  <None Remove="Resources\Images\splash.png" />
 	  <None Remove="Resources\Images\tickcomplete.png" />
 	  <None Remove="Resources\Images\visa.png" />
+	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />
+	  <None Remove="Resources\Raw\nocart.json" />
 	  <None Remove="Resources\raw\nodata.json" />
 	</ItemGroup>
 

@@ -112,7 +112,10 @@ namespace FoodNinja.ViewModel
                 LastName = LastName,
                 MobileNumber = MobileNumber,
                 Image = FinalImage,
-                Address = Address,
+                HouseOrFlatOrBlockName = HouseFlatBlockNo,
+                AreaOrCity = CityArea,
+                State = State,
+                Pincode = Pincode,
                 Latitude = Latitude,
                 Longitude = Longitude,
                //PaymentMethod = new ObservableCollection<PaymentModel>()

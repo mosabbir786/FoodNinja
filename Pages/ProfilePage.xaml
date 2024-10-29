@@ -248,7 +248,7 @@
                                                     Grid.Row="1" Grid.ColumnSpan="3"
                                                     Margin="22,5,22,0"
                                                     FontSize="{markups:OnScreenSize Large='14',Medium='10',Small='8'}"
-                                                    Text="{Binding UserData.Address}"
+                                                    Text="{Binding Address}"
                                                     FontFamily="BentonMedium"
                                                     LineHeight="1.4"/>
 
@@ -278,6 +278,7 @@
                                 </Border>
 
                                 <Button
+                                    ContentLayout="Left, 5"
                                     HorizontalOptions="Start"
                                     FontFamily="BentonMedium"
                                     TextColor="#FFFFFF"
@@ -286,6 +287,7 @@
                                     Text="Logout"
                                     CornerRadius="10"
                                     HeightRequest="{markups:OnScreenSize Large='41',Medium='39',Small='37'}"
+                                    WidthRequest="{markups:OnScreenSize Large='105',Medium='103',Small='101'}"
                                     FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
                                     BackgroundColor="#30FEAD1D"
                                     Command="{Binding LogoutCommand}"/>
@@ -326,7 +328,7 @@
                                     x:Name="houseEntry"
                                     Style="{StaticResource entryStyle}"
                                     Placeholder="House / Flat / Block No"
-                                    Text="{Binding HouseFlatBlockNo}"
+                                    Text="{Binding HouseOrFlatOrBlockName}"
                                     Completed="houseEntry_Completed"/>
                             </Border>
 
@@ -335,7 +337,7 @@
                                     x:Name="cityEntry"
                                     Style="{StaticResource entryStyle}"
                                     Placeholder="Area / City"
-                                    Text="{Binding CityArea}"
+                                    Text="{Binding AreaOrCity}"
                                     Completed="cityEntry_Completed"/>
                             </Border>
 

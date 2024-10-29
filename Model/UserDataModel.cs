@@ -16,9 +16,11 @@ namespace FoodNinja.Model
         public string LastName { get; set; }
         public string MobileNumber { get; set; }
         public Dictionary<int, PaymentModel> PaymentMethod { get; set; } = new Dictionary<int, PaymentModel>();
-      //  public ObservableCollection<PaymentModel> PaymentMethod { get; set; } = new ObservableCollection<PaymentModel>();
         public string Image { get; set; }
-        public string Address { get; set; }
+        public string HouseOrFlatOrBlockName { get; set; }
+        public string AreaOrCity { get; set; }
+        public string State { get; set; }
+        public string Pincode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
     }

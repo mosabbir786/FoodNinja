@@ -49,15 +49,6 @@ namespace FoodNinja
 #elif IOS
                     handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.iOS.CustomMapHandler>();
 #endif
-                })
-               .UseSentry(options =>
-                {
-
-                    options.Dsn = "https://8012c0e3a24b327a69752eb8d97e94d0@o4508200323186688.ingest.us.sentry.io/4508200325349376";
-                    options.MaxBreadcrumbs = 1000;
-                    options.AttachScreenshot = true;
-                    options.Debug = true;
-                    options.TracesSampleRate = 1.0;
                 });
 
 

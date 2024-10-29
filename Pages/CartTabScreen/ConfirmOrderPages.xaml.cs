@@ -125,10 +125,14 @@ public partial class ConfirmOrderPages : ContentPage
             {
                 await viewModel.UpdateUserAddress();
                 await simpleBottomSheet.CloseBottomSheet();
+                await viewModel.FetchUserDataAsync();
+                viewModel.HouseFlatBlockNo = string.Empty;
+                viewModel.CityArea = string.Empty;
+                viewModel.State = string.Empty;
+                viewModel.Pincode = string.Empty;
             }
         }
     }
-
     private async void AddMorePayment_Tapped(object sender, TappedEventArgs e)
     {
         if (sender is Border border)
@@ -155,5 +159,26 @@ public partial class ConfirmOrderPages : ContentPage
             border.Opacity = i;
             await Task.Delay(20);
         }
+    }
+
+    private async void addAddressBtn_Clicked(object sender, EventArgs e)
+    {
+        var tasks = new List<Task>
+        {
+            addAddressBtn.ScaleTo(0.8, 100, Easing.CubicInOut),
+            location.ScaleTo(0.8, 100, Easing.CubicInOut),
+            address.ScaleTo(0.8, 100, Easing.CubicInOut),
+        };
+
+        await Task.WhenAll(tasks);
+
+        tasks = new List<Task>
+        {
+            addAddressBtn.ScaleTo(1, 100, Easing.CubicInOut),
+            location.ScaleTo(1, 100, Easing.CubicInOut),
+            addAddressBtn.ScaleTo(1, 100, Easing.CubicInOut),
+        };
+
+        await simpleBottomSheet.OpenBottomSheet();
     }
 }

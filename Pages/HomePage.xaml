@@ -50,6 +50,8 @@
     <ContentPage.Content>
         <ScrollView VerticalScrollBarVisibility="Never">
             <Grid RowDefinitions="*" Margin="0">
+
+                <!--#region Shimmer Effect Code -->
                 <Grid IsVisible="{Binding IsLoading}" Margin="20,10,20,60" RowSpacing="15" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*,Auto">
                     <customLoadingShimmer:BoxSkiletonView
                             Grid.Row="0" Grid.Column="0"
@@ -185,6 +187,7 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </Grid>
+                <!--#endregion-->
 
                 <VerticalStackLayout Margin="20,10,20,0" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
                     <Grid Margin="0,0,0,15" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
@@ -475,6 +478,15 @@
                         </VisualElement.Behaviors>-->
                     </StackLayout>
                 </VerticalStackLayout>
+
+                <skia:SKLottieView
+                    IsVisible="{Binding IsLoadingForCart}"
+                    IsAnimationEnabled="{Binding IsLoadingForCart}"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="foodyellow.json"
+                    HeightRequest="100" WidthRequest="100"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>

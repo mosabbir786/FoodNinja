@@ -67,6 +67,9 @@ namespace FoodNinja.ViewModel
         private string newAddress;
 
         [ObservableProperty]
+        private string address;
+
+        [ObservableProperty]
         private ObservableCollection<AddFoodToCart> orderFoodItem = new ObservableCollection<AddFoodToCart>();
 
         [ObservableProperty]
@@ -78,6 +81,15 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string returnFromPage;
+
+        [ObservableProperty]
+        private bool addressControlVisiblity;
+
+        [ObservableProperty]
+        private bool addAddressBtnVisiblity;
+
+        [ObservableProperty]
+        private string addOrEditBtnText;
         public ICommand PaymentMethodSelectedCommand { get; }
 
         #endregion
@@ -103,18 +115,40 @@ namespace FoodNinja.ViewModel
             if (response != null)
             {
                 UserData = response;
+                HouseFlatBlockNo = UserData.HouseOrFlatOrBlockName;
+                CityArea = UserData.AreaOrCity;
+                State = UserData.State;
+                Pincode = UserData.Pincode;
+                Address = $"{UserData.HouseOrFlatOrBlockName}, {UserData.AreaOrCity}, {UserData.State}, {UserData.Pincode}";
+                bool isAddressEmpty = string.IsNullOrEmpty(UserData.HouseOrFlatOrBlockName) &&
+                                      string.IsNullOrEmpty(UserData.AreaOrCity) &&
+                                      string.IsNullOrEmpty(UserData.State) &&
+                                      string.IsNullOrEmpty(UserData.Pincode);
+                if(isAddressEmpty)
+                {
+                    Address = null;
+                    AddressControlVisiblity = false;
+                    AddAddressBtnVisiblity = true;
+                    AddOrEditBtnText = "Add Address";
+                }
+                else
+                {
+                    AddressControlVisiblity = true;
+                    AddAddressBtnVisiblity = false;
+                    AddOrEditBtnText = "Edit Address";
+                }
+                                         
                 PaymentMethodList = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
             }
         }
         public async Task UpdateUserAddress()
         {
-            NewAddress = $"{HouseFlatBlockNo}, {CityArea}, {State}, {Pincode}";
             UserId = Preferences.Get("LocalId", string.Empty);
-            await firebaseManager.UpdateUserAddressAysnc(UserId, NewAddress);
-            await FetchUserDataAsync();
+            bool isAddressEdited = await firebaseManager.EditAddressAsync(UserId, HouseFlatBlockNo, CityArea, State, Pincode);
         }
         private async Task OnPaymentMethodSelectedAsync(PaymentModel selectedPaymentMethod)
         {
+            await Task.Delay(1);
             if (selectedPaymentMethod == null)
             {
                 return;
@@ -135,6 +169,7 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task CodSelected()
         {
+            await Task.Delay(1);
             PaymentModel.DeselectCurrentPayment();
             CodBorderColor = Color.FromArgb("#53E88B");
             PaymentMethodSelected = true;
@@ -150,7 +185,10 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PlacedOrder()
         {
-
+            bool isAddressEmpty = string.IsNullOrEmpty(UserData.HouseOrFlatOrBlockName) &&
+                                  string.IsNullOrEmpty(UserData.AreaOrCity) &&
+                                  string.IsNullOrEmpty(UserData.State) &&
+                                  string.IsNullOrEmpty(UserData.Pincode);
             if (!PaymentMethodSelected)
             {
                 if (ReturnFromPage == "SuccessfullOrderPlacedPage")
@@ -167,9 +205,14 @@ namespace FoodNinja.ViewModel
                 await Toast.Make("Order has already been placed.").Show();
                 return;
             }
-            if (!PaymentMethodSelected || string.IsNullOrWhiteSpace(UserData?.Address))
+            if (!PaymentMethodSelected)
             {
                 await Toast.Make("Please select at least one payment method").Show();
+                return;
+            }
+            else if(isAddressEmpty)
+            {
+                await Toast.Make("Please add address to place order.").Show();
                 return;
             }
             else
@@ -201,7 +244,7 @@ namespace FoodNinja.ViewModel
                         FoodQuantity = foodItem.Quantity,
                         RestaurantLat = foodItem.RestaurantLat,
                         RestaurantLong = foodItem.RestaurantLong,
-                        UserAddress = UserData.Address,
+                        UserAddress = UserData.HouseOrFlatOrBlockName+","+" "+UserData.AreaOrCity+","+" "+UserData.State+","+" "+UserData.Pincode,
                         UserLatitude = UserData.Latitude,
                         UserLongitude = UserData.Longitude,
                         TotalPrice = TotalPrice,

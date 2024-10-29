@@ -25,9 +25,6 @@ namespace FoodNinja.ViewModel
         #region Fields
         private FoodNinja.Views.BottomSheet currentBottomSheet;
         private FirebaseManager firebaseManager = new FirebaseManager();
-       /* FirebaseClient firebaseClient;
-        private const string DatabaseUrl = "https://fir-maui-491c3-default-rtdb.firebaseio.com/";*/
-
         public INavigation Navigation { get; }
 
         [ObservableProperty]
@@ -64,10 +61,10 @@ namespace FoodNinja.ViewModel
         private bool addressExpanderVisiblity;
 
         [ObservableProperty]
-        private string houseFlatBlockNo;
+        private string houseOrFlatOrBlockName;
 
         [ObservableProperty]
-        private string cityArea;
+        private string areaOrCity;
 
         [ObservableProperty]
         private string state;
@@ -99,6 +96,12 @@ namespace FoodNinja.ViewModel
             {
                 UserData = response;
                 FullName = UserData.FirstName + " " + UserData.LastName;
+                HouseOrFlatOrBlockName = UserData.HouseOrFlatOrBlockName;
+                AreaOrCity = UserData.AreaOrCity;
+                State = UserData.State;
+                Pincode = UserData.Pincode;
+                Address = $"{UserData.HouseOrFlatOrBlockName}, {UserData.AreaOrCity}, {UserData.State}, {UserData.Pincode}";
+
                 if (UserData.PaymentMethod == null)
                 {
                     UserData.PaymentMethod = new Dictionary<int, PaymentModel>();
@@ -106,7 +109,17 @@ namespace FoodNinja.ViewModel
                 var paymentMethods = new ObservableCollection<PaymentModel>(UserData.PaymentMethod.Values);
                 PaymentMethodsList = paymentMethods;
 
-                if(UserData.Address == null)
+                bool isAddressIsEmpty = string.IsNullOrEmpty(HouseOrFlatOrBlockName) &&
+                                        string.IsNullOrEmpty(AreaOrCity) &&
+                                        string.IsNullOrEmpty(State) && 
+                                        string.IsNullOrEmpty(Pincode);
+
+                if(isAddressIsEmpty)
+                {
+                    Address = null;
+                }
+
+                if(Address == null)
                 {
                     AddressExpanderVisiblity = false;
                 }
@@ -185,16 +198,16 @@ namespace FoodNinja.ViewModel
         }*/
         private async Task EditAddressAsync()
         {
-            Address = $"{HouseFlatBlockNo}, {CityArea}, {State}, {Pincode}";
             IsLoading = true;
-            bool isAddressEdited = await firebaseManager.EditAddressAsync(UserId, Address);
+            bool isAddressEdited = await firebaseManager.EditAddressAsync(UserId,HouseOrFlatOrBlockName,AreaOrCity,State,Pincode);
             if(isAddressEdited)
             {
-                HouseFlatBlockNo = string.Empty;
-                CityArea = string.Empty;
+                HouseOrFlatOrBlockName = string.Empty;
+                AreaOrCity = string.Empty;
                 State = string.Empty;
                 Pincode  = string.Empty;
                 await currentBottomSheet.CloseBottomSheet();
+                await Toast.Make("Addreess Updated").Show();
                 await FetchUserDataAsync();
             }
             else
@@ -265,8 +278,8 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task EditAddress()
         {
-            bool isEmpty = string.IsNullOrWhiteSpace(HouseFlatBlockNo) &&
-                          string.IsNullOrWhiteSpace(CityArea) &&
+            bool isEmpty = string.IsNullOrWhiteSpace(HouseOrFlatOrBlockName) &&
+                          string.IsNullOrWhiteSpace(AreaOrCity) &&
                           string.IsNullOrWhiteSpace(State)
                           && string.IsNullOrWhiteSpace(Pincode);
             if (isEmpty)
