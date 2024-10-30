@@ -28,6 +28,19 @@ namespace FoodNinja.Services
             firebaseClient = new FirebaseClient(DatabaseUrl);
         }
 
+        public async Task<bool> SendPasswordResetEmailAsync(string email)
+        {
+            try
+            {
+                await firebaseAuthProvider.SendPasswordResetEmailAsync(email);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error sending password reset email: {ex.Message}");
+                return false;
+            }
+        }
         public async Task<SignupModel> CreateAccount(string userName, string email, string password)
         {
             try

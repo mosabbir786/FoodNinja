@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FoodNinja.Services;
 using System;
@@ -12,6 +13,7 @@ namespace FoodNinja.ViewModel
     public partial class LoginViewModel:ObservableObject
     {
         #region Fields
+        private FoodNinja.Views.BottomSheet currentBottomSheet;
         private readonly FirebaseManager firebaseManager = new FirebaseManager();
         public INavigation Navigation { get; }
 
@@ -36,6 +38,16 @@ namespace FoodNinja.ViewModel
         [ObservableProperty]
         private string passwordErrorMsg = string.Empty;
 
+
+
+        [ObservableProperty]
+        private string forgetEmail;
+
+        [ObservableProperty]
+        private bool isForgetEmailErrorVisible;
+
+        [ObservableProperty]
+        private string forgetEmailErrorMsg;
         #endregion
 
 
@@ -65,17 +77,17 @@ namespace FoodNinja.ViewModel
                     {
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
-                            Application.Current.MainPage = new AppShell();
+                            App.Current.MainPage = new AppShell();
                         });
                     }
                     else
                     {
-                        await Application.Current.MainPage.DisplayAlert("Error", "Login failed, please try again.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("Error", "Login failed, please try again.", "Ok");
                     }
                 }
                 catch (Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+                    await App.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
                 }
                 finally
                 {
@@ -84,11 +96,45 @@ namespace FoodNinja.ViewModel
 
             }
         }
+
+        [RelayCommand]
+        private async Task ForgetPassword()
+        {
+            ValidateForgetPasswordEmail(ForgetEmail);
+            if(!IsForgetEmailErrorVisible)
+            {
+                IsLoading = true;
+                bool isSend = await firebaseManager.SendPasswordResetEmailAsync(ForgetEmail);
+                if(isSend)
+                {
+                    await App.Current.MainPage.DisplayAlert(
+                                "Password Reset Link Sent",
+                                "We've sent a password reset link to your email address. Please check your inbox (and spam/junk folder, if needed) for an email from us. " +
+                                "Follow the instructions in the email to reset your password. If you don't see the email within a few minutes, please try again or contact our support team.",
+                                "OK");
+                    ForgetEmail = string.Empty;
+                    IsForgetEmailErrorVisible = false;
+                    await currentBottomSheet.CloseBottomSheet();
+
+                }
+                IsLoading = false;
+            }
+        }
+
+
         #endregion
 
         #region Methods
+        public void SetCurrentBottomSheet(FoodNinja.Views.BottomSheet bottomSheet)
+        {
+            currentBottomSheet = bottomSheet;
+        }
 
         #region Property Setters with Validation
+        partial void OnForgetEmailChanged(string value)
+        {
+            ValidateForgetPasswordEmail(value);
+        }
         partial void OnEmailChanged(string value)
         {
             ValidateEmail(value);
@@ -101,6 +147,25 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Validation Method
+        private void ValidateForgetPasswordEmail(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                ForgetEmailErrorMsg = "Email is required.";
+                IsForgetEmailErrorVisible = true;
+            }
+            else if (value.Length < 5)
+            {
+                ForgetEmailErrorMsg = "Email must be at least 5 characters long.";
+                IsForgetEmailErrorVisible = true;
+            }
+            else
+            {
+                ForgetEmailErrorMsg = string.Empty;
+                IsForgetEmailErrorVisible = false;
+            }
+
+        }
         private void ValidateEmail(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

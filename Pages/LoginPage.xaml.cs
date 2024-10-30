@@ -19,6 +19,20 @@ public partial class LoginPage : ContentPage
         {
             FaseAndTranslate(popView, fadeLength: 1000, translateLength: 500);
         };
+        if (BindingContext is LoginViewModel viewModel)
+        {
+            viewModel.SetCurrentBottomSheet(forgetPasswordBottomSheet);
+        }
+        forgetPasswordBottomSheet.BottomSheetClosed += OnBottomSheetClosed;
+
+    }
+
+    private void OnBottomSheetClosed(object? sender, EventArgs e)
+    {
+        if(BindingContext is LoginViewModel viewModel)
+        {
+            viewModel.ForgetEmailErrorMsg = string.Empty;
+        }  
     }
 
     protected override void OnAppearing()
@@ -62,5 +76,12 @@ public partial class LoginPage : ContentPage
         await signUpLabl.ScaleTo(1.1, 100);
         await signUpLabl.ScaleTo(1, 100);
         await Navigation.PushAsync(new SignupPage());
+    }
+
+    private async void ForgotPassword_Tapped(object sender, TappedEventArgs e)
+    {
+        await forgetPasswordLbl.ScaleTo(0.8, 100, Easing.CubicInOut);
+        await forgetPasswordLbl.ScaleTo(1, 100, Easing.CubicInOut);
+        await forgetPasswordBottomSheet.OpenBottomSheet();
     }
 }

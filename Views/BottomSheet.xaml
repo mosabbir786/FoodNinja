@@ -45,6 +45,7 @@
             </Image>
             <!-- Enclosing Border Control for Content -->
             <Border
+                Stroke="Transparent"
                 x:Name="MainContent"
                 Grid.Row="1"
                 Padding="0"
