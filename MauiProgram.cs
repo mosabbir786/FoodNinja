@@ -7,6 +7,8 @@ using Syncfusion.Maui.Core.Hosting;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using FoodNinja.Custom;
+
 
 
 #if IOS
@@ -44,6 +46,7 @@ namespace FoodNinja
                 })
                 .ConfigureMauiHandlers(handlers =>
                 {
+                    handlers.AddHandler<CollectionView, StaggeredStructuredItemsViewHandler>();
 #if ANDROID
 			        handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.Android.CustomMapHandler>();
 #elif IOS

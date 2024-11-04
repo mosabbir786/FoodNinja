@@ -5,6 +5,7 @@
              Title="RestaurantPage"
              BackgroundColor="Black"
              NavigationPage.HasNavigationBar="False"
+             xmlns:mauiStaggeredCollectionView="clr-namespace:FoodNinja.Custom"
              xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
              xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui">
@@ -23,7 +24,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid Margin="20,5,20,20" RowDefinitions=".2*,.8*" x:Name="mainGrid">
+        <Grid Margin="20,5,20,0" RowDefinitions=".2*,.8*" x:Name="mainGrid">
             <Grid TranslationY="0" x:Name="upperGrid" Margin="0,0,0,20" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
                 <Label
                   VerticalOptions="Center"
@@ -80,55 +81,49 @@
               Grid.Row="1"
               ItemsSource="{Binding RestaurantList}">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout
-                      Orientation="Vertical" Span="2"
-                      VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
+                    <mauiStaggeredCollectionView:StaggeredItemsLayout Span="2"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border
-                          x:Name="restroBorder"
-                          StrokeShape="RoundRectangle 15"
-                          HeightRequest="{markups:OnScreenSize Medium='173',Large='174',Small='172'}"
-                          Style="{StaticResource borderStyle}">
-                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                                <ffimageloading:CachedImage
-                                  Source="{Binding RestrauntImageSource,FallbackValue='dummyicon.png'}" Aspect="AspectFill"
-                                  LoadingPlaceholder="dummyicon.png"
-                                  HeightRequest="73" WidthRequest="96"
-                                  ErrorPlaceholder="error.png"
-                                  DownsampleToViewSize="true"
-                                  CacheType="Memory"/>
+                            BackgroundColor="#151515"
+                            x:Name="restroBorder"
+                            StrokeShape="RoundRectangle 15"
+                            Margin="5,5"
+                            Style="{StaticResource borderStyle}"
+                            Padding="0">
+                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="0" Padding="0,0,0,0">
+                                <Image
+                                    Source="{Binding RestrauntImageSource,FallbackValue='dummyicon.png'}"/>
 
                                 <Label
-                                  Margin="0,10,0,0"
-                                  Text="{Binding RestaurantName}"
-                                  TextColor="#FFFFFF"
-                                  FontSize="{markups:OnScreenSize Medium='11',Large='13',Small='10'}"
-                                  FontFamily="BentonMedium"
-                                  HorizontalTextAlignment="Center"/>
+                                   Text="{Binding RestaurantName}"
+                                   TextColor="#FFFFFF"
+                                   FontSize="{markups:OnScreenSize Medium='11',Large='13',Small='10'}"
+                                   FontFamily="BentonMedium"
+                                   HorizontalTextAlignment="Center"/>
 
                                 <Label
-                                  Margin="0,5,0,0"
-                                  Text="{Binding RestrauntDistance, StringFormat='{0} Km'}"
-                                  TextColor="White"
-                                  Opacity="0.5"
-                                  FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
-                                  FontFamily="BentonRegular"
-                                  HorizontalTextAlignment="Center"/>
+                                    Margin="0,5,0,10"
+                                    Text="{Binding RestrauntDistance, StringFormat='{0} Km'}"
+                                    TextColor="White"
+                                    Opacity="0.5"
+                                    FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
+                                    FontFamily="BentonRegular"
+                                    HorizontalTextAlignment="Center"/>
                             </StackLayout>
                             <Border.Shadow>
                                 <Shadow
-                                  Brush="#80252525" 
-                                  Radius="3"
-                                  Opacity="0.4"
-                                  Offset="0,0"/>
+                                    Brush="#80252525" 
+                                    Radius="3"
+                                    Opacity="0.4"
+                                    Offset="0,0"/>
                             </Border.Shadow>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer
-                              Tapped="RestaurantFrame_Tapped" 
-                              Command="{Binding BindingContext.RestaurantFrameTappedCommand, Source={x:Reference Name=restroCollection}}"
-                              CommandParameter="{Binding .}"/>
+                                    Tapped="RestaurantFrame_Tapped" 
+                                    Command="{Binding BindingContext.RestaurantFrameTappedCommand, Source={x:Reference Name=restroCollection}}"
+                                    CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
                         </Border>
                     </DataTemplate>
