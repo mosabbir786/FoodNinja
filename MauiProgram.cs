@@ -8,6 +8,9 @@ using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using FoodNinja.Custom;
+using FoodNinja.ViewModel;
+using FoodNinja.Services;
+
 
 
 
@@ -58,6 +61,9 @@ namespace FoodNinja
                 builder.ConfigureSyncfusionCore();
                 builder.Services.AddSingleton(new FirebaseConfig("AIzaSyD0ehwCKtxucZLyNcUGv-ZFKaNXmw_cmK8"));
                 builder.Services.AddSingleton(new FirebaseClient("https://fir-maui-491c3-default-rtdb.firebaseio.com/"));
+                builder.Logging.AddConsole();
+                builder.Services.AddTransient<ConfirmOrderViewModel>();
+                builder.Services.AddSingleton<INotificationPermissionManager, NotificationPermissionHelper>();
 
             //For Transparent the Statusbar in Android 
             /* builder.ConfigureLifecycleEvents(events =>

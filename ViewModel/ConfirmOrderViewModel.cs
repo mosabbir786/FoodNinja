@@ -1,10 +1,14 @@
 ﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FirebaseAdmin.Messaging;
 using FoodNinja.Model;
 using FoodNinja.Pages;
 using FoodNinja.Pages.CartTabScreen;
+using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +22,12 @@ namespace FoodNinja.ViewModel
     public partial class ConfirmOrderViewModel : ObservableObject
     {
         #region Fields
+        private readonly ILogger<ConfirmOrderViewModel> _logger;
+        private readonly INotificationPermissionManager _permissionHelper;
+
+        [ObservableProperty]
+        private string firebaseToken = string.Empty;
+
         private FirebaseManager firebaseManager = new FirebaseManager();
         public INavigation Navigation { get; }
 
@@ -95,19 +105,49 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Constructor
-        public ConfirmOrderViewModel(FirebaseManager _firebaseManager, INavigation navigation, ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice)
+        public ConfirmOrderViewModel(FirebaseManager _firebaseManager, INavigation navigation, ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice,INotificationPermissionManager permissionHelper)
         {
-            firebaseManager = _firebaseManager;
-            Navigation = navigation;
-            OrderFoodItem = cartDataList;
-            SubTotal = subTotal;
-            TotalPrice = totalPrice;
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+            _permissionHelper = permissionHelper;
+            _logger = factory.CreateLogger<ConfirmOrderViewModel>();
+            this.firebaseManager = _firebaseManager;
+            this.Navigation = navigation;
+            this.OrderFoodItem = cartDataList;
+            this.SubTotal = subTotal;
+            this.TotalPrice = totalPrice;
             PaymentMethodSelectedCommand = new Command<PaymentModel>(async (selectedPaymentMethod) => await OnPaymentMethodSelectedAsync(selectedPaymentMethod));
             ReturnFromPage = string.Empty;
         }
         #endregion
 
         #region Methods
+        public async Task FetchFirebaseToken()
+        {
+            try
+            {
+#if ANDROID
+                if (Preferences.ContainsKey("DeviceToken"))
+                {
+                    FirebaseToken = Preferences.Get("DeviceToken", string.Empty);
+                }
+
+                if (!string.IsNullOrEmpty(FirebaseToken))
+                {
+                    _logger.LogInformation("Firenase token {FirebaseToken}", FirebaseToken);
+                    FirebaseToken = FirebaseToken;
+                    Preferences.Set("DeviceToken", FirebaseToken);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Firebase token could not be retrieved");
+                }
+#endif
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while fetching firebase token: {ex.Message}");
+            }
+        }
         public async Task FetchUserDataAsync()
         {
             UserId = Preferences.Get("LocalId", string.Empty);
@@ -158,6 +198,67 @@ namespace FoodNinja.ViewModel
             SelectedPaymentMethod = selectedPaymentMethod;
             PaymentMethodSelected = true;
         }
+        private async Task Send(string title, string body)
+        {
+            if (Preferences.ContainsKey("DeviceToken"))
+            {
+                FirebaseToken = Preferences.Get("DeviceToken", "");
+            }
+            if (string.IsNullOrEmpty(FirebaseToken))
+            {
+                _logger.LogWarning("No device token found. Unable to send notification.");
+                return;
+            }
+            var androidNotificationObject = new Dictionary<string, string>
+            {
+                { "NavigationID", "2" }
+            };
+            var iosNotificationObject = new Dictionary<string, object>
+            {
+                { "NavigationID", "2" }
+            };
+
+            var pushNotificationRequest = new PushNotificationRequest
+            {
+                notification = new NotificationMessageBody
+                {
+                    title = title,
+                    body = body,
+                },
+                data = androidNotificationObject,
+                registration_ids = new List<string> { FirebaseToken }
+            };
+            var messageList = new List<Message>();
+            var obj = new Message
+            {
+                Token = FirebaseToken,
+                Notification = new Notification
+                {
+                    Title = title,
+                    Body = body,
+                },
+                Data = androidNotificationObject,
+                Apns = new ApnsConfig()
+                {
+                    Aps = new Aps
+                    {
+                        Badge = 15,
+                        CustomData = iosNotificationObject,
+                    }
+                }
+            };
+            try
+            {
+                messageList.Add(obj);
+                var response = await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                _logger.LogInformation("Notification sent successfully: {response}", response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending push notification: {message}", ex.Message);
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -166,6 +267,7 @@ namespace FoodNinja.ViewModel
         {
             await Navigation.PopAsync();
         }
+
         [RelayCommand]
         private async Task CodSelected()
         {
@@ -185,10 +287,57 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PlacedOrder()
         {
+
+            if(OperatingSystem.IsAndroid())
+            {
+                if(DeviceInfo.Version.Major >= 13)
+                {
+                    try
+                    {
+                        var permissionStatus = await _permissionHelper.CheckNotificationPermissionAsync();
+                        if (permissionStatus != PermissionStatus.Granted)
+                        {
+                            int deniedCount = _permissionHelper.GetDeniedCount();
+                            bool isPermissionGranted = permissionStatus == PermissionStatus.Granted;
+                            if (deniedCount >= 2)
+                            {
+                                await App.Current.MainPage.ShowPopupAsync(new NotificationPermissionPopup());
+                                return;
+                            }
+                            else
+                            {
+                                await _permissionHelper.RequestNotificationPermissionAsync();
+                            }
+                        }
+                        else
+                        {
+                            _permissionHelper.ResetDeniedCount();
+                            await ExecutePlacedOrderAsync();
+                            Console.WriteLine("Notification Permission  Granted");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                }
+                else
+                {
+                    await ExecutePlacedOrderAsync();
+                }
+            }
+            else if(OperatingSystem.IsIOS())
+            {
+                //Commming Soon
+            }
+        }
+
+        private async Task ExecutePlacedOrderAsync()
+        {
             bool isAddressEmpty = string.IsNullOrEmpty(UserData.HouseOrFlatOrBlockName) &&
-                                  string.IsNullOrEmpty(UserData.AreaOrCity) &&
-                                  string.IsNullOrEmpty(UserData.State) &&
-                                  string.IsNullOrEmpty(UserData.Pincode);
+                                 string.IsNullOrEmpty(UserData.AreaOrCity) &&
+                                 string.IsNullOrEmpty(UserData.State) &&
+                                 string.IsNullOrEmpty(UserData.Pincode);
             if (!PaymentMethodSelected)
             {
                 if (ReturnFromPage == "SuccessfullOrderPlacedPage")
@@ -200,7 +349,7 @@ namespace FoodNinja.ViewModel
                     }
                 }
             }
-            else if(ReturnFromPage == "SuccessfullOrderPlacedPage")
+            else if (ReturnFromPage == "SuccessfullOrderPlacedPage")
             {
                 await Toast.Make("Order has already been placed.").Show();
                 return;
@@ -210,7 +359,7 @@ namespace FoodNinja.ViewModel
                 await Toast.Make("Please select at least one payment method").Show();
                 return;
             }
-            else if(isAddressEmpty)
+            else if (isAddressEmpty)
             {
                 await Toast.Make("Please add address to place order.").Show();
                 return;
@@ -218,7 +367,7 @@ namespace FoodNinja.ViewModel
             else
             {
                 var random = new Random();
-                var statusOptions = new List<string> { "Processing", "Preparing", "Rider Assign","Complete" };
+                var statusOptions = new List<string> { "Processing", "Preparing", "Rider Assign", "Complete" };
                 var placedOrders = new List<OrderPlacedModel>();
                 foreach (var foodItem in OrderFoodItem)
                 {
@@ -244,7 +393,7 @@ namespace FoodNinja.ViewModel
                         FoodQuantity = foodItem.Quantity,
                         RestaurantLat = foodItem.RestaurantLat,
                         RestaurantLong = foodItem.RestaurantLong,
-                        UserAddress = UserData.HouseOrFlatOrBlockName+","+" "+UserData.AreaOrCity+","+" "+UserData.State+","+" "+UserData.Pincode,
+                        UserAddress = UserData.HouseOrFlatOrBlockName + "," + " " + UserData.AreaOrCity + "," + " " + UserData.State + "," + " " + UserData.Pincode,
                         UserLatitude = UserData.Latitude,
                         UserLongitude = UserData.Longitude,
                         TotalPrice = TotalPrice,
@@ -267,6 +416,7 @@ namespace FoodNinja.ViewModel
                         var placedOrderItem = placedOrders.FirstOrDefault();
                         await firebaseManager.DeleteCartByIdAsync(UserId, restaurantId);
                         await Toast.Make("Order Placed").Show();
+                        await Send("🍕 Order Placed Successfully!", "Thank you for your order! Your food is being prepared and will be on its way shortly. 🍔🍟");
                         await Navigation.PushAsync(new SuccessfullOrderPlacedPage(placedOrderItem));
                     }
                 }

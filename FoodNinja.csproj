@@ -60,7 +60,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FirebaseAdmin" Version="3.0.1" />
 		<PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="26.2.14" />
 		<PackageReference Include="Syncfusion.Maui.Maps" Version="27.1.50" />
@@ -151,6 +153,7 @@
 	  <None Remove="Resources\Images\visa.png" />
 	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
+	  <None Remove="Resources\Raw\adminSdk.json" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />
 	  <None Remove="Resources\Raw\nocart.json" />
@@ -222,6 +225,9 @@
 	  <MauiXaml Update="Pages\Popups\LogoutPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\NotificationPermissionPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Popups\PermissionPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -273,6 +279,12 @@
 	  <MauiXaml Update="Views\DesclaimerView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	  <PackageReference Include="Xamarin.Firebase.Messaging">
+	    <Version>123.0.7</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 </Project>

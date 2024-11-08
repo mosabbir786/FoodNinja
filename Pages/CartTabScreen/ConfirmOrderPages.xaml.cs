@@ -1,9 +1,15 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.Messaging;
+using FirebaseAdmin.Messaging;
+using FirebaseAdmin;
 using FoodNinja.Model;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using System.Collections.ObjectModel;
+using FoodNinja.Pages.ProfileTabScreen;
+using Microsoft.Extensions.Logging;
 
 namespace FoodNinja.Pages.CartTabScreen;
 
@@ -11,12 +17,15 @@ public partial class ConfirmOrderPages : ContentPage
 {
     private ObservableCollection<AddFoodToCart> cartDataList;
     private FirebaseManager firebaseManager;
+    private string _deviceToken;
+
     public ConfirmOrderPages(ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice)
     {
         InitializeComponent();
         firebaseManager = new FirebaseManager();
+        var permissionHelper = new NotificationPermissionHelper();
         this.cartDataList = cartDataList;
-        this.BindingContext = new ConfirmOrderViewModel(firebaseManager, Navigation, cartDataList, subTotal, totalPrice);
+        this.BindingContext = new ConfirmOrderViewModel(firebaseManager, Navigation, cartDataList, subTotal, totalPrice,permissionHelper);
     }
     protected override async void OnAppearing()
     {
@@ -35,9 +44,46 @@ public partial class ConfirmOrderPages : ContentPage
 
             viewModel.IsLoading = true;
             await viewModel.FetchUserDataAsync();
+            await viewModel.FetchFirebaseToken();
             viewModel.IsLoading = false;
+
+        }
+
+        WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
+        {
+            string msg = m.Value;
+            NavigateWhenCLickOnNotification();
+        });
+        if (Preferences.ContainsKey("DeviceToken"))
+        {
+            _deviceToken = Preferences.Get("DeviceToken", "");
+        }
+        ReadFireBaseAdminSdk();
+        NavigateWhenCLickOnNotification();
+    }
+
+    private async void NavigateWhenCLickOnNotification()
+    {
+        if (Preferences.ContainsKey("NavigationID"))
+        {
+            await Navigation.PushAsync(new PreviousOrderDetailPage());
         }
     }
+
+    private async void ReadFireBaseAdminSdk()
+    {
+        var stream = await FileSystem.OpenAppPackageFileAsync("adminSdk.json");
+        var reader = new StreamReader(stream);
+        var jsonContent = reader.ReadToEnd();
+        if (FirebaseMessaging.DefaultInstance == null)
+        {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromJson(jsonContent)
+            });
+        }
+    }
+
     protected override void OnDisappearing()
     {
         base.OnDisappearing();

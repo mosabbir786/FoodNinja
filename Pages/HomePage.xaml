@@ -247,7 +247,7 @@
                                     TextColor="Black"
                                     FontFamily="BentonBold"
                                     LineHeight="1.2"
-                                    FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+                                    FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"/>
 
                                 <Button
                                       FontFamily="BentonBold"
