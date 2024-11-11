@@ -19,7 +19,7 @@
                 FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
                 Grid.Row="0" Grid.ColumnSpan="2"
                 HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                Text="It seems you have denied notification permission.Notification permission is required to receive notifications. Please enable it in your device settings."/>
+                Text="It seems you have denied notification permission.Notification permission is required to receive notifications. If you want to receive notification. Please enable it in your device settings."/>
 
             <Button
                  FontFamily="BentonBold"

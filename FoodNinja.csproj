@@ -60,6 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiAsset Remove="Resources\Raw\firebaseAdminSdk.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="FirebaseAdmin" Version="3.0.1" />
 		<PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
@@ -154,6 +158,7 @@
 	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
 	  <None Remove="Resources\Raw\adminSdk.json" />
+	  <None Remove="Resources\Raw\firebaseAdminSdk.json" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />
 	  <None Remove="Resources\Raw\nocart.json" />

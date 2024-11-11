@@ -1,4 +1,5 @@
-﻿using FoodNinja.Pages;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using FoodNinja.Pages;
 using FoodNinja.Pages.Onboarding_Screen;
 using FoodNinja.Pages.ProfileTabScreen;
 using FoodNinja.Services;
@@ -23,15 +24,38 @@ namespace FoodNinja
                  MainPage = new NavigationPage(new SplashScreen());
             }
             DependencyService.Register<RestaurantService>();
+            WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (recipient, message) =>
+            {
+                HandleNavigationFromNotification();
+            });
         }
-        protected override void OnStart()
+
+        private void HandleNavigationFromNotification()
+        {
+            if (Preferences.ContainsKey("NavigationID"))
+            {
+                string navigationId = Preferences.Get("NavigationID", string.Empty);
+                Preferences.Remove("NavigationID");
+
+                if(!string.IsNullOrEmpty(navigationId))
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await App.Current.MainPage.Navigation.PushAsync(new PreviousOrderDetailPage());
+                    });
+                }
+            }
+        }
+        protected override async void OnStart()
         {
             base.OnStart();
             Preferences.Remove("ReturnFromPage");
+            HandleNavigationFromNotification();
         }
         protected override void OnResume()
         {
             base.OnResume();
+            HandleNavigationFromNotification();
         }
 
         protected override void OnSleep()

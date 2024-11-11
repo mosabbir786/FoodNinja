@@ -112,6 +112,7 @@
                                 Grid.Column="1"
                                 Text="{Binding Password}"
                                 Placeholder="Password"
+                                IsPassword="True"
                                 Completed="passwordEntry_Completed">
                                 <Entry.Behaviors>
                                     <toolkit:MultiValidationBehavior

@@ -71,7 +71,7 @@
                             HeightRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}"
                             CornerRadius="15"
                             Color="{StaticResource shimmerColor}"/>
-                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2" > 
                         <customLoadingShimmer:BoxSkiletonView
                                 HorizontalOptions="Start"
                                 HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
@@ -83,7 +83,7 @@
                                 HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
                                 Color="{StaticResource shimmerColor}"
                                 Margin="0,0,5,0"
-                                 WidthRequest="{markups:OnScreenSize Large='160',Medium='158',Small='156'}"
+                                 WidthRequest="{markups:OnScreenSize Large='130',Medium='128',Small='126'}"
                                 CornerRadius="15"/>
                     </Grid>
                     <CollectionView  Margin="0,10,0,0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Items}"
@@ -158,13 +158,13 @@
                                         <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
                                             <customLoadingShimmer:BoxSkiletonView
                                                     HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
-                                                    WidthRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}"
+                                                    WidthRequest="{markups:OnScreenSize Large='140',Medium='138',Small='136'}"
                                                     Color="{StaticResource shimmerColor}"
                                                     CornerRadius="15"/>
                                             <customLoadingShimmer:BoxSkiletonView
                                                     HorizontalOptions="Start"
                                                     HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
-                                                    WidthRequest="{markups:OnScreenSize Large='120',Medium='118',Small='116'}"
+                                                    WidthRequest="{markups:OnScreenSize Large='95',Medium='93',Small='92'}"
                                                     Color="{StaticResource shimmerColor}"
                                                     CornerRadius="15"/>
                                         </VerticalStackLayout>
@@ -177,7 +177,7 @@
                                                     CornerRadius="15"/>
                                             <customLoadingShimmer:BoxSkiletonView
                                                     HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}" 
-                                                    WidthRequest="{markups:OnScreenSize Large='90',Medium='88',Small='86'}" 
+                                                    WidthRequest="{markups:OnScreenSize Large='80',Medium='88',Small='86'}" 
                                                     Color="{StaticResource shimmerColor}"
                                                     CornerRadius="15"/>
                                         </VerticalStackLayout>
@@ -360,9 +360,9 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
-                        <!--<VisualElement.Behaviors>
+                        <VisualElement.Behaviors>
                             <alohakit:BeginAnimationBehavior Animation="{StaticResource horizoltalTranslate}"/>
-                        </VisualElement.Behaviors>-->
+                        </VisualElement.Behaviors>
                     </ScrollView>
 
 
@@ -473,9 +473,9 @@
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-                        <!--<VisualElement.Behaviors>
+                        <VisualElement.Behaviors>
                             <alohakit:BeginAnimationBehavior Animation="{StaticResource verticalTranslate}"/>
-                        </VisualElement.Behaviors>-->
+                        </VisualElement.Behaviors>
                     </StackLayout>
                 </VerticalStackLayout>
 

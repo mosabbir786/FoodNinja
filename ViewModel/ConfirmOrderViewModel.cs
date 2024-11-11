@@ -259,6 +259,47 @@ namespace FoodNinja.ViewModel
             }
         }
 
+        public async Task HandleNotificationPermission()
+        {
+            if (OperatingSystem.IsAndroid())
+            {
+                if (DeviceInfo.Version.Major >= 13)
+                {
+                    try
+                    {
+                        var permissionStatus = await _permissionHelper.CheckNotificationPermissionAsync();
+                        if (permissionStatus != PermissionStatus.Granted)
+                        {
+                            int deniedCount = _permissionHelper.GetDeniedCount();
+                            bool isPermissionGranted = permissionStatus == PermissionStatus.Granted;
+                            if (deniedCount >= 2)
+                            {
+                                await App.Current.MainPage.ShowPopupAsync(new NotificationPermissionPopup());
+                                return;
+                            }
+                            else
+                            {
+                                await _permissionHelper.RequestNotificationPermissionAsync();
+                            }
+                        }
+                        else
+                        {
+                            _permissionHelper.ResetDeniedCount();
+                            Console.WriteLine("Notification Permission  Granted");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                }
+            }
+            else if (OperatingSystem.IsIOS())
+            {
+                //Commming Soon
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -287,49 +328,7 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PlacedOrder()
         {
-
-            if(OperatingSystem.IsAndroid())
-            {
-                if(DeviceInfo.Version.Major >= 13)
-                {
-                    try
-                    {
-                        var permissionStatus = await _permissionHelper.CheckNotificationPermissionAsync();
-                        if (permissionStatus != PermissionStatus.Granted)
-                        {
-                            int deniedCount = _permissionHelper.GetDeniedCount();
-                            bool isPermissionGranted = permissionStatus == PermissionStatus.Granted;
-                            if (deniedCount >= 2)
-                            {
-                                await App.Current.MainPage.ShowPopupAsync(new NotificationPermissionPopup());
-                                return;
-                            }
-                            else
-                            {
-                                await _permissionHelper.RequestNotificationPermissionAsync();
-                            }
-                        }
-                        else
-                        {
-                            _permissionHelper.ResetDeniedCount();
-                            await ExecutePlacedOrderAsync();
-                            Console.WriteLine("Notification Permission  Granted");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.ToString());
-                    }
-                }
-                else
-                {
-                    await ExecutePlacedOrderAsync();
-                }
-            }
-            else if(OperatingSystem.IsIOS())
-            {
-                //Commming Soon
-            }
+            await ExecutePlacedOrderAsync();
         }
 
         private async Task ExecutePlacedOrderAsync()
@@ -416,7 +415,11 @@ namespace FoodNinja.ViewModel
                         var placedOrderItem = placedOrders.FirstOrDefault();
                         await firebaseManager.DeleteCartByIdAsync(UserId, restaurantId);
                         await Toast.Make("Order Placed").Show();
-                        await Send("🍕 Order Placed Successfully!", "Thank you for your order! Your food is being prepared and will be on its way shortly. 🍔🍟");
+                        var permissionStatus = await _permissionHelper.CheckNotificationPermissionAsync();
+                        if (permissionStatus == PermissionStatus.Granted)
+                        {
+                           await Send("🍕 Order Placed Successfully!", "Thank you for your order! Your food is being prepared and will be on its way shortly. 🍔🍟");
+                        }
                         await Navigation.PushAsync(new SuccessfullOrderPlacedPage(placedOrderItem));
                     }
                 }

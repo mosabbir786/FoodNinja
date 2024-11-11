@@ -25,7 +25,7 @@
                 TextColor="#53E88B"
                 FontFamily="BentonBold"
                 HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+                FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"/>
 
             <Grid ColumnDefinitions="*,*" VerticalOptions="End" ColumnSpacing="10" Margin="0,20,0,0">
                 <Button
@@ -34,7 +34,7 @@
                     BackgroundColor="#53E88B"
                     FontFamily="BentonBold"
                     CornerRadius="15"
-                    FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                    FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"
                     HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
                     Clicked="Exit_Button_Clicked"/>
                 <Button
@@ -42,7 +42,7 @@
                     TextColor="#FFFFFF"
                     BackgroundColor="#FEAD1D"
                     FontFamily="BentonBold"
-                    FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                    FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"
                     CornerRadius="15"
                     Grid.Column="1"
                     HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"

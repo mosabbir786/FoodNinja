@@ -43,23 +43,24 @@ public partial class ConfirmOrderPages : ContentPage
             }
 
             viewModel.IsLoading = true;
+            await viewModel.HandleNotificationPermission();
             await viewModel.FetchUserDataAsync();
             await viewModel.FetchFirebaseToken();
             viewModel.IsLoading = false;
 
         }
 
-        WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
+        /*WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
         {
             string msg = m.Value;
             NavigateWhenCLickOnNotification();
-        });
+        });*/
         if (Preferences.ContainsKey("DeviceToken"))
         {
             _deviceToken = Preferences.Get("DeviceToken", "");
         }
         ReadFireBaseAdminSdk();
-        NavigateWhenCLickOnNotification();
+       // NavigateWhenCLickOnNotification();
     }
 
     private async void NavigateWhenCLickOnNotification()
@@ -72,7 +73,7 @@ public partial class ConfirmOrderPages : ContentPage
 
     private async void ReadFireBaseAdminSdk()
     {
-        var stream = await FileSystem.OpenAppPackageFileAsync("adminSdk.json");
+        var stream = await FileSystem.OpenAppPackageFileAsync("firebaseAdminSdk.json");
         var reader = new StreamReader(stream);
         var jsonContent = reader.ReadToEnd();
         if (FirebaseMessaging.DefaultInstance == null)
@@ -83,7 +84,6 @@ public partial class ConfirmOrderPages : ContentPage
             });
         }
     }
-
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
@@ -94,6 +94,7 @@ public partial class ConfirmOrderPages : ContentPage
             viewModel.ReturnFromPage = string.Empty;
         }
         Preferences.Remove("ReturnFromPage");
+        WeakReferenceMessenger.Default.Unregister<PushNotificationReceived>(this);
     }
     private async void EditAddressLbl_Tapped(object sender, TappedEventArgs e)
     {
@@ -206,7 +207,6 @@ public partial class ConfirmOrderPages : ContentPage
             await Task.Delay(20);
         }
     }
-
     private async void addAddressBtn_Clicked(object sender, EventArgs e)
     {
         var tasks = new List<Task>
