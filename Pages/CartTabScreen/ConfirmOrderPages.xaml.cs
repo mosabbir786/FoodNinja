@@ -49,18 +49,11 @@ public partial class ConfirmOrderPages : ContentPage
             viewModel.IsLoading = false;
 
         }
-
-        /*WeakReferenceMessenger.Default.Register<PushNotificationReceived>(this, (r, m) =>
-        {
-            string msg = m.Value;
-            NavigateWhenCLickOnNotification();
-        });*/
         if (Preferences.ContainsKey("DeviceToken"))
         {
             _deviceToken = Preferences.Get("DeviceToken", "");
         }
         ReadFireBaseAdminSdk();
-       // NavigateWhenCLickOnNotification();
     }
 
     private async void NavigateWhenCLickOnNotification()

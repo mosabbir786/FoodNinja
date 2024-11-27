@@ -40,6 +40,13 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+
+		<!--Added this 5 line for enable debugging in Release mode-->
+		<!--<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>false</Optimize>
+		<DefineConstants>TRACE;RELEASE</DefineConstants>
+		<AndroidLinkMode>None</AndroidLinkMode>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -57,10 +64,6 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiAsset Remove="Resources\Raw\firebaseAdminSdk.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -157,7 +160,6 @@
 	  <None Remove="Resources\Images\visa.png" />
 	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
-	  <None Remove="Resources\Raw\adminSdk.json" />
 	  <None Remove="Resources\Raw\firebaseAdminSdk.json" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />

@@ -25,26 +25,6 @@
                 <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
                 <Setter Property="BackgroundColor" Value="#252525"/>
             </Style>
-
-            <!--<alohakit:FadeToAnimation
-                x:Key="FadeToAnimation"
-                Target="{x:Reference mainGrid}"
-                Opacity ="1"
-                Duration="500"
-                Easing="SpringOut"/>
-
-            <alohakit:TranslateToAnimation
-                Duration="700"
-                x:Key="horizoltalTranslate"
-                Target="{x:Reference restroList}"
-                Easing="SinInOut"
-                TranslateX="0"/>
-            <alohakit:TranslateToAnimation
-                Duration="700"
-                x:Key="verticalTranslate"
-                Target="{x:Reference menuList}"
-                Easing="SinInOut"
-                TranslateY="0"/>-->
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -360,9 +340,6 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
-                        <VisualElement.Behaviors>
-                            <alohakit:BeginAnimationBehavior Animation="{StaticResource horizoltalTranslate}"/>
-                        </VisualElement.Behaviors>
                     </ScrollView>
 
 
@@ -473,9 +450,6 @@
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-                        <VisualElement.Behaviors>
-                            <alohakit:BeginAnimationBehavior Animation="{StaticResource verticalTranslate}"/>
-                        </VisualElement.Behaviors>
                     </StackLayout>
                 </VerticalStackLayout>
 

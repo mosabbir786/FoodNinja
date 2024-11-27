@@ -10,7 +10,6 @@
              xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui">
 
-
     <ContentPage.Resources>
         <ResourceDictionary>
             <x:String x:Key="Headline">Find Your Favorite Food</x:String>
@@ -27,59 +26,59 @@
         <Grid Margin="20,5,20,0" RowDefinitions=".2*,.8*" x:Name="mainGrid">
             <Grid TranslationY="0" x:Name="upperGrid" Margin="0,0,0,20" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
                 <Label
-                  VerticalOptions="Center"
-                  LineHeight="{markups:OnScreenSize Large='1',Medium='0.8',Small='0.79'}"
-                  Margin="0,0,50,0"
-                  Grid.Row="0" Grid.Column="0"
-                  FontSize="31"
-                  FontFamily="BentonBold"
-                  TextColor="#FFFFFF"
-                  Text="{StaticResource Headline}"/>
+                    VerticalOptions="Center"
+                    LineHeight="{markups:OnScreenSize Large='1',Medium='0.8',Small='0.79'}"
+                    Margin="0,0,50,0"
+                    Grid.Row="0" Grid.Column="0"
+                    FontSize="31"
+                    FontFamily="BentonBold"
+                    TextColor="#FFFFFF"
+                    Text="{StaticResource Headline}"/>
 
                 <Border
-                  Grid.Row="0" Grid.Column="1"
-                  HeightRequest="45" WidthRequest="45" 
-                  Style="{StaticResource borderStyle}">
+                    Grid.Row="0" Grid.Column="1"
+                    HeightRequest="45" WidthRequest="45" 
+                    Style="{StaticResource borderStyle}">
                     <Image
-                      Source="notification"
-                      HeightRequest="20" WidthRequest="20"
-                      VerticalOptions="Center" HorizontalOptions="Center"/>
+                        Source="notification"
+                        HeightRequest="20" WidthRequest="20"
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Border>
 
                 <Border
-                  Margin="0,10,0,0"
-                  HeightRequest="45"
-                  Grid.Row="1" Grid.Column="0"
-                  Style="{StaticResource borderStyle}">
+                    Margin="0,10,0,0"
+                    HeightRequest="45"
+                    Grid.Row="1" Grid.Column="0"
+                    Style="{StaticResource borderStyle}">
                     <SearchBar
-                      x:Name="searchbar"
-                      Placeholder="What do you want to order?"
-                      FontSize="12"
-                      FontFamily="BentonRegular"
-                      CancelButtonColor="#FFFFFF"
-                      TextColor="#FFFFFF"
-                      TextChanged="SearchBar_TextChanged"
-                      SearchButtonPressed="SearchBar_SearchButtonPressed"/>
+                        x:Name="searchbar"
+                        Placeholder="What do you want to order?"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        CancelButtonColor="#FFFFFF"
+                        TextColor="#FFFFFF"
+                        TextChanged="SearchBar_TextChanged"
+                        SearchButtonPressed="SearchBar_SearchButtonPressed"/>
                 </Border>
 
                 <Border
-                  Margin="0,10,0,0"
-                  VerticalOptions="Center"
-                  Grid.Row="1" Grid.Column="1"
-                  HeightRequest="45" WidthRequest="45" 
-                  Style="{StaticResource borderStyle}">
+                    Margin="0,10,0,0"
+                    VerticalOptions="Center"
+                    Grid.Row="1" Grid.Column="1"
+                    HeightRequest="45" WidthRequest="45" 
+                    Style="{StaticResource borderStyle}">
                     <Image
-                      Source="filter"
-                      HeightRequest="20" WidthRequest="20"
-                      VerticalOptions="Center" HorizontalOptions="Center"/>
+                        Source="filter"
+                        HeightRequest="20" WidthRequest="20"
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Border>
             </Grid>
           
             <CollectionView
-              TranslationY="0"
-              x:Name="restroCollection"
-              Grid.Row="1"
-              ItemsSource="{Binding RestaurantList}">
+                TranslationY="0"
+                x:Name="restroCollection"
+                Grid.Row="1"
+                ItemsSource="{Binding RestaurantList}">
                 <CollectionView.ItemsLayout>
                     <mauiStaggeredCollectionView:StaggeredItemsLayout Span="2"/>
                 </CollectionView.ItemsLayout>
