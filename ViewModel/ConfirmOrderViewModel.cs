@@ -123,6 +123,7 @@ namespace FoodNinja.ViewModel
         #region Methods
         public async Task FetchFirebaseToken()
         {
+            await Task.Delay(1);
             try
             {
 #if ANDROID

@@ -12,6 +12,7 @@ namespace FoodNinja
         public App()
         {
             InitializeComponent();
+            
             SyncfusionLicenseProvider.RegisterLicense("MzUxMTQ3N0AzMjM3MmUzMDJlMzBFYjJ3Z2R4ZzNOV2xTUXRxZ3JLUG8rbzBqWVZIWlBOMmVvOG8vZG1vdDFNPQ==");
             Preferences.Remove("ReturnFromPage");
             bool isLoggedIn = Preferences.Get("IsLoggedIn", false);

@@ -14,6 +14,8 @@ using FoodNinja.Services;
 
 
 
+
+
 #if IOS
 using UIKit;
 using Foundation;
@@ -21,6 +23,7 @@ using Foundation;
 
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using FoodNinja.Platforms.Android;
 #endif
 
 namespace FoodNinja
@@ -64,6 +67,10 @@ namespace FoodNinja
                 builder.Logging.AddConsole();
                 builder.Services.AddTransient<ConfirmOrderViewModel>();
                 builder.Services.AddSingleton<INotificationPermissionManager, NotificationPermissionHelper>();
+                builder.Services.AddSingleton<FirebaseManager>();
+#if ANDROID
+            builder.Services.AddSingleton<FirebaseService>();
+#endif
 
             //For Transparent the Statusbar in Android 
             /* builder.ConfigureLifecycleEvents(events =>

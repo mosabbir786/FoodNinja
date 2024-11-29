@@ -868,6 +868,84 @@ namespace FoodNinja.Services
                 Console.WriteLine("Error while deleting placed order." + ex.Message);
                 return false;
             }
+        }       
+        public async Task<bool>SaveNotificationAsync(string userId, SaveNotificationModel notificationModel)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .Child(notificationModel.Id.ToString())
+                    .PatchAsync(notificationModel);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving notification: {ex.Message}");
+                return false;
+            }
+        }
+        
+        public async Task<List<SaveNotificationModel>> FetchNotificationListAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .OnceAsync<SaveNotificationModel>();
+                     var notificationList = notifications
+                    .Select(item => new SaveNotificationModel
+                    {
+                        Id = item.Object.Id,
+                        Title = item.Object.Title,
+                        Message = item.Object.Message,
+                        ReceivedAt = item.Object.ReceivedAt
+                       
+                    }).ToList();
+                return notificationList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while fetching notification list" + ex.Message);
+                return new List<SaveNotificationModel>();
+            }
+        }
+
+        public async Task<bool> DeleteNotificationById (string userId, int notificationId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .Child(notificationId.ToString())
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting notification id using id " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> ClearAllNotificationAsync(string userId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while clearing all notification" + ex.Message);
+                return false;
+            }
         }
         public async Task LogoutAsync()
         {

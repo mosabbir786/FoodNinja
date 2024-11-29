@@ -6,6 +6,8 @@ using AndroidX.Core.App;
 using AndroidX.Core.Content;
 using CommunityToolkit.Mvvm.Messaging;
 using FoodNinja.Model;
+using FoodNinja.Platforms.Android;
+using FoodNinja.Services;
 
 namespace FoodNinja
 {
@@ -22,6 +24,8 @@ namespace FoodNinja
             SupportActionBar.Hide();
             Platform.Init(this, savedInstanceState);
             await CreateNotificationChannel();
+            var firebaseManager = IPlatformApplication.Current.Services.GetService<FirebaseManager>();
+            FirebaseService.Init(firebaseManager);
         }
 
         protected override void OnNewIntent(Intent? intent)
@@ -46,6 +50,7 @@ namespace FoodNinja
         }
         private async Task CreateNotificationChannel()
         {
+            await Task.Delay(1);
             if (OperatingSystem.IsOSPlatformVersionAtLeast("android", 26))
             {
                 var channel = new NotificationChannel(Channel_ID, "Test Notfication Channel", NotificationImportance.Default);

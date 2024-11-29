@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.NotificationPage"
+             Title="NotificationPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             xmlns:converter="clr-namespace:FoodNinja.Converter"
+             xmlns:local="clr-namespace:FoodNinja.ViewModel"
+             xmlns:local1="clr-namespace:FoodNinja.Model"
+             xmlns:shimmer="clr-namespace:FoodNinja.Custom"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <!--#region Shimmer Effect Code -->
+            <Grid RowDefinitions="Auto,*" Margin="20,15" RowSpacing="10" IsVisible="{Binding IsLoading}">
+                <shimmer:BoxSkiletonView
+                    HeightRequest="{markups:OnScreenSize Large='48',Medium='46',Small='44'}" 
+                    WidthRequest="{markups:OnScreenSize Large='48',Medium='46',Small='44'}" 
+                    Color="Gray"
+                    HorizontalOptions="Start"
+                    CornerRadius="15"/>
+
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding DummyList}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            Orientation="Vertical"
+                            VerticalItemSpacing="10"
+                            Span="1"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Stroke="Transparent"
+                                BackgroundColor="#252525"
+                                Padding="10"
+                                StrokeShape="RoundRectangle 10">
+                                <Grid RowDefinitions="*" ColumnDefinitions="Auto,*,Auto">
+                                    <shimmer:BoxSkiletonView
+                                        Grid.Column="0"
+                                        Color="Gray"
+                                        CornerRadius="15"
+                                        HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                        WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                                    <VerticalStackLayout Margin="10,0,10,0" Grid.Row="0" Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                        <shimmer:BoxSkiletonView
+                                            Color="Gray"
+                                            HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                            CornerRadius="15"/>
+                                        <shimmer:BoxSkiletonView
+                                            Color="Gray"
+                                            HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                            CornerRadius="15"/>
+                                    </VerticalStackLayout>
+                                    <shimmer:BoxSkiletonView
+                                        Grid.Column="2"
+                                        Color="Gray"
+                                        HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                        WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                        CornerRadius="15"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region Actual Code -->
+            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" RowDefinitions="Auto,*" Margin="20,15" RowSpacing="10">
+                <ImageButton
+                    x:Name="backBtn"
+                    Source="back"
+                    HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                    WidthRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                    VerticalOptions="Start" HorizontalOptions="Start"
+                    Command="{Binding BackCommand}"/>
+
+                <Grid Grid.Row="1">
+                    <CollectionView
+                        IsVisible="{Binding NotificationCollectionVisiblity}"
+                        x:Name="notificationCollection"
+                        ItemsSource="{Binding NotificationList}"
+                        IsGrouped="True">
+                        <CollectionView.FooterTemplate>
+                            <DataTemplate>
+                                <VerticalStackLayout>
+                                    <Button
+                                        Margin="0,10,0,0"
+                                        Text="Clear Notification"
+                                        HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                                        CornerRadius="15"
+                                        BackgroundColor="#FEAD1D"
+                                        TextColor="#FFFFFF"
+                                        FontFamily="BentonMedium"
+                                        HorizontalOptions="Center"
+                                        Command="{Binding BindingContext.ClearNotificationCommand, Source={x:Reference Name=notificationCollection}}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="{markups:OnScreenSize Large='16', Medium='15',Small='14'}"/>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.FooterTemplate>
+                        <CollectionView.GroupHeaderTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Date}" FontAttributes="Bold" />
+                            </DataTemplate>
+                        </CollectionView.GroupHeaderTemplate>
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout
+                                Orientation="Vertical"
+                                Span="1"
+                                VerticalItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems SwipeBehaviorOnInvoked="Auto">
+                                            <SwipeItemView BackgroundColor="Transparent">
+                                                <ImageButton
+                                                    x:Name="deleteBtn"
+                                                    Source="delete"
+                                                    Margin="20,0"
+                                                    Command="{Binding BindingContext.DeleteNotificationCommand, Source={x:Reference Name=notificationCollection}}"
+                                                    CommandParameter="{Binding .}"
+                                                    HeightRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                                                    WidthRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"/>
+                                            </SwipeItemView>
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <VerticalStackLayout>
+                                        <Border
+                                            Stroke="Transparent"
+                                            BackgroundColor="#252525"
+                                            Padding="10"
+                                            StrokeShape="RoundRectangle 10">
+                                            <Grid RowDefinitions="*" ColumnDefinitions="Auto,*,Auto">
+                                                <Image
+                                                    Source="notification_tick"
+                                                    HorizontalOptions="Start"
+                                                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                                                <VerticalStackLayout Spacing="5" VerticalOptions="Center" Margin="10,0,0,0" Grid.Column="1">
+                                                    <Label
+                                                        Text="{Binding Title}"
+                                                        TextColor="#FEAD1D"
+                                                        FontFamily="BentonBold"
+                                                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+
+                                                    <Label
+                                                        Text="{Binding Message}"
+                                                        TextColor="#FFFFFF"
+                                                        FontFamily="BentonBook"
+                                                        FontSize="{markups:OnScreenSize Large='11',Medium='13',Small='11'}"/>
+                                                </VerticalStackLayout>
+
+                                                <Label
+                                                    Text="{Binding RelativeTime}"
+                                                    Grid.Column="2"
+                                                    VerticalOptions="Center"
+                                                    FontFamily="BentonMedium"
+                                                    FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"/>
+                                            </Grid>
+                                        </Border>
+                                    </VerticalStackLayout>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+
+                <skia:SKLottieView
+                    Grid.RowSpan="2"
+                    IsVisible="{Binding NoDataFoundVisible}"
+                    IsAnimationEnabled="{Binding NoDataFoundVisible}"
+                    x:Name="nocart"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="nodata.json"
+                    HeightRequest="200" WidthRequest="200"/>
+            </Grid>
+            <!--#endregion-->
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

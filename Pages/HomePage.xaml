@@ -189,7 +189,7 @@
                                  Source="notification"
                                  HeightRequest="20" WidthRequest="20"
                                  VerticalOptions="Center" HorizontalOptions="Center"
-                                 Clicked="NotificationImageButton_Clicked"/>
+                                 Command="{Binding NavigateToNotificationPageCommand}"/>
                         </Border>
 
                         <Border

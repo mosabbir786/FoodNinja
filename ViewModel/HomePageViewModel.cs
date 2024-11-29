@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FoodNinja.Model;
+using FoodNinja.Pages;
 using FoodNinja.Pages.HomeTabScreen;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
@@ -218,9 +219,9 @@ namespace FoodNinja.ViewModel
         }
 
         [RelayCommand]
-        private async Task NavigateToFilterPage()
+        private async Task NavigateToNotificationPage()
         {
-            //await Navigation.PushAsync(new FilterPage());
+            await Navigation.PushAsync(new NotificationPage());
         }
         #endregion
     }

@@ -135,6 +135,7 @@
 	  <None Remove="Resources\Images\mute.png" />
 	  <None Remove="Resources\Images\nointernet.png" />
 	  <None Remove="Resources\Images\notification.png" />
+	  <None Remove="Resources\Images\notification_tick.png" />
 	  <None Remove="Resources\Images\onboard1.png" />
 	  <None Remove="Resources\Images\onboard2.png" />
 	  <None Remove="Resources\Images\payoneer.png" />
@@ -160,7 +161,6 @@
 	  <None Remove="Resources\Images\visa.png" />
 	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
-	  <None Remove="Resources\Raw\firebaseAdminSdk.json" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />
 	  <None Remove="Resources\Raw\nocart.json" />
@@ -218,6 +218,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\NotificationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Onboarding Screen\FirstOnboarding.xaml">
