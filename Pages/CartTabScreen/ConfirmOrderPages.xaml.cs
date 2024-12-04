@@ -10,6 +10,8 @@ using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using System.Collections.ObjectModel;
 using FoodNinja.Pages.ProfileTabScreen;
 using Microsoft.Extensions.Logging;
+using FoodNinja.Pages.HomeTabScreen;
+using FoodNinja.Custom;
 
 namespace FoodNinja.Pages.CartTabScreen;
 
@@ -18,19 +20,33 @@ public partial class ConfirmOrderPages : ContentPage
     private ObservableCollection<AddFoodToCart> cartDataList;
     private FirebaseManager firebaseManager;
     private string _deviceToken;
+    private string?  ComesFromRestaurantDetailPage;
+    private string? ComesFromPopularMenuPage;
 
-    public ConfirmOrderPages(ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice)
+    public ConfirmOrderPages(ObservableCollection<AddFoodToCart> cartDataList, double subTotal, double totalPrice/*, string? comesFromRestaurantDetailPage = null, string? comesFromPopularMenuPage = null*/)
     {
         InitializeComponent();
         firebaseManager = new FirebaseManager();
         var permissionHelper = new NotificationPermissionHelper();
         this.cartDataList = cartDataList;
+       /* ComesFromRestaurantDetailPage = comesFromRestaurantDetailPage;
+        ComesFromPopularMenuPage = comesFromPopularMenuPage;*/
         this.BindingContext = new ConfirmOrderViewModel(firebaseManager, Navigation, cartDataList, subTotal, totalPrice,permissionHelper);
     }
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
+        string sourcePage = Preferences.Get("SourcePage", string.Empty);
+        if(sourcePage == "RestaurantDetailPage")
+        {
+            NavigationTracker.AddPage(nameof(ConfirmOrderPages));
+        }
+        else if(sourcePage == "PopularMenuPage")
+        {
+            NavigationTracker.AddPage(nameof(ConfirmOrderPages));
+        }
+
         if (BindingContext is ConfirmOrderViewModel viewModel)
         {
             string returnFromPage = Preferences.Get("ReturnFromPage", string.Empty);

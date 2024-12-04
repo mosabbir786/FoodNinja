@@ -15,5 +15,7 @@ namespace FoodNinja.Model
         public string ReceivedAt { get; set; }
 
         public string RelativeTime => TimeFormater.GetRelativeTime(ReceivedAt);
+
+        public bool IsRead { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using FoodNinja.Model;
 using FoodNinja.Pages;
 using FoodNinja.Pages.HomeTabScreen;
@@ -69,6 +71,12 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string currentViewModel = "HomePage";
+
+        [ObservableProperty]
+        private int unreadNotificationCount;
+
+        [ObservableProperty]
+        private string userId;
         public ICommand AddFoodToCartCommand { get; }
         #endregion
 
@@ -77,6 +85,7 @@ namespace FoodNinja.ViewModel
         {
             Navigation = navigation;
             firebaseManager = _firebaseManager;
+            UserId = Preferences.Get("LocalId", string.Empty);
             Items = new ObservableCollection<Item>
             {
                 new Item { Name = "Name", Description = "Description", Image = "rs1.png" },
@@ -91,6 +100,11 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Methods
+
+        public async Task LoadUnreadNotificationCount()
+        {
+            UnreadNotificationCount = await firebaseManager.GetUnreadNotificationCountAsync(UserId);
+        }
         private async void LoadData()
         {
             IsLoading = true;
@@ -224,6 +238,14 @@ namespace FoodNinja.ViewModel
             await Navigation.PushAsync(new NotificationPage());
         }
         #endregion
+    }
+
+    public class  NotificationBadgeMessage : ValueChangedMessage<int>
+    {
+        public NotificationBadgeMessage(int unreadCount) : base(unreadCount)
+        {
+            
+        }
     }
 }
 

@@ -28,6 +28,15 @@ public partial class TrackOrderPage : ContentPage
         base.OnAppearing();
         ApplyMapStyleBasedOnTheme();
         GetDirections();
+        string sourcePage = Preferences.Get("SourcePage", string.Empty);
+        if (sourcePage == "RestaurantDetailPage")
+        {
+            NavigationTracker.AddPage(nameof(TrackOrderPage));
+        }
+        else if (sourcePage == "PopularMenuPage")
+        {
+            NavigationTracker.AddPage(nameof(ConfirmOrderPages));
+        }
     }
     protected override void OnDisappearing()
     {
@@ -78,6 +87,7 @@ public partial class TrackOrderPage : ContentPage
     {
         try
         {
+            await Task.Delay(1);
             var a = Assembly.GetExecutingAssembly();
             // using var stream = a.GetManifestResourceStream("FoodDeliveryMaui.dark_map_style.json");
             using var stream = a.GetManifestResourceStream("FoodNinja.darkmap.json");
@@ -285,7 +295,7 @@ public partial class TrackOrderPage : ContentPage
             throw;
         }
     }
-    private async void MapPinClicked(MapPin pin)
+    private  void MapPinClicked(MapPin pin)
     {
 
     }

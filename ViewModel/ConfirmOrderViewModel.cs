@@ -102,6 +102,9 @@ namespace FoodNinja.ViewModel
         private string addOrEditBtnText;
         public ICommand PaymentMethodSelectedCommand { get; }
 
+        private string? ComesFromRestaurantDetailPage;
+        private string? ComesFromPopularMenuPage;
+
         #endregion
 
         #region Constructor

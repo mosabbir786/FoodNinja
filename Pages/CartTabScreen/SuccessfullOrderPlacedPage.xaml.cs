@@ -1,3 +1,4 @@
+using FoodNinja.Custom;
 using FoodNinja.Model;
 using System.ComponentModel;
 
@@ -29,7 +30,19 @@ public partial class SuccessfullOrderPlacedPage : ContentPage,INotifyPropertyCha
         await Navigation.PushAsync(new TrackOrderPage(PlacedOrderItem));
     }
 
-
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        string sourcePage = Preferences.Get("SourcePage", string.Empty);
+        if (sourcePage == "RestaurantDetailPage")
+        {
+            NavigationTracker.AddPage(nameof(SuccessfullOrderPlacedPage));
+        }
+        else if (sourcePage == "PopularMenuPage")
+        {
+            NavigationTracker.AddPage(nameof(ConfirmOrderPages));
+        }
+    }
     protected override bool OnBackButtonPressed()
     {
         Preferences.Set("ReturnFromPage", "SuccessfullOrderPlacedPage");

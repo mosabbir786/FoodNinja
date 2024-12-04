@@ -27,7 +27,7 @@ namespace FoodNinja.Custom
                 if (span.Minutes > 1)
                     return $"{span.Minutes} min";
                 if (span.Minutes == 1)
-                    return "1min ago";
+                    return "1min";
                 return "now";
             }
             return "Invalid date";

@@ -39,6 +39,8 @@ namespace FoodNinja.ViewModel
         [ObservableProperty]
         private ObservableCollection<AddFoodToCart> cartDataList = new ObservableCollection<AddFoodToCart>();
 
+        [ObservableProperty]
+        private string pageType;
         public IAsyncRelayCommand DeleteCartItemCommand { get; }
         #endregion
 
@@ -119,7 +121,7 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task PlaceOrder()
         {
-            await Navigation.PushAsync(new ConfirmOrderPages(CartDataList, SubTotal, TotalPrice));
+             await Navigation.PushAsync(new ConfirmOrderPages(CartDataList, SubTotal, TotalPrice));
         }
         #endregion
 

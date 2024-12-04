@@ -873,6 +873,7 @@ namespace FoodNinja.Services
         {
             try
             {
+                notificationModel.IsRead = false;
                 await firebaseClient
                     .Child("NotificationList")
                     .Child(userId)
@@ -887,6 +888,55 @@ namespace FoodNinja.Services
             }
         }
         
+        public async Task<int> GetUnreadNotificationCountAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .OnceAsync<SaveNotificationModel>();
+
+                var unreadCount = notifications
+                    .Count(item => !item.Object.IsRead);
+                return unreadCount;
+            }
+            catch( Exception ex )
+            {
+                Console.WriteLine("Error while fetching unread notification count: " + ex.Message);
+                return 0;
+            }
+        }
+
+        public async Task<bool> MarkAllNotificationsAsReadAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child (userId)
+                    .OnceAsync<SaveNotificationModel>();
+
+                foreach(var item in notifications)
+                {
+                    var notification = item.Object;
+                    notification.IsRead = true;
+
+                    await firebaseClient
+                        .Child("NotificationList")
+                        .Child(userId)
+                        .Child(notification.Id.ToString())
+                        .PatchAsync(notification);
+                }
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while marking notifications as read: " + ex.Message);
+                return false;
+            }
+        }
         public async Task<List<SaveNotificationModel>> FetchNotificationListAsync(string userId)
         {
             try
@@ -947,6 +997,8 @@ namespace FoodNinja.Services
                 return false;
             }
         }
+
+
         public async Task LogoutAsync()
         {
             try

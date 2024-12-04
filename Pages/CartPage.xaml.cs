@@ -1,5 +1,6 @@
 using AlohaKit.Animations;
 using CommunityToolkit.Maui.Views;
+using FoodNinja.Custom;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
@@ -26,7 +27,19 @@ public partial class CartPage : ContentPage
     {
         Dispatcher.Dispatch(async () =>
         {
-            await this.ShowPopupAsync(new ShowExitConfirmationPopup());
+            var sourcePage = Preferences.Get("SourcePage", string.Empty);
+            if (sourcePage == "RestaurantDetailPage")
+            {
+                await Navigation.PopAsync();
+            }
+            else if (sourcePage == "PopularMenuPage")
+            {
+                await Navigation.PopAsync();
+            }
+            else if (sourcePage != "RestaurantDetailPage" && sourcePage != "PopularMenuPage")
+            {
+                await this.ShowPopupAsync(new ShowExitConfirmationPopup());
+            }
         });
         return true;
     }
@@ -94,22 +107,40 @@ public partial class CartPage : ContentPage
         base.OnAppearing();
         priceCalculationBorder.Margin = new Thickness(0, 10, 0, 70);
         backBtn.IsVisible = false;
-        var sourcePage = Preferences.Get("SourcePage", string.Empty);
-        if (sourcePage == "RestaurantDetailPage")
+
+
+      
+        if (BindingContext is CartViewModel cartViewModel)
         {
-            backBtn.IsVisible = true;
-            priceCalculationBorder.Margin = new Thickness(0, 10, 0, 0);
+            cartViewModel.PageType = Preferences.Get("SourcePage", string.Empty);
+            if (cartViewModel.PageType == "RestaurantDetailPage")
+            {
+                NavigationTracker.AddPage(nameof(CartPage));
+                /*var navigationHistory = NavigationTracker.GetNavigationHistoryPageName();
+                string history = string.Join(",", navigationHistory);
+                Console.WriteLine("****************" + " " + history);*/
+
+                backBtn.IsVisible = true;
+                priceCalculationBorder.Margin = new Thickness(0, 10, 0, 0);
+            }
+            else if (cartViewModel.PageType == "PopularMenuPage")
+            {
+                NavigationTracker.AddPage(nameof(CartPage));
+
+               /* var navigationHistory = NavigationTracker.GetNavigationHistoryPageName();
+                string history = string.Join(",", navigationHistory);
+                Console.WriteLine("****************" + " " + history);*/
+
+                backBtn.IsVisible = true;
+                priceCalculationBorder.Margin = new Thickness(0, 10, 0, 0);
+            }
+            else if (cartViewModel.PageType != "RestaurantDetailPage" && cartViewModel.PageType != "PopularMenuPage")
+            {
+                backBtn.IsVisible = false;
+                priceCalculationBorder.Margin = new Thickness(0, 10, 0, 70);
+            }
         }
-        else if (sourcePage == "PopularMenuPage")
-        {
-            backBtn.IsVisible = true;
-            priceCalculationBorder.Margin = new Thickness(0, 10, 0, 0);
-        }
-        else if (sourcePage != "RestaurantDetailPage" && sourcePage != "PopularMenuPage")
-        {
-            backBtn.IsVisible = false;
-            priceCalculationBorder.Margin = new Thickness(0, 10, 0, 70);
-        }
+
         if (BindingContext is CartViewModel viewModel)
         {
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -143,7 +174,19 @@ public partial class CartPage : ContentPage
         if (BindingContext is CartViewModel viewModel)
         {
             await viewModel.GetCartdata();
+            var navigationHistory = NavigationTracker.GetNavigationHistory();
+            int totalNavigationCount = NavigationTracker.GetNavigationHistory();
+            if(viewModel.PageType == "RestaurantDetailPage" || viewModel.PageType == "PopularMenuPage")
+            {
+                if (totalNavigationCount >= 8)
+                {
+                    Preferences.Remove("SourcePage");
+                }
+                else if(totalNavigationCount >= 6)
+                {
+                    Preferences.Remove("SourcePage");
+                }
+            }           
         }
-        Preferences.Remove("SourcePage");
     }
 }

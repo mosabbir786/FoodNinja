@@ -51,129 +51,129 @@
         <Grid Margin="0,5,0,0" RowDefinitions=".2*,.8*,Auto">
             <Grid TranslationY="0" x:Name="upperGrid" Margin="20,0,20,20" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
                 <Label
-                VerticalOptions="Center"
-                LineHeight="{markups:OnScreenSize Large='1',Medium='0.9',Small='0.79'}"
-                Margin="0,0,50,0"
-                Grid.Row="0" Grid.Column="0"
-                FontSize="31"
-                FontFamily="BentonBold"
-                TextColor="#FFFFFF"
-                Text="{StaticResource Headline}"/>
-
-                <Border
-                Grid.Row="0" Grid.Column="1"
-                HeightRequest="45" WidthRequest="45" 
-                Style="{StaticResource borderStyle}">
-                    <Image
-                    Source="notification"
-                    HeightRequest="20" WidthRequest="20"
-                    VerticalOptions="Center" HorizontalOptions="Center"/>
-                </Border>
-
-                <Border
-                 Margin="0,10,0,0"
-                 HeightRequest="45"
-                 Grid.Row="1" Grid.Column="0"
-                 Style="{StaticResource borderStyle}">
-                    <SearchBar
-                    x:Name="searchbar"
-                    Placeholder="What do you want to order?"
-                    FontSize="12"
-                    FontFamily="BentonRegular"
-                    CancelButtonColor="#FFFFFF"
+                    VerticalOptions="Center"
+                    LineHeight="{markups:OnScreenSize Large='1',Medium='0.9',Small='0.79'}"
+                    Margin="0,0,50,0"
+                    Grid.Row="0" Grid.Column="0"
+                    FontSize="31"
+                    FontFamily="BentonBold"
                     TextColor="#FFFFFF"
-                    TextChanged="searchbar_TextChanged"
-                    SearchButtonPressed="searchbar_SearchButtonPressed"/>
+                    Text="{StaticResource Headline}"/>
+
+                <Border
+                    Grid.Row="0" Grid.Column="1"
+                    HeightRequest="45" WidthRequest="45" 
+                    Style="{StaticResource borderStyle}">
+                    <Image
+                        Source="notification"
+                        HeightRequest="20" WidthRequest="20"
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Border>
 
                 <Border
-                 Margin="0,10,0,0"
-                 VerticalOptions="Center"
-                 Grid.Row="1" Grid.Column="1"
-                 HeightRequest="45" WidthRequest="45" 
-                 Style="{StaticResource borderStyle}">
+                     Margin="0,10,0,0"
+                     HeightRequest="45"
+                     Grid.Row="1" Grid.Column="0"
+                     Style="{StaticResource borderStyle}">
+                    <SearchBar
+                        x:Name="searchbar"
+                        Placeholder="What do you want to order?"
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        CancelButtonColor="#FFFFFF"
+                        TextColor="#FFFFFF"
+                        TextChanged="searchbar_TextChanged"
+                        SearchButtonPressed="searchbar_SearchButtonPressed"/>
+                </Border>
+
+                <Border
+                     Margin="0,10,0,0"
+                     VerticalOptions="Center"
+                     Grid.Row="1" Grid.Column="1"
+                     HeightRequest="45" WidthRequest="45" 
+                     Style="{StaticResource borderStyle}">
                     <Image
-                    Source="filter"
-                    HeightRequest="20" WidthRequest="20"
-                    VerticalOptions="Center" HorizontalOptions="Center"/>
+                        Source="filter"
+                        HeightRequest="20" WidthRequest="20"
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Border>
             </Grid>
 
             <CollectionView
-            Margin="20,0"
-            TranslationY="0"
-            x:Name="menuList"
-            Grid.Row="1"
-            HorizontalOptions="Fill" VerticalOptions="Fill"
-            CollectionView.ItemsSource="{Binding PopularMenueList}">
+                Margin="20,0"
+                TranslationY="0"
+                x:Name="menuList"
+                Grid.Row="1"
+                HorizontalOptions="Fill" VerticalOptions="Fill"
+                CollectionView.ItemsSource="{Binding PopularMenueList}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout
-                    Orientation="Vertical"
-                    Span="1"
-                    VerticalItemSpacing="10"/>
+                        Orientation="Vertical"
+                        Span="1"
+                        VerticalItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border
-                        StrokeShape="RoundRectangle 15"
-                        Padding="10"
-                        Style="{StaticResource borderStyle}"
-                        HeightRequest="{markups:OnScreenSize Medium='98',Large='100',Small='96'}">
+                            StrokeShape="RoundRectangle 15"
+                            Padding="10"
+                            Style="{StaticResource borderStyle}"
+                            HeightRequest="{markups:OnScreenSize Medium='98',Large='100',Small='96'}">
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
                                 <Border
-                                Stroke="Transparent"
-                                HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
-                                WidthRequest="{markups:OnScreenSize Medium='53',Large='55',Small='51'}"
-                                StrokeShape="RoundRectangle, 12">
+                                    Stroke="Transparent"
+                                    HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                                    WidthRequest="{markups:OnScreenSize Medium='53',Large='55',Small='51'}"
+                                    StrokeShape="RoundRectangle, 12">
                                     <ffimageloading:CachedImage
-                                    Source="{Binding FoodImageSource,FallbackValue='dummyicon.png'}" Aspect="AspectFill" 
-                                    LoadingPlaceholder="dummyicon.png"
-                                    ErrorPlaceholder="error.png"
-                                    DownsampleToViewSize="true"
-                                    CacheType="Memory"/>
+                                        Source="{Binding FoodImageSource,FallbackValue='dummyicon.png'}" Aspect="AspectFill" 
+                                        LoadingPlaceholder="dummyicon.png"
+                                        ErrorPlaceholder="error.png"
+                                        DownsampleToViewSize="true"
+                                        CacheType="Memory"/>
 
                                 </Border>
 
                                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="0,0,0,10">
                                     <Label
-                                    Margin="0,10,0,0"
-                                    Text="{Binding DishName}"
-                                    TextColor="#FFFFFF"
-                                    FontSize="{markups:OnScreenSize Medium='12',Large='13',Small='11'}"
-                                    FontFamily="BentonBold"
-                                    HorizontalTextAlignment="Start" />
+                                        Margin="0,10,0,0"
+                                        Text="{Binding DishName}"
+                                        TextColor="#FFFFFF"
+                                        FontSize="{markups:OnScreenSize Medium='12',Large='13',Small='11'}"
+                                        FontFamily="BentonBold"
+                                        HorizontalTextAlignment="Start" />
                                     <Label
-                                    Margin="0,5,0,0"
-                                    Text="{Binding RestaurantName}"
-                                    TextColor="LightGray"
-                                    Opacity="0.5"
-                                    FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
-                                    FontFamily="BentonRegular"
-                                    HorizontalTextAlignment="Start"/>
+                                        Margin="0,5,0,0"
+                                        Text="{Binding RestaurantName}"
+                                        TextColor="LightGray"
+                                        Opacity="0.5"
+                                        FontSize="{markups:OnScreenSize Medium='10',Large='11',Small='9'}"
+                                        FontFamily="BentonRegular"
+                                        HorizontalTextAlignment="Start"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout VerticalOptions="Center" Grid.Column="2" Margin="0,0,10,0">
                                     <Label
-                                    Margin="0,0,0,10"
-                                    Text="{Binding Price, StringFormat='${0:F2}'}"
-                                    TextColor="#FEAD1D"
-                                    FontSize="{markups:OnScreenSize Medium='16',Large='18',Small='14'}"
-                                    FontFamily="BentonMedium"
-                                    HorizontalTextAlignment="Center" />
+                                        Margin="0,0,0,10"
+                                        Text="{Binding Price, StringFormat='${0:F2}'}"
+                                        TextColor="#FEAD1D"
+                                        FontSize="{markups:OnScreenSize Medium='16',Large='18',Small='14'}"
+                                        FontFamily="BentonMedium"
+                                        HorizontalTextAlignment="Center" />
 
                                     <Button
-                                    FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
-                                    FontFamily="BentonMedium"
-                                    FontAttributes="Bold"
-                                    CornerRadius="12"
-                                    Text="Add+"
-                                    CharacterSpacing="1.5"
-                                    TextColor="#FFFFFF"
-                                    BackgroundColor="#37d582"
-                                    HeightRequest="{markups:OnScreenSize Large='38',Medium='36',Small='34'}"
-                                    WidthRequest="{markups:OnScreenSize Large='70',Medium='68',Small='66'}"
-                                    Command="{Binding BindingContext.AddFoodToCartCommand, Source={x:Reference Name=menuList}}"
-                                    CommandParameter="{Binding .}"/>
+                                        FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
+                                        FontFamily="BentonMedium"
+                                        FontAttributes="Bold"
+                                        CornerRadius="12"
+                                        Text="Add+"
+                                        CharacterSpacing="1.5"
+                                        TextColor="#FFFFFF"
+                                        BackgroundColor="#37d582"
+                                        HeightRequest="{markups:OnScreenSize Large='38',Medium='36',Small='34'}"
+                                        WidthRequest="{markups:OnScreenSize Large='70',Medium='68',Small='66'}"
+                                        Command="{Binding BindingContext.AddFoodToCartCommand, Source={x:Reference Name=menuList}}"
+                                        CommandParameter="{Binding .}"/>
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -184,6 +184,7 @@
                 </CollectionView.Footer>
             </CollectionView>
 
+            <!--#region Cart Notification Border Code -->
             <Border
                 TranslationY="0" 
                 x:Name="cartNotificationBorder"
@@ -210,14 +211,14 @@
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span
-                                    Text="{Binding NumberOfItemInCart}"
-                                    TextColor="#FFFFFF"
-                                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                                        Text="{Binding NumberOfItemInCart}"
+                                        TextColor="#FFFFFF"
+                                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
 
                                     <Span
-                                    Text="{Binding CartValueText, StringFormat=' {0} '}"
-                                    TextColor="#FFFFFF"
-                                    FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                                        Text="{Binding CartValueText, StringFormat=' {0} '}"
+                                        TextColor="#FFFFFF"
+                                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
@@ -238,16 +239,18 @@
                     </Grid>
                 </Border>
             </Border>
+            <!--#endregion-->
+
             <skia:SKLottieView
-            IsVisible="False"
-            IsAnimationEnabled="False"
-            Grid.RowSpan="3"
-            VerticalOptions="Center" HorizontalOptions="Center"
-            x:Name="loader"
-            RepeatCount="-1"
-            RepeatMode="Reverse"
-            Source="nodata.json"
-            HeightRequest="200" WidthRequest="200"/>
+                IsVisible="False"
+                IsAnimationEnabled="False"
+                Grid.RowSpan="3"
+                VerticalOptions="Center" HorizontalOptions="Center"
+                x:Name="loader"
+                RepeatCount="-1"
+                RepeatMode="Reverse"
+                Source="nodata.json"
+                HeightRequest="200" WidthRequest="200"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

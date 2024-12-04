@@ -2,8 +2,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FoodNinja.Custom;
 using FoodNinja.Model;
 using FoodNinja.Pages;
+using FoodNinja.Pages.HomeTabScreen;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using System;
@@ -54,6 +56,7 @@ namespace FoodNinja.ViewModel
         private async Task Navigate()
         {
             Preferences.Set("SourcePage", "PopularMenuPage");
+            NavigationTracker.AddPage(nameof(PopularMenuPage));
             await Navigation.PushAsync(new CartPage());
         }
         #endregion

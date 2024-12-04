@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FoodNinja.Model;
 using FoodNinja.Services;
 using System;
@@ -43,6 +44,7 @@ namespace FoodNinja.ViewModel
 
         public  IAsyncRelayCommand DeleteNotificationCommand { get; }
         #endregion
+
         #region Constructor
         public NotificationViewModel(INavigation navigation, FirebaseManager firebaseManager)
         {
@@ -76,34 +78,12 @@ namespace FoodNinja.ViewModel
             var response =await _firebaseManager.FetchNotificationListAsync(UserId);
             if (response != null && response.Any())
             {
-               /* var groupedData = response
-                .GroupBy(n => n.ReceivedAt)
-                .Select(g => new NotificationGroup(g.Key, new ObservableCollection<SaveNotificationModel>(g))).ToList();
-                NotificationList = new ObservableCollection<NotificationGroup>(groupedData);
-                foreach (var group in NotificationList)
-                {
-                    Console.WriteLine($"Group: {group.Date}");
-                    foreach (var notification in group)
-                    {
-                        Console.WriteLine($" - Title: {notification.Title}, Message: {notification.Message}");
-                    }
-                }*/
-                /* var grouped = response
-                 .GroupBy(n => DateTime.ParseExact(n.ReceivedAt, "hh:mm tt dd-MM-yyyy", null).ToString("dd-MM-yyyy"))
-                 .Select(g => new NotificationGroup(g.Key, g))
-                 .ToList();
-                 NotificationList = new ObservableCollection<NotificationGroup>(grouped);
-                 foreach (var group in NotificationList)
-                 {
-                     Debug.WriteLine($"Group: {group.Date}");
-                     foreach (var notification in group.Notifications)
-                     {
-                         Debug.WriteLine($"Notification: {notification.Title} - {notification.Message}");
-                     }
-                 }*/
-
                 NotificationList = new ObservableCollection<SaveNotificationModel>(response);
                 NotificationCollectionVisiblity = NotificationList.Any();
+                await _firebaseManager.MarkAllNotificationsAsReadAsync(UserId);
+                int unreadCount = await _firebaseManager.GetUnreadNotificationCountAsync(UserId);
+
+                WeakReferenceMessenger.Default.Send(new FoodNinja.ViewModel.NotificationBadgeMessage(unreadCount));
             }
             else
             {
@@ -152,14 +132,4 @@ namespace FoodNinja.ViewModel
         }
         #endregion
     }
-    //public class NotificationGroup:ObservableCollection<SaveNotificationModel>
-    //{
-    //    public string Date { get; set; }
-    // //   public List<SaveNotificationModel> Notifications { get; set; }
-    //    public NotificationGroup(string date, ObservableCollection<SaveNotificationModel> notifications) : base(notifications) 
-    //    {
-    //        Date = date;
-    //       // Notifications = notifications.ToList();
-    //    }
-    //}
 }

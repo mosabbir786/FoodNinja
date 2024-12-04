@@ -3,8 +3,10 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FoodNinja.Custom;
 using FoodNinja.Model;
 using FoodNinja.Pages;
+using FoodNinja.Pages.HomeTabScreen;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using System;
@@ -73,6 +75,8 @@ namespace FoodNinja.ViewModel
         {
             WeakReferenceMessenger.Default.Send("RestaurantDetailPage");
             Preferences.Set("SourcePage", "RestaurantDetailPage");
+
+            NavigationTracker.AddPage(nameof(RestaurantDetailPage));
             await Navigation.PushAsync(new CartPage());
         }
         #endregion

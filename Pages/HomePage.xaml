@@ -16,6 +16,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converter:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converter:IntToBoolConverter x:Key="IntToBoolConverter"/>
             <Color x:Key="shimmerColor">Gray</Color>
             <x:String x:Key="Headline">Find Your Favorite Food</x:String>
             <x:String x:Key="Deal">Special Deal For &#10; October</x:String>
@@ -182,14 +183,43 @@
                              Text="{StaticResource Headline}"/>
 
                         <Border
+                            x:Name="notificationFrame"
                              Grid.Row="0" Grid.Column="1"
                              HeightRequest="45" WidthRequest="45" 
-                             Style="{StaticResource borderStyle}">
-                            <ImageButton
+                             Style="{StaticResource borderStyle}"
+                             Padding="10"
+                             BackgroundColor="#252525">
+                            <Image
                                  Source="notification"
-                                 HeightRequest="20" WidthRequest="20"
-                                 VerticalOptions="Center" HorizontalOptions="Center"
-                                 Command="{Binding NavigateToNotificationPageCommand}"/>
+                                 VerticalOptions="Center" HorizontalOptions="Center"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateToNotificationPageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Border.Behaviors>
+                                <toolkit:TouchBehavior
+                                    DefaultAnimationDuration="250"
+                                    DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                                    PressedOpacity="0.6"
+                                    PressedScale="0.8" />
+                            </Border.Behaviors>
+                        </Border>
+
+
+                        <Border
+                            IsVisible="{Binding UnreadNotificationCount, Converter={StaticResource IntToBoolConverter}}"
+                            Grid.Row="0" Grid.Column="1"
+                            VerticalOptions="Start" HorizontalOptions="End"
+                            StrokeShape="RoundRectangle 12.5"
+                            HeightRequest="22" WidthRequest="22"
+                            BackgroundColor="#37d582"
+                            Stroke="Transparent"
+                            Margin="5,2,-5,0"
+                            Padding="0">
+                            <Label
+                                Text="{Binding UnreadNotificationCount}"
+                                VerticalOptions="Center" HorizontalOptions="Center"
+                                Margin="0"
+                                FontSize="10"/>
                         </Border>
 
                         <Border

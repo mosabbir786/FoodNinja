@@ -20,6 +20,12 @@ public partial class PopularMenuPage : ContentPage
         }
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        cartNotificationBorder.IsVisible = false;
+        cartNotificationBorder.TranslationY = 0;
+    }
     private async void OnFoodAddedToCart()
     {
         if (!isAnimating)
@@ -30,7 +36,6 @@ public partial class PopularMenuPage : ContentPage
             await Task.Delay(100);
         }
     }
-
     private async void FadeAndTranslate(Microsoft.Maui.Controls.VisualElement popview, uint fadeLength = 1000, uint translateLength = 500)
     {
         SetViewPosition(popview);
@@ -42,7 +47,6 @@ public partial class PopularMenuPage : ContentPage
         popview.TranslationY = 300;
         popview.Opacity = 0.5;
     }
-
     private void searchbar_TextChanged(object sender, TextChangedEventArgs e)
     {
         var container = BindingContext as PopularMenuViewModel;
@@ -67,7 +71,6 @@ public partial class PopularMenuPage : ContentPage
             }
         }
     }
-
     private void searchbar_SearchButtonPressed(object sender, EventArgs e)
     {
         Performsearch(searchbar.Text);

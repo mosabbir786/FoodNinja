@@ -155,13 +155,14 @@
                                                         Text="{Binding Title}"
                                                         TextColor="#FEAD1D"
                                                         FontFamily="BentonBold"
-                                                        FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+                                                        FontSize="{markups:OnScreenSize Large='13',Medium='12',Small='11'}"/>
 
                                                     <Label
                                                         Text="{Binding Message}"
                                                         TextColor="#FFFFFF"
                                                         FontFamily="BentonBook"
-                                                        FontSize="{markups:OnScreenSize Large='11',Medium='13',Small='11'}"/>
+                                                        Margin="0,0,4,0"
+                                                        FontSize="{markups:OnScreenSize Large='11',Medium='9',Small='8'}"/>
                                                 </VerticalStackLayout>
 
                                                 <Label
