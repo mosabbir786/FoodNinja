@@ -3,10 +3,14 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
 using FoodNinja.Model;
+using FoodNinja.Pages;
+using Microsoft.Maui.Controls.Internals;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,13 +22,25 @@ namespace FoodNinja.Services
         private const string DatabaseUrl = "https://fir-maui-491c3-default-rtdb.firebaseio.com/";
         FirebaseAuthProvider firebaseAuthProvider;
         FirebaseClient firebaseClient;
-
         public FirebaseManager()
         {
             firebaseAuthProvider = new FirebaseAuthProvider(new FirebaseConfig(FirebaseApiKey));
             firebaseClient = new FirebaseClient(DatabaseUrl);
         }
 
+        public async Task<bool> SendPasswordResetEmailAsync(string email)
+        {
+            try
+            {
+                await firebaseAuthProvider.SendPasswordResetEmailAsync(email);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error sending password reset email: {ex.Message}");
+                return false;
+            }
+        }
         public async Task<SignupModel> CreateAccount(string userName, string email, string password)
         {
             try
@@ -181,7 +197,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<List<NearestRestaurantModel>> GetNearestRestaurantAsync()
         {
             try
@@ -288,7 +303,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<List<AddFoodToCart>> GetCartDataAsync()
         {
             try
@@ -339,7 +353,6 @@ namespace FoodNinja.Services
                 return new List<AddFoodToCart>();
             }
         }
-
         public async Task<bool> DecrementFoodQuantityAsync(AddFoodToCart addFoodToCart)
         {
             try
@@ -448,7 +461,6 @@ namespace FoodNinja.Services
                 return false;
             }
         }
-
         public async Task<UserDataModel> GetUserDataAsync(string userId)
         {
             try
@@ -464,38 +476,6 @@ namespace FoodNinja.Services
             {
                 Console.WriteLine("Error while fetching user data " + ex.Message);
                 return null;
-            }
-        }
-        public async Task UpdateUserAddressAysnc(string userId, string newAddress)
-        {
-            try
-            {
-                Console.WriteLine($"Updating address for user: {userId} to {newAddress}");
-
-                var userChildren = await firebaseClient
-                    .Child("UserData")
-                    .Child(userId)
-                    .OnceAsync<UserDataModel>();
-                var userNode = userChildren.FirstOrDefault();
-                if (userNode != null)
-                {
-                    var thirdChildKey = userNode.Key;
-                    Console.WriteLine($"Third child key: {thirdChildKey}");
-
-                    var updates = new Dictionary<string, object>
-                    {
-                        { "Address", newAddress }
-                    };
-                    await firebaseClient
-                        .Child("UserData")
-                        .Child(userId)
-                        .Child(thirdChildKey)
-                        .PatchAsync(updates);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error while updating user address" + ex.Message);
             }
         }
         public async Task<bool> IsDifferentRestaurantPresentAsync(string userId, int restaurantId)
@@ -538,6 +518,502 @@ namespace FoodNinja.Services
                 Console.WriteLine("***************** Exception: " + ex.Message);
                 Console.WriteLine("***************** StackTrace: " + ex.StackTrace);
                 return false;
+            }
+        }
+        public async Task AddPaymentMethodAsync(string userId, PaymentModel paymentMethod)
+        {
+            try
+            {
+                var allUsers = await firebaseClient
+                 .Child("UserData")
+                 .Child(userId)
+                 .OnceAsync<UserDataModel>();
+                var userNode = allUsers.FirstOrDefault();
+                if (userNode.Key != null)
+                {
+                    var userData = userNode.Object;
+                    if (userData.PaymentMethod == null)
+                    {
+                        userData.PaymentMethod = new Dictionary<int, PaymentModel>();
+                    }
+
+                    if (!userData.PaymentMethod.ContainsKey(paymentMethod.Id))
+                    {
+                        userData.PaymentMethod[paymentMethod.Id] = paymentMethod;
+                        await firebaseClient
+                           .Child("UserData")
+                           .Child(userId)
+                           .Child(userNode.Key)
+                           .PatchAsync(JsonConvert.SerializeObject(userData));
+                        Console.WriteLine("Payment method added successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Payment method with this ID already exists.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while adding payment method " + ex.Message);
+            }
+        }      
+        public async Task<bool>DeletePaymentMethodAsync(string userId, int paymentMrthodId)
+        {
+            try
+            {
+                var allUser = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = allUser.FirstOrDefault();
+                if(userNode != null)
+                {
+                    var userData = userNode.Object;
+                    if(userData.PaymentMethod != null && userData.PaymentMethod.ContainsKey(paymentMrthodId))
+                    {
+                        userData.PaymentMethod.Remove(paymentMrthodId);
+                        await firebaseClient
+                            .Child("UserData")
+                            .Child(userId)
+                            .Child(userNode.Key)
+                            .PatchAsync(JsonConvert.SerializeObject(new 
+                            {
+                               PaymentMethod = userData.PaymentMethod
+                            }));
+                        Console.WriteLine("Payment method deleted successfully.");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Payment method not found.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting payment method" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> PlacedOrderAsync(string UserId, List<OrderPlacedModel> selectedOrder)
+        {
+            try
+            {
+                var userOrderRef = firebaseClient.Child("PlacedOrder").Child(UserId);
+                foreach (var order in selectedOrder)
+                {
+                    await userOrderRef.Child(order.OrderId.ToString()).PostAsync(order);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while plced order" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> DeleteCartByIdAsync(string userId, int? restaurantId)
+        {
+            try
+            {
+                await firebaseClient
+                     .Child("CartItem")
+                     .Child(userId)
+                     .Child(restaurantId.ToString())
+                     .DeleteAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while deleting cart item by id" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<List<UserDataModel>> GetAllUser()
+        {
+            try
+            {
+                /* var users = await firebaseClient
+                     .Child("UserData")
+                     .OnceAsync<UserDataModel>();
+
+                 var userList = new List<UserDataModel>();
+
+                 foreach (var user in users)
+                 {
+                     var userId = user.Key;
+                     var userDetails = await firebaseClient
+                         .Child("UserData")
+                         .Child(userId)
+                         .OnceAsync<UserDataModel>();
+
+                     foreach (var detail in userDetails)
+                     {
+                         var userData = detail.Object;
+                         userData.Id = userId; 
+                         userList.Add(userData);
+                     }
+                 }
+                 return userList;*/
+
+                var usersData = await firebaseClient
+                    .Child("UserData")
+                    .OnceSingleAsync<Dictionary<string, Dictionary<string, UserDataModel>>>();
+
+                var userList = usersData
+                .SelectMany(userEntry => userEntry.Value.Select(userDetail =>
+                {
+                    userDetail.Value.Id = userEntry.Key;
+                    return userDetail.Value;
+                }))
+                .ToList();
+                return userList;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while getting all user details" + ex.Message);
+                return null;
+            }
+        }
+        public async Task<bool> DeleteAddress(string userId)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if(userNode != null)
+                {
+                    var userNodeRef = firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key);
+
+                    await userNodeRef.Child("Address").DeleteAsync();
+                    await userNodeRef.Child("HouseOrFlatOrBlockName").DeleteAsync();
+                    await userNodeRef.Child("AreaOrCity").DeleteAsync();
+                    await userNodeRef.Child("State").DeleteAsync();
+                    await userNodeRef.Child("Pincode").DeleteAsync();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while deleting address" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> EditAddressAsync(string userId,string houseOrFlatOrBlockName, string areaOrCity, string state, string pincode)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                    .Child("UserData")
+                    .Child(userId)
+                    .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if(userNode != null)
+                {
+                    await firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key)
+                        .PatchAsync( new
+                        { 
+                            HouseOrFlatOrBlockName = houseOrFlatOrBlockName,
+                            AreaOrCity = areaOrCity,
+                            State = state,
+                            Pincode = pincode
+                        });
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while editing address" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> EditUserProfile(string userId, UserDataModel updatedData)
+        {
+            try
+            {
+                var userReference = await firebaseClient
+                  .Child("UserData")
+                  .Child(userId)
+                  .OnceAsync<UserDataModel>();
+
+                var userNode = userReference.FirstOrDefault();
+                if (userNode != null)
+                {
+                    var userData = userNode.Object;
+                    var updates = new Dictionary<string, object>();
+
+                    if (!string.IsNullOrEmpty(updatedData.Email))
+                        updates["Email"] = updatedData.Email;
+
+                    if (!string.IsNullOrEmpty(updatedData.FirstName))
+                        updates["FirstName"] = updatedData.FirstName;
+
+                    if (!string.IsNullOrEmpty(updatedData.LastName))
+                        updates["LastName"] = updatedData.LastName;
+
+                    if (!string.IsNullOrEmpty(updatedData.MobileNumber))
+                        updates["MobileNumber"] = updatedData.MobileNumber;
+
+                  /*  if (!string.IsNullOrEmpty(updatedData.Address))
+                        updates["Address"] = updatedData.Address;
+*/
+                    if (!string.IsNullOrEmpty(updatedData.Image))
+                        updates["Image"] = updatedData.Image;
+
+                    if (!string.IsNullOrEmpty(updatedData.HouseOrFlatOrBlockName))
+                        updates["HouseOrFlatOrBlockName"] = updatedData.HouseOrFlatOrBlockName;
+
+                    if (!string.IsNullOrEmpty(updatedData.AreaOrCity))
+                        updates["AreaOrCity"] = updatedData.AreaOrCity;
+
+                    if (!string.IsNullOrEmpty(updatedData.State))
+                        updates["State"] = updatedData.State;
+
+                    if (!string.IsNullOrEmpty(updatedData.Pincode))
+                        updates["Pincode"] = updatedData.Pincode;
+
+                    await firebaseClient
+                        .Child("UserData")
+                        .Child(userId)
+                        .Child(userNode.Key)
+                        .PatchAsync(updates);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("No user found");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while edititng profile details" + ex.Message);
+                return false;
+            }
+        }
+        public async Task<ObservableCollection<OrderPlacedModel>> GetAllPlacedOrderAsync(string userId)
+        {
+            try
+            {
+                var orders = new ObservableCollection<OrderPlacedModel>();
+
+                var userOrders = await firebaseClient
+                    .Child("PlacedOrder")
+                    .Child(userId)
+                    .OnceAsync<OrderPlacedModel>();
+
+                foreach (var orderEntry in userOrders)
+                {
+                    var orderDetails = await firebaseClient
+                        .Child("PlacedOrder")
+                        .Child(userId)
+                        .Child(orderEntry.Key)
+                        .OnceAsync<OrderPlacedModel>();
+                    //orders.AddRange(orderDetails.Select(o => o.Object));
+                    foreach (var detail in orderDetails)
+                    {
+                        orders.Add(detail.Object);
+                    }
+                }
+                return orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while fetching all placed order detail." + ex.Message);
+                return new ObservableCollection<OrderPlacedModel>();
+            }
+        }
+        public async Task<bool> DeletePlacedOrderByIdAsync(string userId, int orderId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("PlacedOrder")
+                    .Child(userId)
+                    .Child(orderId.ToString())
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting placed order." + ex.Message);
+                return false;
+            }
+        }       
+        public async Task<bool>SaveNotificationAsync(string userId, SaveNotificationModel notificationModel)
+        {
+            try
+            {
+                notificationModel.IsRead = false;
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .Child(notificationModel.Id.ToString())
+                    .PatchAsync(notificationModel);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving notification: {ex.Message}");
+                return false;
+            }
+        }
+        
+        public async Task<int> GetUnreadNotificationCountAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .OnceAsync<SaveNotificationModel>();
+
+                var unreadCount = notifications
+                    .Count(item => !item.Object.IsRead);
+                return unreadCount;
+            }
+            catch( Exception ex )
+            {
+                Console.WriteLine("Error while fetching unread notification count: " + ex.Message);
+                return 0;
+            }
+        }
+
+        public async Task<bool> MarkAllNotificationsAsReadAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child (userId)
+                    .OnceAsync<SaveNotificationModel>();
+
+                foreach(var item in notifications)
+                {
+                    var notification = item.Object;
+                    notification.IsRead = true;
+
+                    await firebaseClient
+                        .Child("NotificationList")
+                        .Child(userId)
+                        .Child(notification.Id.ToString())
+                        .PatchAsync(notification);
+                }
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while marking notifications as read: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<List<SaveNotificationModel>> FetchNotificationListAsync(string userId)
+        {
+            try
+            {
+                var notifications = await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .OnceAsync<SaveNotificationModel>();
+                     var notificationList = notifications
+                    .Select(item => new SaveNotificationModel
+                    {
+                        Id = item.Object.Id,
+                        Title = item.Object.Title,
+                        Message = item.Object.Message,
+                        ReceivedAt = item.Object.ReceivedAt
+                       
+                    }).ToList();
+                return notificationList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while fetching notification list" + ex.Message);
+                return new List<SaveNotificationModel>();
+            }
+        }
+
+        public async Task<bool> DeleteNotificationById (string userId, int notificationId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .Child(notificationId.ToString())
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while deleting notification id using id " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> ClearAllNotificationAsync(string userId)
+        {
+            try
+            {
+                await firebaseClient
+                    .Child("NotificationList")
+                    .Child(userId)
+                    .DeleteAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while clearing all notification" + ex.Message);
+                return false;
+            }
+        }
+
+
+        public async Task LogoutAsync()
+        {
+            try
+            {
+                Preferences.Remove("IsLoggedIn");
+                Preferences.Remove("FirebaseToken");
+                Preferences.Remove("RefereshToken");
+                Preferences.Remove("LocalId");
+                Preferences.Clear();
+                await Toast.Make("Successfully Logout").Show();
+                Microsoft.Maui.Controls.Application.Current.MainPage = new NavigationPage(new LoginPage());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*****************{ex.Message}");
             }
         }
 

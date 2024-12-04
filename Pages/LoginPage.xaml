@@ -5,28 +5,30 @@
              Title="LoginPage"
              BackgroundColor="Black"
              NavigationPage.HasNavigationBar="False"
+             xmlns:bottomSheet="clr-namespace:FoodNinja.Views"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
              xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
     <ContentPage.Resources>
         <Style x:Key="InvalidEntryStyle" TargetType="Entry">
             <Setter Property="TextColor" Value="Red" />
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='13',Small='12'}"/>
             <Setter Property="FontFamily" Value="BentonRegular"/>
         </Style>
         <Style x:Key="ValidEntryStyle" TargetType="Entry">
             <Setter Property="TextColor" Value="#37d582" />
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='13',Small='12'}"/>
             <Setter Property="FontFamily" Value="BentonRegular"/>
         </Style>
         <ResourceDictionary>
             <Style x:Key="labelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="#FFFFFF"/>
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
             </Style>
 
             <Style x:Key="borderStyle" TargetType="Border">
-                <Setter Property="HeightRequest" Value="53"/>
+                <Setter Property="HeightRequest" Value="{markups:OnScreenSize Large='53',Medium='51',Small='49'}"/>
                 <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
                 <Setter Property="Stroke" Value="Transparent"/>
                 <Setter Property="BackgroundColor" Value="#252525"/>
@@ -35,7 +37,7 @@
 
             <Style x:Key="entryStyle" TargetType="Entry">
                 <Setter Property="PlaceholderColor" Value="#4D4D4D"/>
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='13',Small='12'}"/>
                 <Setter Property="TextColor" Value="#FFFFFF"/>
                 <Setter Property="FontFamily" Value="BentonRegular"/>
             </Style>
@@ -44,13 +46,13 @@
 
     <ContentPage.Content>
         <ScrollView VerticalScrollBarVisibility="Never">
-            <Grid x:Name="popView" RowDefinitions=".5*,.6*" Margin="20,20,20,30">
+            <Grid x:Name="popView" RowDefinitions=".5*,.6*" Margin="0,20,0,0">
                 <Image
                     Source="mainlogo"
                     HeightRequest="210" WidthRequest="195"
                     HorizontalOptions="Center"/>
 
-                <StackLayout Grid.Row="1">
+                <StackLayout Grid.Row="1" Margin="20,0,0,0">
                     <Border
                         x:Name="emailBorder"
                         Style="{StaticResource borderStyle}">
@@ -80,7 +82,7 @@
                         Margin="5,5,0,0"
                         Text="{Binding EmailErrorMsg}"
                         TextColor="#FEAD1D"
-                        FontSize="12"
+                        FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
                         FontFamily="BentonRegular"
                         VerticalOptions="Center"/>
 
@@ -97,7 +99,11 @@
                             </DataTrigger>
                         </Border.Triggers>
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
-                            <Image Source="lock" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+                            <Image 
+                                Source="lock" 
+                                VerticalOptions="Center" 
+                                HeightRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"
+                                WidthRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"/>
 
                             <Entry
                                 x:Name="passwordEntry"
@@ -106,6 +112,7 @@
                                 Grid.Column="1"
                                 Text="{Binding Password}"
                                 Placeholder="Password"
+                                IsPassword="True"
                                 Completed="passwordEntry_Completed">
                                 <Entry.Behaviors>
                                     <toolkit:MultiValidationBehavior
@@ -134,7 +141,7 @@
                         Margin="5,4,0,0"
                         Text="{Binding PasswordErrorMsg}"
                         TextColor="#FEAD1D"
-                        FontSize="12"
+                        FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
                         FontFamily="BentonRegular"
                         VerticalOptions="Center"/>
 
@@ -152,7 +159,8 @@
                             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Image
                                     Source="fb"
-                                    HeightRequest="25" WidthRequest="25"/>
+                                    HeightRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"
+                                    WidthRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"/>
                                 <Label
                                     Text="Facebook"
                                     FontFamily="BentonBold"
@@ -166,7 +174,8 @@
                             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Image
                                     Source="google"
-                                    HeightRequest="25" WidthRequest="25"/>
+                                    HeightRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"
+                                    WidthRequest="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"/>
                                 <Label
                                     Text="Google"
                                     FontFamily="BentonBold"
@@ -176,6 +185,7 @@
                     </Grid>
 
                     <Label
+                        x:Name="forgetPasswordLbl"
                         Margin="0,10"
                         TextColor="#37d582"
                         Text="Forgot Your Password?"
@@ -183,7 +193,9 @@
                         HorizontalTextAlignment="Center"
                         TextDecorations="Underline"
                         Style="{StaticResource labelStyle}">
-
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ForgotPassword_Tapped"/>
+                        </Label.GestureRecognizers>
                     </Label>
 
                     <Button
@@ -191,9 +203,10 @@
                          TextColor="#FFFFFF"
                          FontFamily="BentonBold"
                          Margin="0,10,0,15"
-                         FontSize="16"
+                         FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='13'}"
                          CornerRadius="15"
-                         HeightRequest="50" WidthRequest="150"
+                         HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                         WidthRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}"
                          HorizontalOptions="Center"
                          Command="{Binding LoginCommand}">
                         <Button.Background>
@@ -217,7 +230,7 @@
                             VerticalOptions="Center"
                             TextColor="#37d582"
                             Text="SignUp"
-                            FontSize="14"
+                            FontSize="{markups:OnScreenSize Large='14',Medium='13',Small='12'}"
                             FontFamily="BentonBold"
                             Margin="0,0,0,0"
                             TextDecorations="Underline">
@@ -228,6 +241,93 @@
 
                     </StackLayout>
                 </StackLayout>
+
+                <bottomSheet:BottomSheet
+                    BackgroundColor="Transparent"
+                    x:Name="forgetPasswordBottomSheet"
+                    Grid.RowSpan="2"
+                    VerticalOptions="End">
+                    <bottomSheet:BottomSheet.BottomSheetContent>
+                        <StackLayout BackgroundColor="#151515" Padding="20,20">
+                            <Label
+                                Text="Forget Password"
+                                Margin="5,0,0,0"
+                                FontFamily="BentonBold"
+                                TextColor="#FFFFFF"
+                                FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+
+                            <Label
+                                Margin="5,30,0,10"
+                                Text="Enter your registered email"
+                                Style="{StaticResource labelStyle}"
+                                FontFamily="BentonMedium"
+                                TextColor="#FDAD1D"/>
+
+                            <Border
+                                x:Name="forgetemailBorder"
+                                Style="{StaticResource borderStyle}">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                    <Image Source="profile" VerticalOptions="Center" HeightRequest="25" WidthRequest="25"/>
+
+                                    <Entry
+                                         VerticalOptions="Center"
+                                         Style="{StaticResource entryStyle}"
+                                         Grid.Column="1"
+                                         Placeholder="Email"
+                                         Text="{Binding ForgetEmail}">
+                                        <Entry.Behaviors>
+                                            <toolkit:TextValidationBehavior
+                                                x:Name="forgetemailValidator"
+                                                Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                                MinimumLength="5"
+                                                ValidStyle="{StaticResource ValidEntryStyle}"
+                                                InvalidStyle="{StaticResource InvalidEntryStyle}"/>
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                </Grid>
+                            </Border>
+                            <Label
+                                IsVisible="{Binding IsForgetEmailErrorVisible}"
+                                Margin="5,5,0,0"
+                                Text="{Binding ForgetEmailErrorMsg}"
+                                TextColor="#FEAD1D"
+                                FontSize="{markups:OnScreenSize Large='12',Medium='11',Small='10'}"
+                                FontFamily="BentonRegular"
+                                VerticalOptions="Center"/>
+
+                            <Button
+                                HorizontalOptions="Center"
+                                Margin="0,30,0,0"
+                                BackgroundColor="#FEAD1D"
+                                TextColor="#FFFFFF"
+                                FontFamily="BentonBold"
+                                Text="Send Reset Password Link"
+                                CornerRadius="15"
+                                FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='12'}"
+                                HeightRequest="{markups:OnScreenSize Large='48',Medium='46',Small='44'}"
+                                Command="{Binding ForgetPasswordCommand}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroupList>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Scale" Value="1" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Scale" Value="0.8" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="PointerOver" />
+                                        </VisualStateGroup>
+                                    </VisualStateGroupList>
+                                </VisualStateManager.VisualStateGroups>
+                            </Button>
+                        </StackLayout>
+                    </bottomSheet:BottomSheet.BottomSheetContent>
+                </bottomSheet:BottomSheet>
+
                 <skia:SKLottieView
                     IsVisible="{Binding IsLoading}"
                     IsAnimationEnabled="{Binding IsLoading}"

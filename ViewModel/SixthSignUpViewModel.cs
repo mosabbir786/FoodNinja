@@ -5,6 +5,7 @@ using FoodNinja.Pages.Signup_Screen;
 using FoodNinja.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,10 +112,13 @@ namespace FoodNinja.ViewModel
                 LastName = LastName,
                 MobileNumber = MobileNumber,
                 Image = FinalImage,
-                Address = Address,
+                HouseOrFlatOrBlockName = HouseFlatBlockNo,
+                AreaOrCity = CityArea,
+                State = State,
+                Pincode = Pincode,
                 Latitude = Latitude,
                 Longitude = Longitude,
-                PaymentMethod = new List<PaymentModel>()
+               //PaymentMethod = new ObservableCollection<PaymentModel>()
             };
             IsLoading = true;
             await Task.Delay(50);

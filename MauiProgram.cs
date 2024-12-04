@@ -7,6 +7,13 @@ using Syncfusion.Maui.Core.Hosting;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using FoodNinja.Custom;
+using FoodNinja.ViewModel;
+using FoodNinja.Services;
+
+
+
+
 
 
 #if IOS
@@ -16,6 +23,7 @@ using Foundation;
 
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using FoodNinja.Platforms.Android;
 #endif
 
 namespace FoodNinja
@@ -41,10 +49,28 @@ namespace FoodNinja
                     fonts.AddFont("BentonSans_Book.ttf", "BentonBook");
                     fonts.AddFont("BentonSans_Medium.ttf", "BentonMedium");
                     fonts.AddFont("BentonSans_Regular.ttf", "BentonRegular");
+                })
+                .ConfigureMauiHandlers(handlers =>
+                {
+                    handlers.AddHandler<CollectionView, StaggeredStructuredItemsViewHandler>();
+#if ANDROID
+			        handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.Android.CustomMapHandler>();
+#elif IOS
+                    handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, FoodNinja.Platforms.iOS.CustomMapHandler>();
+#endif
                 });
+
+
                 builder.ConfigureSyncfusionCore();
                 builder.Services.AddSingleton(new FirebaseConfig("AIzaSyD0ehwCKtxucZLyNcUGv-ZFKaNXmw_cmK8"));
                 builder.Services.AddSingleton(new FirebaseClient("https://fir-maui-491c3-default-rtdb.firebaseio.com/"));
+                builder.Logging.AddConsole();
+                builder.Services.AddTransient<ConfirmOrderViewModel>();
+                builder.Services.AddSingleton<INotificationPermissionManager, NotificationPermissionHelper>();
+                builder.Services.AddSingleton<FirebaseManager>();
+#if ANDROID
+            builder.Services.AddSingleton<FirebaseService>();
+#endif
 
             //For Transparent the Statusbar in Android 
             /* builder.ConfigureLifecycleEvents(events =>

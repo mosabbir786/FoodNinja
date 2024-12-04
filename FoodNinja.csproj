@@ -38,6 +38,17 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+
+		<!--Added this 5 line for enable debugging in Release mode-->
+		<!--<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>false</Optimize>
+		<DefineConstants>TRACE;RELEASE</DefineConstants>
+		<AndroidLinkMode>None</AndroidLinkMode>-->
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -56,7 +67,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FirebaseAdmin" Version="3.0.1" />
 		<PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
+		<PackageReference Include="Syncfusion.Maui.Expander" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="26.2.14" />
 		<PackageReference Include="Syncfusion.Maui.Maps" Version="27.1.50" />
 		<PackageReference Include="Syncfusion.Licensing" Version="27.1.50" />
@@ -72,15 +86,20 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />		
 		<PackageReference Include="OnScreenSizeMarkup.Maui" Version="3.0.18" />
+
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="darkmap.json" />
+	  <None Remove="dark_map_style.json" />
 	  <None Remove="Platforms\Android\google-services %281%29.json" />
 	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
 	  <None Remove="Resources\Fonts\BentonSans_Bold.ttf" />
 	  <None Remove="Resources\Fonts\BentonSans_Book.ttf" />
 	  <None Remove="Resources\Fonts\BentonSans_Medium.ttf" />
 	  <None Remove="Resources\Fonts\BentonSans_Regular.ttf" />
+	  <None Remove="Resources\Images\arrowdown.png" />
+	  <None Remove="Resources\Images\arrowup.png" />
 	  <None Remove="Resources\Images\back.png" />
 	  <None Remove="Resources\Images\bike.png" />
 	  <None Remove="Resources\Images\call.png" />
@@ -107,6 +126,7 @@
 	  <None Remove="Resources\Images\icnmenuclosedark.png" />
 	  <None Remove="Resources\Images\location.png" />
 	  <None Remove="Resources\Images\lock.png" />
+	  <None Remove="Resources\Images\logout.png" />
 	  <None Remove="Resources\Images\mainlogo.png" />
 	  <None Remove="Resources\Images\maplocation.png" />
 	  <None Remove="Resources\Images\mappin.png" />
@@ -115,6 +135,7 @@
 	  <None Remove="Resources\Images\mute.png" />
 	  <None Remove="Resources\Images\nointernet.png" />
 	  <None Remove="Resources\Images\notification.png" />
+	  <None Remove="Resources\Images\notification_tick.png" />
 	  <None Remove="Resources\Images\onboard1.png" />
 	  <None Remove="Resources\Images\onboard2.png" />
 	  <None Remove="Resources\Images\payoneer.png" />
@@ -133,14 +154,22 @@
 	  <None Remove="Resources\Images\rs2.png" />
 	  <None Remove="Resources\Images\rs3.png" />
 	  <None Remove="Resources\Images\rs4.png" />
+	  <None Remove="Resources\Images\signout.png" />
 	  <None Remove="Resources\Images\speaker.png" />
 	  <None Remove="Resources\Images\splash.png" />
 	  <None Remove="Resources\Images\tickcomplete.png" />
 	  <None Remove="Resources\Images\visa.png" />
+	  <None Remove="Resources\Images\whitelocation.png" />
 	  <None Remove="Resources\Images\wifi.png" />
 	  <None Remove="Resources\raw\food.json" />
 	  <None Remove="Resources\raw\foodyellow.json" />
+	  <None Remove="Resources\Raw\nocart.json" />
 	  <None Remove="Resources\raw\nodata.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="darkmap.json" />
+	  <EmbeddedResource Include="dark_map_style.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -158,7 +187,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Pages\AddPaymentMethodPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\CartPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\ConfirmOrderPages.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\SuccessfullOrderPlacedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CartTabScreen\TrackOrderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ChatPage.xaml">
@@ -179,16 +220,40 @@
 	  <MauiXaml Update="Pages\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\NotificationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Onboarding Screen\FirstOnboarding.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Onboarding Screen\SecondOnboarding.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\DeletePreviousOrderPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\LogoutPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\NotificationPermissionPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\PermissionPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Popups\ReplaceCartItemPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Popups\ShowExitConfirmationPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProfileTabScreen\EditProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProfileTabScreen\PreviousOrderDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Signup Screen\FifthSignup.xaml">
@@ -212,12 +277,24 @@
 	  <MauiXaml Update="Pages\SplashScreen.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\BottomSheet.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Controls\TabBarIconView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Controls\TabBarView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\DesclaimerView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	  <PackageReference Include="Xamarin.Firebase.Messaging">
+	    <Version>123.0.7</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 </Project>

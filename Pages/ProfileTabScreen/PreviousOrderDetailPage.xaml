@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.ProfileTabScreen.PreviousOrderDetailPage"
+             Title="PreviousOrderDetailPage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converter="clr-namespace:FoodNinja.Converter"
+             xmlns:shimmer="clr-namespace:FoodNinja.Custom"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converter:Base64ToImageSourceConverter x:Key="Base64ToImageSourceConverter"/>
+            <x:String x:Key="HeadLine">Find Your Favorite Order</x:String>
+            <Color x:Key="primaryColor">#53E88B</Color>
+            <Color x:Key="shimmerColor">Gray</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <!--#region Shimmer Effect Part -->
+            <Grid IsVisible="{Binding IsLoading}" RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,Auto" Margin="20,10">
+                <shimmer:BoxSkiletonView
+                    CornerRadius="15"
+                    Color="{StaticResource shimmerColor}"
+                    Margin="0,0,0,0"
+                    HorizontalOptions="Start"
+                    HeightRequest="50" WidthRequest="50"/>
+
+                <shimmer:BoxSkiletonView
+                    Grid.Row="1" Grid.Column="0"
+                    CornerRadius="15"
+                    Color="{StaticResource shimmerColor}"
+                    Margin="0,10,0,0"
+                    HorizontalOptions="Start"
+                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}" 
+                    WidthRequest="{markups:OnScreenSize Large='260',Medium='258',Small='256'}" />
+
+                <shimmer:BoxSkiletonView
+                    Grid.Row="1" Grid.Column="1"
+                    CornerRadius="15"
+                    Color="{StaticResource shimmerColor}"
+                    Margin="0,10,0,0"
+                    HorizontalOptions="Start"
+                    HeightRequest="50" WidthRequest="50"/>
+
+                <shimmer:BoxSkiletonView
+                    Grid.Row="2" Grid.ColumnSpan="2"
+                    CornerRadius="15"
+                    Color="{StaticResource shimmerColor}"
+                    Margin="0,10,0,0"
+                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"/>
+
+                <CollectionView
+                    Margin="0,20,0,0"
+                    Grid.Row="3" Grid.ColumnSpan="2"
+                    VerticalScrollBarVisibility="Never"
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding DummyCollection}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            VerticalItemSpacing="12"
+                            Orientation="Vertical"
+                            Span="1"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BackgroundColor="#252525"
+                                StrokeShape="RoundRectangle 15"
+                                Stroke="Transparent"
+                                HorizontalOptions="Fill"
+                                Padding="15,10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                    <shimmer:BoxSkiletonView
+                                        Color="{StaticResource shimmerColor}"
+                                        CornerRadius="15"
+                                        Grid.Column="0"
+                                        HeightRequest="{markups:OnScreenSize Large='55',Medium='53',Small='51'}"
+                                        WidthRequest="{markups:OnScreenSize Large='55',Medium='53',Small='51'}">
+                                    </shimmer:BoxSkiletonView>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                        <shimmer:BoxSkiletonView
+                                            Color="{StaticResource shimmerColor}"
+                                            CornerRadius="15"
+                                            HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                            WidthRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start"/>
+
+                                        <shimmer:BoxSkiletonView
+                                            Color="{StaticResource shimmerColor}"
+                                            CornerRadius="15"
+                                            HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                            WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start"/>
+
+                                        <shimmer:BoxSkiletonView
+                                            Color="{StaticResource shimmerColor}"
+                                            CornerRadius="15"
+                                            HeightRequest="{markups:OnScreenSize Large='15',Medium='14',Small='13'}"
+                                            WidthRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start"/>
+                                    </VerticalStackLayout>
+
+                                    <shimmer:BoxSkiletonView  
+                                        VerticalOptions="Center"
+                                        Color="Gray"
+                                        Grid.Column="2"
+                                        CornerRadius="30"
+                                        Margin="0,10,0,0"
+                                        HeightRequest="{markups:OnScreenSize Large='23',Medium='21',Small='19'}"
+                                        WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region Real Item-->
+            <Grid IsVisible="{Binding IsLoading,Converter={StaticResource InverseBoolConverter}}" RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,Auto" Margin="20,10">
+                <ImageButton
+                    Source="back.png"
+                    Margin="0,0,0,0"
+                    HorizontalOptions="Start"
+                    HeightRequest="50" WidthRequest="50"
+                    Command="{Binding BackCommand}"/>
+
+                <Label
+                    Grid.Row="1" Grid.Column="0"
+                    Text="{StaticResource HeadLine}"
+                    TextColor="#FFFFFF"
+                    FontFamily="BentonBold"
+                    LineHeight="1.1"
+                    FontSize="{markups:OnScreenSize Large='28',Medium='26',Small='24'}"/>
+
+                <Border
+                    BackgroundColor="#151515"
+                    StrokeShape="RoundRectangle 15"
+                    Stroke="Transparent"
+                    Grid.Row="1" Grid.Column="1"
+                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}" 
+                    WidthRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}" >
+                    <ImageButton
+                        Source="notification"
+                        HeightRequest="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                        WidthRequest="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Border>
+
+                <Border
+                    Margin="0,10,0,10"
+                    Grid.Row="2" Grid.ColumnSpan="2"
+                    StrokeShape="RoundRectangle 15"
+                    BackgroundColor="#151515"
+                    Stroke="Transparent"
+                    HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}">
+                    <SearchBar
+                        VerticalOptions="Center"
+                        x:Name="firstSearchbar"
+                        Placeholder="Search for the nearest restaurant..."                         
+                        FontSize="12"
+                        FontFamily="BentonRegular"
+                        CancelButtonColor="#FFFFFF"
+                        TextColor="#FFFFFF"
+                        Unfocused="firstSearchbar_Unfocused"
+                        SearchButtonPressed="firstSearchbar_SearchButtonPressed"
+                        TextChanged="firstSearchbar_TextChanged"/>
+                </Border>
+
+                <CollectionView
+                    Grid.Row="3" Grid.ColumnSpan="2"
+                    x:Name="previousOrderCollection"
+                    VerticalScrollBarVisibility="Never"
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding AllOrderList}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            VerticalItemSpacing="10"
+                            Orientation="Vertical"
+                            Span="1"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BackgroundColor="#202020"
+                                StrokeShape="RoundRectangle 15"
+                                Stroke="Transparent"
+                                HorizontalOptions="Fill"
+                                Padding="10,10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                    <Border
+                                        StrokeShape="RoundRectangle 15"
+                                        Stroke="Transparent"
+                                        Grid.Column="0"
+                                        HeightRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}"
+                                        WidthRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}">
+                                        <Image
+                                            x:Name="foodImage"
+                                            Aspect="AspectFill"
+                                            Source="{Binding FoodImage, Converter={StaticResource Base64ToImageSourceConverter}}"/>
+                                    </Border>
+                                        
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label
+                                            Text="{Binding FoodName}"
+                                            TextColor="#FFFFFF"
+                                            FontFamily="BentonBold"
+                                            FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start"/>
+
+                                        <Label
+                                            Text="{Binding RestaurantName}"
+                                            TextColor="Gray"
+                                            FontFamily="BentonRegular"
+                                            FontSize="{markups:OnScreenSize Large='13',Medium='11',Small='9'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start"/>
+
+                                        <Label
+                                            Text="{Binding FoodPrice, StringFormat='${0:F2}'}"
+                                            TextColor="{StaticResource primaryColor}"
+                                            FontFamily="BentonBold"
+                                            FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                            VerticalOptions="Start" HorizontalOptions="Start">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Complete">
+                                                    <Setter Property="TextColor" Value="LightGray"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Rider Assign">
+                                                    <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Preparing">
+                                                    <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding OrderStatus}" Value="Processing">
+                                                    <Setter Property="TextColor" Value="{StaticResource primaryColor}"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </VerticalStackLayout>
+                                        
+                                    <Border 
+                                        x:Name="orderStatusBorder"
+                                        VerticalOptions="Center"
+                                        StrokeShape="RoundRectangle 30"
+                                        BackgroundColor="{StaticResource primaryColor}"
+                                        Stroke="Transparent"
+                                        Grid.Column="2"
+                                        Padding="10,5">
+                                        <Label
+                                            FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"
+                                            TextColor="#FFFFFF"
+                                            FontFamily="BentonMedium"
+                                            VerticalOptions="Center" HorizontalOptions="Center"
+                                            Text="{Binding OrderStatus}"/>
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Complete">
+                                                <Setter Property="BackgroundColor" Value="LightGray"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Rider Assign">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Preparing">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding OrderStatus}" Value="Processing">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource primaryColor}"/>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                    </Border>
+                                </Grid>
+                                <Border.Behaviors>
+                                    <toolkit:TouchBehavior
+                                        Command="{Binding BindingContext.DeleteOrderCommand, Source={x:Reference Name=previousOrderCollection}}"
+                                        CommandParameter="{Binding .}"
+                                        LongPressDuration="2000"
+                                        DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                                        PressedOpacity="0.5"
+                                        PressedScale="0.8"/>
+                                </Border.Behaviors>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+            <skia:SKLottieView
+                IsVisible="{Binding NoData}"
+                IsAnimationEnabled="{Binding NoData}"
+                RepeatCount="-1"
+                RepeatMode="Reverse"
+                Source="nodata.json"
+                Grid.RowSpan="4" Grid.ColumnSpan="2"
+                HeightRequest="200" WidthRequest="200"/>
+            <!--#endregion-->
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

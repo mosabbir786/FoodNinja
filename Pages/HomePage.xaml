@@ -5,6 +5,8 @@
              Title="HomePage"
              BackgroundColor="Black"
              NavigationPage.HasNavigationBar="False"
+             xmlns:converter="clr-namespace:FoodNinja.Converter"
+             xmlns:customLoadingShimmer="clr-namespace:FoodNinja.Custom"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
              xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
@@ -13,6 +15,8 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <converter:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converter:IntToBoolConverter x:Key="IntToBoolConverter"/>
             <Color x:Key="shimmerColor">Gray</Color>
             <x:String x:Key="Headline">Find Your Favorite Food</x:String>
             <x:String x:Key="Deal">Special Deal For &#10; October</x:String>
@@ -22,32 +26,151 @@
                 <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
                 <Setter Property="BackgroundColor" Value="#252525"/>
             </Style>
-
-            <!--<alohakit:FadeToAnimation
-                x:Key="FadeToAnimation"
-                Target="{x:Reference mainGrid}"
-                Opacity ="1"
-                Duration="500"
-                Easing="SpringOut"/>
-
-            <alohakit:TranslateToAnimation
-                Duration="700"
-                x:Key="horizoltalTranslate"
-                Target="{x:Reference restroList}"
-                Easing="SinInOut"
-                TranslateX="0"/>
-            <alohakit:TranslateToAnimation
-                Duration="700"
-                x:Key="verticalTranslate"
-                Target="{x:Reference menuList}"
-                Easing="SinInOut"
-                TranslateY="0"/>-->
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView VerticalScrollBarVisibility="Never">
             <Grid RowDefinitions="*" Margin="0">
-                <VerticalStackLayout Margin="20,10,20,0">
+
+                <!--#region Shimmer Effect Code -->
+                <Grid IsVisible="{Binding IsLoading}" Margin="20,10,20,60" RowSpacing="15" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*,Auto">
+                    <customLoadingShimmer:BoxSkiletonView
+                            Grid.Row="0" Grid.Column="0"
+                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                            CornerRadius="15"
+                            Color="{StaticResource shimmerColor}"/>
+                    <customLoadingShimmer:BoxSkiletonView
+                            Grid.Row="0" Grid.Column="1"
+                            HeightRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}" 
+                            WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                            Color="{StaticResource shimmerColor}"
+                            Margin="10,0,0,0"
+                            CornerRadius="15"/>
+                    <customLoadingShimmer:BoxSkiletonView
+                            Margin="0,10,0,10"
+                            Grid.Row="1" Grid.ColumnSpan="2"
+                            HeightRequest="{markups:OnScreenSize Large='150',Medium='148',Small='146'}"
+                            CornerRadius="15"
+                            Color="{StaticResource shimmerColor}"/>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2" > 
+                        <customLoadingShimmer:BoxSkiletonView
+                                HorizontalOptions="Start"
+                                HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                Color="{StaticResource shimmerColor}"
+                                WidthRequest="{markups:OnScreenSize Large='160',Medium='158',Small='156'}"
+                                CornerRadius="15"/>
+                        <customLoadingShimmer:BoxSkiletonView
+                                HorizontalOptions="EndAndExpand"
+                                HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                Color="{StaticResource shimmerColor}"
+                                Margin="0,0,5,0"
+                                 WidthRequest="{markups:OnScreenSize Large='130',Medium='128',Small='126'}"
+                                CornerRadius="15"/>
+                    </Grid>
+                    <CollectionView  Margin="0,10,0,0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Items}"
+                            ItemsLayout="HorizontalList" HorizontalScrollBarVisibility="Never">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                        Margin="0,0,10,0"
+                                        VerticalOptions="Fill" HorizontalOptions="Fill"
+                                        HeightRequest="150" WidthRequest="155"
+                                        BackgroundColor="#252525"
+                                        Stroke="Transparent" >
+                                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <customLoadingShimmer:BoxSkiletonView
+                                                HeightRequest="{markups:OnScreenSize Large='73',Medium='71',Small='59'}"
+                                                 WidthRequest="{markups:OnScreenSize Large='96',Medium='94',Small='92'}"
+                                                Color="{StaticResource shimmerColor}"
+                                                CornerRadius="15"/>
+                                        <customLoadingShimmer:BoxSkiletonView
+                                                HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                                WidthRequest="{markups:OnScreenSize Large='90',Medium='88',Small='86'}"
+                                                Color="{StaticResource shimmerColor}"
+                                                CornerRadius="15"/>
+                                        <customLoadingShimmer:BoxSkiletonView
+                                                HeightRequest="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"
+                                                 WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                                Color="{StaticResource shimmerColor}"
+                                                CornerRadius="15"/>
+                                    </VerticalStackLayout>
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="15"/>
+                                    </Border.StrokeShape>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="2" Margin="0,10,0,0">
+                        <customLoadingShimmer:BoxSkiletonView
+                                HorizontalOptions="Start"
+                                HeightRequest="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                                Color="{StaticResource shimmerColor}"
+                                 WidthRequest="{markups:OnScreenSize Large='160',Medium='158',Small='156'}"
+                                CornerRadius="15"/>
+                        <customLoadingShimmer:BoxSkiletonView
+                                HorizontalOptions="EndAndExpand"
+                                HeightRequest="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                                Color="{StaticResource shimmerColor}"
+                                Margin="0,0,5,0"
+                                 WidthRequest="{markups:OnScreenSize Large='120',Medium='118',Small='116'}"
+                                CornerRadius="15"/>
+                    </Grid>
+                    <CollectionView
+                            Margin="0,10,0,0"
+                            Grid.Row="5" Grid.ColumnSpan="2"
+                            HorizontalOptions="FillAndExpand" 
+                            ItemsSource="{Binding SingleCollection}"
+                            RemainingItemsThreshold="1">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                        Margin="0,0,0,10"
+                                        HeightRequest="100"
+                                        BackgroundColor="#252525"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 15">
+                                    <Grid Padding="10" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
+                                        <customLoadingShimmer:BoxSkiletonView
+                                                HeightRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}" 
+                                                WidthRequest="{markups:OnScreenSize Large='60',Medium='58',Small='56'}"
+                                                Color="{StaticResource shimmerColor}"
+                                                CornerRadius="15"/>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                            <customLoadingShimmer:BoxSkiletonView
+                                                    HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                                    WidthRequest="{markups:OnScreenSize Large='140',Medium='138',Small='136'}"
+                                                    Color="{StaticResource shimmerColor}"
+                                                    CornerRadius="15"/>
+                                            <customLoadingShimmer:BoxSkiletonView
+                                                    HorizontalOptions="Start"
+                                                    HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"
+                                                    WidthRequest="{markups:OnScreenSize Large='95',Medium='93',Small='92'}"
+                                                    Color="{StaticResource shimmerColor}"
+                                                    CornerRadius="15"/>
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="5">
+                                            <customLoadingShimmer:BoxSkiletonView
+                                                    HorizontalOptions="Center"
+                                                    HeightRequest="{markups:OnScreenSize Large='15',Medium='13',Small='11'}" 
+                                                    WidthRequest="{markups:OnScreenSize Large='50',Medium='48',Small='46'}"
+                                                    Color="{StaticResource shimmerColor}"
+                                                    CornerRadius="15"/>
+                                            <customLoadingShimmer:BoxSkiletonView
+                                                    HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}" 
+                                                    WidthRequest="{markups:OnScreenSize Large='80',Medium='88',Small='86'}" 
+                                                    Color="{StaticResource shimmerColor}"
+                                                    CornerRadius="15"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+                <!--#endregion-->
+
+                <VerticalStackLayout Margin="20,10,20,0" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
                     <Grid Margin="0,0,0,15" RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUto" ColumnSpacing="15">
                         <Label
                              VerticalOptions="Center"
@@ -60,14 +183,43 @@
                              Text="{StaticResource Headline}"/>
 
                         <Border
+                            x:Name="notificationFrame"
                              Grid.Row="0" Grid.Column="1"
                              HeightRequest="45" WidthRequest="45" 
-                             Style="{StaticResource borderStyle}">
-                            <ImageButton
+                             Style="{StaticResource borderStyle}"
+                             Padding="10"
+                             BackgroundColor="#252525">
+                            <Image
                                  Source="notification"
-                                 HeightRequest="20" WidthRequest="20"
-                                 VerticalOptions="Center" HorizontalOptions="Center"
-                                 Clicked="NotificationImageButton_Clicked"/>
+                                 VerticalOptions="Center" HorizontalOptions="Center"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateToNotificationPageCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Border.Behaviors>
+                                <toolkit:TouchBehavior
+                                    DefaultAnimationDuration="250"
+                                    DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                                    PressedOpacity="0.6"
+                                    PressedScale="0.8" />
+                            </Border.Behaviors>
+                        </Border>
+
+
+                        <Border
+                            IsVisible="{Binding UnreadNotificationCount, Converter={StaticResource IntToBoolConverter}}"
+                            Grid.Row="0" Grid.Column="1"
+                            VerticalOptions="Start" HorizontalOptions="End"
+                            StrokeShape="RoundRectangle 12.5"
+                            HeightRequest="22" WidthRequest="22"
+                            BackgroundColor="#37d582"
+                            Stroke="Transparent"
+                            Margin="5,2,-5,0"
+                            Padding="0">
+                            <Label
+                                Text="{Binding UnreadNotificationCount}"
+                                VerticalOptions="Center" HorizontalOptions="Center"
+                                Margin="0"
+                                FontSize="10"/>
                         </Border>
 
                         <Border
@@ -105,7 +257,7 @@
                                     TextColor="Black"
                                     FontFamily="BentonBold"
                                     LineHeight="1.2"
-                                    FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"/>
+                                    FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"/>
 
                                 <Button
                                       FontFamily="BentonBold"
@@ -218,9 +370,6 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
-                        <!--<VisualElement.Behaviors>
-                            <alohakit:BeginAnimationBehavior Animation="{StaticResource horizoltalTranslate}"/>
-                        </VisualElement.Behaviors>-->
                     </ScrollView>
 
 
@@ -331,11 +480,17 @@
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-                        <!--<VisualElement.Behaviors>
-                            <alohakit:BeginAnimationBehavior Animation="{StaticResource verticalTranslate}"/>
-                        </VisualElement.Behaviors>-->
                     </StackLayout>
                 </VerticalStackLayout>
+
+                <skia:SKLottieView
+                    IsVisible="{Binding IsLoadingForCart}"
+                    IsAnimationEnabled="{Binding IsLoadingForCart}"
+                    x:Name="loader"
+                    RepeatCount="-1"
+                    RepeatMode="Reverse"
+                    Source="foodyellow.json"
+                    HeightRequest="100" WidthRequest="100"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>

@@ -2,11 +2,383 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FoodNinja.Pages.CartPage"
-             Title="CartPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="CartPage"
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:AlohaKit.Animations="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations"
+             xmlns:alohakit="clr-namespace:AlohaKit.Animations;assembly=AlohaKit.Animations"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:converter="clr-namespace:FoodNinja.Converter"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui">
+  
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:Base64ToImageSourceConverter x:Key="Base64ToImageSourceConverter"/>
+
+            <Style x:Key="priceTitleLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+            </Style>
+
+            <Style x:Key="priceLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="BentonMedium"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="HorizontalTextAlignment" Value="End"/>
+                <Setter Property="FontSize" Value="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"/>
+            </Style>
+            <alohakit:FadeToAnimation
+      x:Key="FadeToAnimation"
+      Duration="300"
+      Target="{x:Reference priceCalculationBorder}"
+      Opacity="1"
+      Easing="SpringIn"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid RowDefinitions="Auto,*,Auto" Margin="15,15">
+            <VerticalStackLayout Margin="0,0">
+                <ImageButton
+                  IsVisible="False"
+                  x:Name="backBtn"
+                  Source="back"
+                  HeightRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                  WidthRequest="{markups:OnScreenSize Medium='48',Large='50',Small='46'}"
+                  VerticalOptions="Start" HorizontalOptions="Start"
+                  Command="{Binding BackCommand}"/>
+
+                <Label
+                  FontFamily="BentonBold"
+                  FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                  TextColor="#FFFFFF"
+                  Text="Order Details"
+                  Margin="5,10,0,0"/>
+
+
+                <!--<CollectionView
+                  Margin="0,15,0,0"
+                  x:Name="orderCollection"
+                  ItemsSource="{Binding CartDataList}">
+                  <CollectionView.ItemsLayout>
+                      <GridItemsLayout
+                          Orientation="Vertical"
+                          Span="1"
+                          VerticalItemSpacing="10"/>
+                  </CollectionView.ItemsLayout>
+                  <CollectionView.ItemTemplate>
+                      <DataTemplate>
+                          <SwipeView>
+                              <SwipeView.RightItems>
+                                  <SwipeItems SwipeBehaviorOnInvoked="Close">
+                                      <SwipeItemView BackgroundColor="Transparent">
+                                          <Border
+                                              x:Name="swapBorder"
+                                              BackgroundColor="#FEAD1D"
+                                              HeightRequest="{markups:OnScreenSize Medium='93',Large='95',Small='91'}"
+                                              WidthRequest="{markups:OnScreenSize Medium='93',Large='95',Small='91'}"
+                                              Stroke="Transparent"
+                                              >
+                                              <Image 
+                                                  VerticalOptions="Center" HorizontalOptions="Center"
+                                                  Source="delete"
+                                                  HeightRequest="{markups:OnScreenSize Medium='33',Large='35',Small='31'}"
+                                                  WidthRequest="{markups:OnScreenSize Medium='33',Large='35',Small='31'}"/>
+                                              <Border.StrokeShape>
+                                                  <RoundRectangle CornerRadius="0,15,0,15"/>
+                                              </Border.StrokeShape>
+                                          </Border>
+                                      </SwipeItemView>
+                                  </SwipeItems>
+                              </SwipeView.RightItems>
+                              <Border
+                                  Margin="0,0,0,0"
+                                  x:Name="itemBorder"
+                                  Stroke="Transparent"
+                                  StrokeShape="RoundRectangle 14"
+                                  BackgroundColor="#252525"
+                                  HeightRequest="{markups:OnScreenSize Medium='93',Large='95',Small='91'}">
+                                  <Grid Padding="15,10" ColumnDefinitions="Auto,*,Auto">
+                                      <Border
+                                          Grid.Column="0"
+                                          Stroke="Transparent"
+                                          StrokeShape="RoundRectangle 12"
+                                          HeightRequest="{markups:OnScreenSize Medium='58',Large='60',Small='56'}">
+                                          <Image
+                                              Source="{Binding FoodImage,Converter={StaticResource Base64ToImageSourceConverter}}"/>
+                                      </Border>
+
+                                      <VerticalStackLayout VerticalOptions="Center" Spacing="5" Grid.Column="1" Margin="10,0,0,0">
+                                          <Label
+                                              TextColor="#FFFFFF"
+                                              Text="{Binding FoodName}"
+                                              FontFamily="BentonMedium"
+                                              FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"/>
+
+                                          <Label
+                                              TextColor="Gray"
+                                              FontFamily="BentonBook"
+                                              Text="{Binding RestaurantName}"
+                                              FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+
+                                          <Label
+                                              TextColor="#53E88B"
+                                              FontFamily="BentonBold"
+                                              FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                                              Text="{Binding FoodPrice, StringFormat='{0} $'}"/>
+                                      </VerticalStackLayout>
+
+                                      <HorizontalStackLayout Grid.Column="2" Spacing="10">
+                                          <Button
+                                              FontFamily="BentonBold"
+                                              TextColor="#53E88B"
+                                              Padding="0"
+                                              BackgroundColor="#23342d"
+                                              FontSize="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"
+                                              HeightRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                                              WidthRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                                              Text="-"
+                                              CornerRadius="10"/>
+                                          <Label
+                                              FontFamily="BentonMedium"
+                                              FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"
+                                              VerticalOptions="Center"
+                                              Text="1"
+                                              TextColor="#FFFFFF"/>
+                                          <Button
+                                              FontFamily="BentonBold"
+                                              FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                                              Padding="0"
+                                              Text="+"
+                                              CornerRadius="10"
+                                              TextColor="#FFFFFF"
+                                              BackgroundColor="#53E88B"
+                                              HeightRequest="{markups:OnScreenSize Large='29',Medium='27',Small='25'}"
+                                              WidthRequest="{markups:OnScreenSize Large='29',Medium='27',Small='25'}"/>
+                                      </HorizontalStackLayout>
+                                  </Grid>
+                              </Border>
+                          </SwipeView>
+                      </DataTemplate>
+                  </CollectionView.ItemTemplate>
+              </CollectionView>-->
+            </VerticalStackLayout>
+            <!--#region Custom SwapView -->
+            <CollectionView
+                  Grid.Row="1"
+                  x:Name="cartItemCollection"
+                  ItemsSource="{Binding CartDataList}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="1" VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid  Margin="0,10,0,0" x:Name="swapItemContainer" HeightRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}" HorizontalOptions="FillAndExpand">
+                            <Grid.GestureRecognizers>
+                                <PanGestureRecognizer PanUpdated="OnPanUpdated"/>
+                            </Grid.GestureRecognizers>
+                            <Border
+                                  Opacity="0"
+                                  HorizontalOptions="End"
+                                  x:Name="deleteIconStack"
+                                  Margin="0,2,0,2"
+                                  StrokeThickness="0"
+                                  Stroke="Transparent"
+                                  HeightRequest="{markups:OnScreenSize Large='96',Medium='94',Small='92'}" 
+                                  WidthRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}" 
+                                  StrokeShape="RoundRectangle 15,18,15,18"
+                                  BackgroundColor="#FEAD1D">
+                                <ImageButton
+                                      Margin="20,0,0,0"
+                                      Source="delete"
+                                      HeightRequest="35" WidthRequest="35"
+                                      HorizontalOptions="Center"
+                                      VerticalOptions="Center"
+                                      Command="{Binding BindingContext.DeleteCartItemCommand, Source={x:Reference Name=cartItemCollection}}"
+                                      CommandParameter="{Binding .}"/>
+                            </Border>
+                            <Border
+                                  x:Name="itemStack"
+                                  HeightRequest="{markups:OnScreenSize Large='100',Medium='98',Small='96'}" 
+                                  Stroke="Transparent"
+                                  StrokeShape="RoundRectangle 18"
+                                  VerticalOptions="FillAndExpand"
+                                  HorizontalOptions="Fill"
+                                  BackgroundColor="#252525">
+                                <Grid Padding="15,10" ColumnDefinitions="Auto,*,Auto">
+                                    <Border
+                                          Grid.Column="0"
+                                          Stroke="Transparent"
+                                          StrokeShape="RoundRectangle 12"
+                                          HeightRequest="{markups:OnScreenSize Medium='58',Large='60',Small='56'}">
+                                        <Image Source="{Binding FoodImage,Converter={StaticResource Base64ToImageSourceConverter}}"/>
+                                    </Border>
+
+                                    <VerticalStackLayout VerticalOptions="Center" Spacing="5" Grid.Column="1" Margin="10,0,0,0">
+                                        <Label
+                                              TextColor="#FFFFFF"
+                                              Text="{Binding FoodName}"
+                                              FontFamily="BentonMedium"
+                                              FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"/>
+
+                                        <Label
+                                              TextColor="Gray"
+                                              FontFamily="BentonBook"
+                                              Text="{Binding RestaurantName}"
+                                              FontSize="{markups:OnScreenSize Large='12',Medium='10',Small='8'}"/>
+
+                                        <Label
+                                              TextColor="#53E88B"
+                                              FontFamily="BentonBold"
+                                              FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                                              Text="{Binding FoodPrice, StringFormat='{0} $'}"/>
+                                    </VerticalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="2" Spacing="10">
+                                        <Button
+                                              FontFamily="BentonBold"
+                                              TextColor="#53E88B"
+                                              Padding="0"
+                                              BackgroundColor="#23342d"
+                                              FontSize="{markups:OnScreenSize Large='25',Medium='23',Small='21'}"
+                                              HeightRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                                              WidthRequest="{markups:OnScreenSize Large='30',Medium='28',Small='26'}"
+                                              Text="-"
+                                              CornerRadius="10"
+                                              Command="{Binding BindingContext.DecrementCommand, Source={x:Reference Name=cartItemCollection}}"
+                                              CommandParameter="{Binding .}"/>
+                                        <Label
+                                              FontFamily="BentonMedium"
+                                              FontSize="{markups:OnScreenSize Large='14',Medium='12',Small='10'}"
+                                              VerticalOptions="Center"
+                                              Text="{Binding Quantity}"
+                                              TextColor="#FFFFFF"/>
+                                        <Button
+                                              FontFamily="BentonBold"
+                                              FontSize="{markups:OnScreenSize Large='20',Medium='18',Small='16'}"
+                                              Padding="0"
+                                              Text="+"
+                                              CornerRadius="10"
+                                              TextColor="#FFFFFF"
+                                              BackgroundColor="#53E88B"
+                                              HeightRequest="{markups:OnScreenSize Large='29',Medium='27',Small='25'}"
+                                              WidthRequest="{markups:OnScreenSize Large='29',Medium='27',Small='25'}"
+                                              Command="{Binding BindingContext.IncrementCommand, Source={x:Reference Name=cartItemCollection}}"
+                                              CommandParameter="{Binding .}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--#endregion-->
+
+
+
+            <!--#region Price Calculation -->
+            <Border
+                Opacity="0"
+              x:Name="priceCalculationBorder"
+              IsVisible="{Binding IsPriceStackVisiblity}"
+              Grid.Row="2"
+              Stroke="Transparent"
+              BackgroundColor="#53E88B"
+              StrokeShape="RoundRectangle 20"
+              Padding="0">
+                <Grid RowSpacing="5"  RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,*">
+
+                    <Label
+                      Margin="15,15,0,0"
+                      Text="Sub-Total"
+                      Grid.Row="0" Grid.Column="0"
+                      Style="{StaticResource priceTitleLabelStyle}"/>
+
+                    <Label
+                      Margin="15,0,0,0"
+                      Text="Delivery Charge"
+                      Grid.Row="1" Grid.Column="0"
+                      Style="{StaticResource priceTitleLabelStyle}"/>
+
+                    <Label
+                      Margin="15,5,0,0"
+                      Text="Total"
+                      TextColor="#FFFFFF"
+                      FontAttributes="Bold"
+                      FontFamily="BentonBold"
+                      FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"
+                      Grid.Row="2" Grid.Column="0"/>
+
+                    <Label
+                      Margin="0,15,15,0"
+                      Text="{Binding SubTotal,StringFormat='{0} $'}"
+                      Grid.Row="0" Grid.Column="1"
+                      Style="{StaticResource priceLabelStyle}"/>
+
+                    <Label
+                      Margin="0,0,15,0"
+                      Text="{Binding DeliveryCharge,StringFormat='{0} $'}"
+                      Grid.Row="1" Grid.Column="1"
+                      Style="{StaticResource priceLabelStyle}"/>
+
+                    <Label
+                      Text="{Binding TotalPrice,StringFormat='{0} $'}"
+                      Margin="0,5,15,0"
+                      TextColor="#FFFFFF"
+                      FontAttributes="Bold"
+                      FontFamily="BentonBold"
+                      HorizontalOptions="End"
+                      FontSize="{markups:OnScreenSize Large='18',Medium='16',Small='14'}"
+                      Grid.Row="2" Grid.Column="1"/>
+
+                    <Button
+                      CornerRadius="12"
+                      BackgroundColor="#FFFFFF"
+                      HeightRequest="{markups:OnScreenSize Large='45',Medium='43',Small='41'}"
+                      Margin="10"
+                      FontFamily="BentonMedium"
+                      FontSize="{markups:OnScreenSize Large='16',Medium='14',Small='12'}"
+                      TextColor="#53E88B"
+                      Text="Place My Order"
+                      FontAttributes="Bold"
+                      Grid.Row="3" Grid.ColumnSpan="2"
+                      Command="{Binding PlaceOrderCommand}"/>
+                </Grid>
+            </Border>
+            <!--#endregion-->
+            <!--These changese are done on 7-10-2024 From Line 349 to 367-->
+            <VerticalStackLayout Spacing="5" Margin="0,0,0,80" Grid.RowSpan="3" VerticalOptions="Center" HorizontalOptions="Center">
+                <skia:SKLottieView
+                  IsVisible="{Binding NoItemInCartAnimation}"
+                  IsAnimationEnabled="{Binding NoItemInCartAnimation}"
+                  RepeatCount="-1"
+                  RepeatMode="Reverse"
+                  Source="nodata.json"
+                  HeightRequest="200" WidthRequest="200"/>
+
+                <Label
+                  IsVisible="{Binding NoItemInCartAnimation}"
+                  Text="Nothing in your cart yet. Let's get some delicious food in there!"
+                  TextColor="#FEAD1D"
+                  HorizontalTextAlignment="Center"
+                  HorizontalOptions="Center"
+                  Margin="30,0"
+                  FontFamily="BentonMedium"
+                  FontSize="{markups:OnScreenSize Large='15',Medium='13',Small='11'}"/>
+            </VerticalStackLayout>
+
+
+
+            <skia:SKLottieView
+              Grid.RowSpan="3"
+              IsVisible="{Binding IsLoading}"
+              IsAnimationEnabled="{Binding IsLoading}"
+              x:Name="loader"
+              RepeatCount="-1"
+              RepeatMode="Reverse"
+              Source="foodyellow.json"
+              HeightRequest="100" WidthRequest="100"/>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>

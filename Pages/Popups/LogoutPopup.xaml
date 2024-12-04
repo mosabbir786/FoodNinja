@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodNinja.Pages.Popups.LogoutPopup"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:markups="clr-namespace:OnScreenSizeMarkup.Maui;assembly=OnScreenSizeMarkup.Maui"
+             Color="Transparent">
+
+
+    <Border
+        BackgroundColor="Black"
+        Stroke="Transparent"
+        StrokeShape="RoundRectangle 15"
+        HeightRequest="{markups:OnScreenSize Large='220',Medium='245',Small='240'}"
+        WidthRequest="{markups:OnScreenSize Large='270',Medium='275',Small='270'}">
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" Padding="15,15,15,15" ColumnSpacing="10" VerticalOptions="Center" RowSpacing="30">
+            <Label
+                TextColor="#53E88B"
+                LineHeight="1.2"
+                FontFamily="BentonBold"
+                FontSize="{markups:OnScreenSize Large='20',Medium='19',Small='18'}"
+                Grid.Row="0" Grid.ColumnSpan="2"
+                HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                Text="Are you sure you want to logout?"/>
+
+            <Button
+                FontFamily="BentonBold"
+                BackgroundColor="#53E88B"
+                TextColor="#FFFFFF"
+                Text="Yes"
+                CornerRadius="15"
+                HeightRequest="45"
+                VerticalOptions="Start"
+                Grid.Row="1" Grid.Column="0"
+                FontSize="{markups:OnScreenSize Large='16',Medium='15',Small='14'}"
+                Clicked="YesButton_Clicked"/>
+
+            <Button
+                FontFamily="BentonBold"
+                BackgroundColor="#53E88B"
+                TextColor="#FFFFFF"
+                Text="No"
+                CornerRadius="15"
+                HeightRequest="45"
+                VerticalOptions="Start"
+                Grid.Row="1" Grid.Column="1"
+                FontSize="{markups:OnScreenSize Large='16',Medium='15',Small='14'}"
+                Clicked="NoButton_Clicked"/>
+        </Grid>
+    </Border>
+
+</toolkit:Popup>

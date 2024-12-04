@@ -1,5 +1,8 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.Messaging;
 using FoodNinja.Model;
+using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
 using FoodNinja.ViewModel;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
@@ -21,7 +24,7 @@ public partial class HomePage : ContentPage
     {
         Dispatcher.Dispatch(async () =>
         {
-            
+            await this.ShowPopupAsync(new ShowExitConfirmationPopup());
         });
         return true;
     }
@@ -32,45 +35,41 @@ public partial class HomePage : ContentPage
         var viewModel = BindingContext as HomePageViewModel;
         if (viewModel != null)
         {
-           // viewModel.CurrentPage = TypeOfPage.HomePage;
+            await Task.Delay(1);
+            viewModel.CurrentPage = TypeOfPage.HomePage;
 
-            /* viewModel.IsLoading = true;
-             await viewModel.LoadRestaurantsAsync();
-             await viewModel.LoadPopularMenuAsync();
-             viewModel.IsLoading = false;*/
+            await viewModel.LoadUnreadNotificationCount();
+            WeakReferenceMessenger.Default.Register<NotificationBadgeMessage>(this, (r, message) =>
+            {
+               viewModel.UnreadNotificationCount = message.Value;
+            });
         }
     }
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
         App.Current.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
-
+        WeakReferenceMessenger.Default.Unregister<NotificationBadgeMessage>(this);
     }
 
     #region Clicked Event
-    private void NotificationImageButton_Clicked(object sender, EventArgs e)
-    {
-
-    }
 
     private void firstSearchbar_Focused(object sender, FocusEventArgs e)
     {
         menuList.Margin = new Thickness(0, 0, 0, 90);
     }
-
     private void firstSearchbar_Unfocused(object sender, FocusEventArgs e)
     {
         menuList.Margin = new Thickness(0, 0, 0, 0);
     }
-
     private void firstSearchbar_SearchButtonPressed(object sender, EventArgs e)
     {
         PerformSearch(firstSearchbar.Text);
     }
-
     private async void firstSearchbar_TextChanged(object sender, TextChangedEventArgs e)
     {
-      /*  var container = BindingContext as HomePageViewModel;
+        await Task.Delay(1);
+        var container = BindingContext as HomePageViewModel;
         if (container != null && container.RestaurantList != null)
         {
             if (!string.IsNullOrEmpty(e.NewTextValue))
@@ -91,9 +90,8 @@ public partial class HomePage : ContentPage
                     firstSearchbar?.Unfocus();
                 }
             }
-        }*/
+        }
     }
-
     private async void ViewMoreRestaurant_Tapped(object sender, TappedEventArgs e)
     {
         vMore1Border.BackgroundColor = Colors.Gray;
@@ -110,7 +108,6 @@ public partial class HomePage : ContentPage
             await Task.Delay(20);
         }
     }
-
     private async void RestaurantFrame_Tapped(object sender, TappedEventArgs e)
     {
         if (sender is Border border)
@@ -120,7 +117,6 @@ public partial class HomePage : ContentPage
             await ResetBorderAnimation(border);
         }
     }
-
     private async void ViewMoreMenu_Tapped(object sender, TappedEventArgs e)
     {
         vMore2Border.BackgroundColor = Colors.Gray;
@@ -160,7 +156,7 @@ public partial class HomePage : ContentPage
     }
     private async void PerformSearch(string searchText)
     {
-       /* firstSearchbar.Text = string.Empty;
+        firstSearchbar.Text = string.Empty;
         var container = BindingContext as HomePageViewModel;
         if (container != null && container.RestaurantList != null)
         {
@@ -182,9 +178,8 @@ public partial class HomePage : ContentPage
                 container.RestaurantList = new ObservableCollection<NearestRestaurantModel>(container.Restaurant.Take(3));
                 firstSearchbar?.Unfocus();
             }
-        }*/
+        }
     }
-    #endregion
 
-  
+    #endregion
 }

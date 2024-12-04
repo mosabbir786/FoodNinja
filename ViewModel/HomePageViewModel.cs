@@ -2,7 +2,10 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using FoodNinja.Model;
+using FoodNinja.Pages;
 using FoodNinja.Pages.HomeTabScreen;
 using FoodNinja.Pages.Popups;
 using FoodNinja.Services;
@@ -50,6 +53,9 @@ namespace FoodNinja.ViewModel
         private bool isViewMoreLbl1;
 
         [ObservableProperty]
+        private bool isLoadingForCart;
+
+        [ObservableProperty]
         private ObservableCollection<NearestRestaurantModel> restaurantList = new ObservableCollection<NearestRestaurantModel>();
 
         [ObservableProperty]
@@ -65,6 +71,12 @@ namespace FoodNinja.ViewModel
 
         [ObservableProperty]
         private string currentViewModel = "HomePage";
+
+        [ObservableProperty]
+        private int unreadNotificationCount;
+
+        [ObservableProperty]
+        private string userId;
         public ICommand AddFoodToCartCommand { get; }
         #endregion
 
@@ -73,6 +85,7 @@ namespace FoodNinja.ViewModel
         {
             Navigation = navigation;
             firebaseManager = _firebaseManager;
+            UserId = Preferences.Get("LocalId", string.Empty);
             Items = new ObservableCollection<Item>
             {
                 new Item { Name = "Name", Description = "Description", Image = "rs1.png" },
@@ -87,6 +100,11 @@ namespace FoodNinja.ViewModel
         #endregion
 
         #region Methods
+
+        public async Task LoadUnreadNotificationCount()
+        {
+            UnreadNotificationCount = await firebaseManager.GetUnreadNotificationCountAsync(UserId);
+        }
         private async void LoadData()
         {
             IsLoading = true;
@@ -143,7 +161,9 @@ namespace FoodNinja.ViewModel
                     RestaurantLong = selectedFood.RestaurantLong,
 
                 };
+                IsLoadingForCart = true;
                 var response = await firebaseManager.AddFoodToCartFromPopularMenuAsync(addFoodToCart);
+                IsLoadingForCart = false;
                 if (response)
                 {
                     await Toast.Make("Food added to cart").Show();
@@ -157,7 +177,9 @@ namespace FoodNinja.ViewModel
         }
         private async Task OnRequestFrameTapped(NearestRestaurantModel? selectedRestaurant)
         {
-            await Navigation.PushAsync(new RestaurantDetailPage(selectedRestaurant));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.SelectedRestaurant = selectedRestaurant;
+            await Navigation.PushAsync(new RestaurantDetailPage());
         }
         public async Task LoadRestaurantsAsync()
         {
@@ -197,22 +219,33 @@ namespace FoodNinja.ViewModel
         [RelayCommand]
         private async Task NavigateToNextPage()
         {
-
-            await Navigation.PushAsync(new RestaurantPage(Restaurant));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.Restaurant = Restaurant;
+            await Navigation.PushAsync(new RestaurantPage());
         }
 
         [RelayCommand]
         private async Task NavigateToPopularMenu()
         {
-            await Navigation.PushAsync(new PopularMenuPage(PopularMenu));
+            var restaurantService = DependencyService.Get<RestaurantService>();
+            restaurantService.PopularMenu = PopularMenu;
+            await Navigation.PushAsync(new PopularMenuPage());
         }
 
         [RelayCommand]
-        private async Task NavigateToFilterPage()
+        private async Task NavigateToNotificationPage()
         {
-            //await Navigation.PushAsync(new FilterPage());
+            await Navigation.PushAsync(new NotificationPage());
         }
         #endregion
+    }
+
+    public class  NotificationBadgeMessage : ValueChangedMessage<int>
+    {
+        public NotificationBadgeMessage(int unreadCount) : base(unreadCount)
+        {
+            
+        }
     }
 }
 
