@@ -75,11 +75,17 @@ namespace FoodNinja.ViewModel
         #region Methods
         public async Task LoadNotification()
         {
+            IsLoading = true;
             var response =await _firebaseManager.FetchNotificationListAsync(UserId);
             if (response != null && response.Any())
             {
-                NotificationList = new ObservableCollection<SaveNotificationModel>(response);
+                var sortedResponse = response
+                    .OrderByDescending(notification => DateTime.Parse(notification.ReceivedAt))
+                    .ToList();
+                NotificationList = new ObservableCollection<SaveNotificationModel>(sortedResponse);
                 NotificationCollectionVisiblity = NotificationList.Any();
+                await Task.Delay(300);
+                IsLoading = false;
                 await _firebaseManager.MarkAllNotificationsAsReadAsync(UserId);
                 int unreadCount = await _firebaseManager.GetUnreadNotificationCountAsync(UserId);
 
@@ -88,6 +94,7 @@ namespace FoodNinja.ViewModel
             else
             {
                 NoDataFoundVisible = true;
+                IsLoading = false;
                 Console.WriteLine("No notifications found.");
             }
         }

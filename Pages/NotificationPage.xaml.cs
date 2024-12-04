@@ -18,10 +18,7 @@ public partial class NotificationPage : ContentPage
         base.OnAppearing();
 		if(BindingContext is NotificationViewModel viewModel)
 		{
-			viewModel.IsLoading = true;
-			await Task.Delay(500);
 			await viewModel.LoadNotification();
-			viewModel.IsLoading = false;
 		}
     }
 }

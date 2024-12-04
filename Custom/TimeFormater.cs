@@ -16,19 +16,22 @@ namespace FoodNinja.Custom
             {
                 var span = DateTime.Now - dateTime;
 
-                if (span.Days > 1)
-                    return $"{span.Days} d";
-                if (span.Days == 1)
-                    return "1d";
-                if (span.Hours > 1)
-                    return $"{span.Hours} hr";
-                if (span.Hours == 1)
-                    return "1hr";
-                if (span.Minutes > 1)
-                    return $"{span.Minutes} min";
-                if (span.Minutes == 1)
-                    return "1min";
-                return "now";
+                if (span.TotalDays >= 365)
+                    return $"{(int)(span.TotalDays / 365)}y";
+                if (span.TotalDays >= 30)
+                    return $"{(int)(span.TotalDays / 30)}m";
+                if (span.TotalDays >= 7)
+                    return $"{(int)(span.TotalDays / 7)}w";
+                if (span.TotalDays >= 1)
+                    return $"{(int)span.TotalDays}d";
+                if (span.TotalHours >= 1)
+                    return $"{(int)span.TotalHours}hr";
+                if (span.TotalMinutes >= 1)
+                    return $"{(int)span.TotalMinutes}min";
+                if (span.TotalSeconds >= 1)
+                    return $"{(int)span.TotalSeconds}sec";
+
+                return "just now";
             }
             return "Invalid date";
         }
